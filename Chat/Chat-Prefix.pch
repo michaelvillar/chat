@@ -4,4 +4,9 @@
 
 #ifdef __OBJC__
   #import <Cocoa/Cocoa.h>
+  #import <TwUI/TUIKit.h>
+  #import "XMPPFramework.h"
+  #import "MVConstants.h"
 #endif
+
+#define kMVMessageMaxChars 1000
