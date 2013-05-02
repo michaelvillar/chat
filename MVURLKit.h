@@ -5,8 +5,6 @@
 #import "MVAsset.h"
 #import "MVMessage.h"
 #import "MVService.h"
-#import "MVKickoffFileService.h"
-#import "MVKickoffTaskService.h"
 #import "MVDribbbleShotService.h"
 #import "MVTwitterTweetService.h"
 #import "MVYoutubeVideoService.h"

@@ -203,36 +203,7 @@
     
     if(parsedMessage.service)
     {
-      if([parsedMessage.service isKindOfClass:[MVKickoffFileService class]])
-      {
-        MVKickoffFileService *service = (MVKickoffFileService*)(parsedMessage.service);
-        MVAsset *asset = [[MVURLKit sharedInstance] assetForRemoteURL:service.url
-                                                          withMaxSize:kMVDiscussionMessageMaxSize
-                                                          ignoresGIFs:YES];
-        CFStringRef fileExtension = (__bridge CFStringRef)(asset.localURL.pathExtension);
-        CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, 
-                                                                    fileExtension, 
-                                                                    NULL);
-        if(UTTypeConformsTo(fileUTI, kUTTypeJPEG) ||
-           UTTypeConformsTo(fileUTI, kUTTypeJPEG2000) ||
-           UTTypeConformsTo(fileUTI, kUTTypeTIFF) ||
-           UTTypeConformsTo(fileUTI, kUTTypePICT) ||
-           UTTypeConformsTo(fileUTI, kUTTypeGIF) ||
-           UTTypeConformsTo(fileUTI, kUTTypePNG) ||
-           UTTypeConformsTo(fileUTI, kUTTypeAppleICNS) ||
-           UTTypeConformsTo(fileUTI, kUTTypeBMP) ||
-           UTTypeConformsTo(fileUTI, kUTTypeICO))
-          messageItem.type = kMVDiscussionMessageTypeImage;
-        else
-        {
-          messageItem.type = kMVDiscussionMessageTypeFile;
-          messageItem.attributedMessage = [[NSAttributedString alloc] 
-                                           initWithString:asset.localURL.lastPathComponent];
-        }
-        messageItem.asset = asset;
-        [messageItem bind:@"url" toObject:messageItem withKeyPath:@"asset.originalAsset.localURL" options:0];
-      }
-      else if([parsedMessage.service isKindOfClass:[MVImageService class]])
+      if([parsedMessage.service isKindOfClass:[MVImageService class]])
       {
         MVImageService *service = (MVImageService*)(parsedMessage.service);
         MVAsset *asset = [[MVURLKit sharedInstance] assetForRemoteURL:service.url

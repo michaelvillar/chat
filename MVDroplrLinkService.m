@@ -55,7 +55,7 @@
           suggestedFilename = [suggestedFilename stringByAddingPercentEscapesUsingEncoding:
                                NSUTF8StringEncoding];
           self.downloadUrl = [NSURL URLWithString:
-                              [NSString stringWithFormat:@"%@+#kickoff_filename=%@",
+                              [NSString stringWithFormat:@"%@+#chat_filename=%@",
                                                          self.url.absoluteString,
                                                          suggestedFilename]];
         }

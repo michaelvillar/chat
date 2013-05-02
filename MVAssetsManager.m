@@ -7,8 +7,6 @@
 #import "MVFileUploadManager_Private.h"
 #import "NSString+QueryParsing.h"
 
-#define kMVAssetsCachePath @"com.kickoffapp.Kickoff2"
-
 @interface MVAssetsManager () <MVFileDownloadDelegate>
 
 @property (strong, readwrite) NSOperationQueue *operationQueue;
@@ -161,9 +159,9 @@
   if(url.fragment)
   {
     NSDictionary *fragments = url.fragment.dictionaryFromQueryComponents;
-    if([fragments valueForKey:@"kickoff_filename"])
+    if([fragments valueForKey:@"chat_filename"])
     {
-      fileName = [[fragments valueForKey:@"kickoff_filename"] objectAtIndex:0];
+      fileName = [[fragments valueForKey:@"chat_filename"] objectAtIndex:0];
     }
   }
   filePath = [filePath stringByAppendingPathComponent:fileName];
