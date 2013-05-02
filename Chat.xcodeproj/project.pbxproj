@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4C1E00001730CE10005BDA73 /* MVKickoffFileService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE21730CE10005BDA73 /* MVKickoffFileService.m */; };
-		4C1E00011730CE10005BDA73 /* MVKickoffTaskService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE41730CE10005BDA73 /* MVKickoffTaskService.m */; };
 		4C1E00021730CE10005BDA73 /* MVMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE61730CE10005BDA73 /* MVMessage.m */; };
 		4C1E00031730CE10005BDA73 /* MVMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE81730CE10005BDA73 /* MVMessageParser.m */; };
 		4C1E00041730CE10005BDA73 /* MVTwitterTweetService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFEB1730CE10005BDA73 /* MVTwitterTweetService.m */; };
@@ -494,6 +492,7 @@
 		4C1E01EC1732496A005BDA73 /* EMKeychainItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMKeychainItem.m; sourceTree = "<group>"; };
 		4C1E01EE17324A7C005BDA73 /* MVConnectionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVConnectionManager.h; sourceTree = "<group>"; };
 		4C1E01EF17324A7D005BDA73 /* MVConnectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVConnectionManager.m; sourceTree = "<group>"; };
+		4C1E01F117325256005BDA73 /* Chat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Chat.entitlements; sourceTree = "<group>"; };
 		4C1EFF571730C65C005BDA73 /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C1EFF5A1730C65C005BDA73 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		4C1EFF5D1730C65C005BDA73 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -580,10 +579,6 @@
 		4C1EFFDE1730CE10005BDA73 /* MVImageService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVImageService.m; sourceTree = "<group>"; };
 		4C1EFFDF1730CE10005BDA73 /* MVJSONGetRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVJSONGetRequest.h; sourceTree = "<group>"; };
 		4C1EFFE01730CE10005BDA73 /* MVJSONGetRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVJSONGetRequest.m; sourceTree = "<group>"; };
-		4C1EFFE11730CE10005BDA73 /* MVKickoffFileService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVKickoffFileService.h; sourceTree = "<group>"; };
-		4C1EFFE21730CE10005BDA73 /* MVKickoffFileService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVKickoffFileService.m; sourceTree = "<group>"; };
-		4C1EFFE31730CE10005BDA73 /* MVKickoffTaskService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVKickoffTaskService.h; sourceTree = "<group>"; };
-		4C1EFFE41730CE10005BDA73 /* MVKickoffTaskService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVKickoffTaskService.m; sourceTree = "<group>"; };
 		4C1EFFE51730CE10005BDA73 /* MVMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVMessage.h; sourceTree = "<group>"; };
 		4C1EFFE61730CE10005BDA73 /* MVMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVMessage.m; sourceTree = "<group>"; };
 		4C1EFFE71730CE10005BDA73 /* MVMessageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVMessageParser.h; sourceTree = "<group>"; };
@@ -1420,6 +1415,7 @@
 		4C1EFF611730C65C005BDA73 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4C1E01F117325256005BDA73 /* Chat.entitlements */,
 				4C1EFF621730C65C005BDA73 /* Chat-Info.plist */,
 				4C1EFF631730C65C005BDA73 /* InfoPlist.strings */,
 				4C1EFF661730C65C005BDA73 /* main.m */,
@@ -1497,10 +1493,6 @@
 				4C1EFFDE1730CE10005BDA73 /* MVImageService.m */,
 				4C1EFFDF1730CE10005BDA73 /* MVJSONGetRequest.h */,
 				4C1EFFE01730CE10005BDA73 /* MVJSONGetRequest.m */,
-				4C1EFFE11730CE10005BDA73 /* MVKickoffFileService.h */,
-				4C1EFFE21730CE10005BDA73 /* MVKickoffFileService.m */,
-				4C1EFFE31730CE10005BDA73 /* MVKickoffTaskService.h */,
-				4C1EFFE41730CE10005BDA73 /* MVKickoffTaskService.m */,
 				4C1EFFE51730CE10005BDA73 /* MVMessage.h */,
 				4C1EFFE61730CE10005BDA73 /* MVMessage.m */,
 				4C1EFFE71730CE10005BDA73 /* MVMessageParser.h */,
@@ -1642,8 +1634,6 @@
 				4C1EFFFD1730CE10005BDA73 /* MVGetRedirectedURL.m in Sources */,
 				4C1EFFFE1730CE10005BDA73 /* MVImageService.m in Sources */,
 				4C1EFFFF1730CE10005BDA73 /* MVJSONGetRequest.m in Sources */,
-				4C1E00001730CE10005BDA73 /* MVKickoffFileService.m in Sources */,
-				4C1E00011730CE10005BDA73 /* MVKickoffTaskService.m in Sources */,
 				4C1E00021730CE10005BDA73 /* MVMessage.m in Sources */,
 				4C1E00031730CE10005BDA73 /* MVMessageParser.m in Sources */,
 				4C1E00041730CE10005BDA73 /* MVTwitterTweetService.m in Sources */,
@@ -1866,6 +1856,8 @@
 		4C1EFF751730C65C005BDA73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Chat/Chat.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1888,6 +1880,8 @@
 		4C1EFF761730C65C005BDA73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Chat/Chat.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
