@@ -1,5 +1,4 @@
 #define kMVPreferencesGmailEmailKey @"gmail_email"
 
-#define kMVKeychainServiceName @"chat"
-
+#define kMVKeychainServiceName @"com.michaelvillar.Chat"
 #define kMVAssetsCachePath @"com.michaelvillar.Chat"

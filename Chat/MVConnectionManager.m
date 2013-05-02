@@ -77,12 +77,29 @@ static MVConnectionManager *instance;
 
 #pragma mark XMPPStreamDelegate
 
+- (void)xmppStreamDidSecure:(XMPPStream *)sender
+{
+  NSLog(@"did secure");
+}
+
 - (void)xmppStreamDidConnect:(XMPPStream *)xmppStream
 {
   NSError *error = nil;
-  BOOL success = [xmppStream authenticateWithPassword:self.password error:&error];
-  if(!success)
-    [self fireErrorNotification:error];
+  BOOL success;
+  
+  if(!self.xmppStream.isSecure)
+  {
+    success = [self.xmppStream connect:&error];
+    if(!success)
+      [self fireErrorNotification:error];
+  }
+  else
+  {
+    success = [self.xmppStream authenticateWithPassword:self.password error:&error];
+    NSLog(@"error %@",error);
+    if(!success)
+      [self fireErrorNotification:error];
+  }
 }
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)xmppStream
