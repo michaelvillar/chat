@@ -17,6 +17,9 @@
 @property (strong, readwrite) MVDiscussionView *discussionView;
 @property (strong, readwrite) MVRoundedTextView *textView;
 @property (strong, readwrite) MVDiscussionViewController *discussionViewController;
+@property (strong, readwrite) NSMutableDictionary *composingItems;
+
+- (void)removeWriteItemForJid:(XMPPJID*)jid;
 
 @end
 
@@ -27,6 +30,7 @@
             discussionView            = discussionView_,
             textView                  = textView_,
             discussionViewController  = discussionViewController_,
+            composingItems            = composingItems_,
             identifier                = identifier_;
 
 - (id)init
@@ -62,6 +66,7 @@
     discussionViewController_ = [[MVDiscussionViewController alloc]
                                  initWithDiscussionView:discussionView
                                  xmppStream:xmppStream jid:jid];
+    composingItems_ = [NSMutableDictionary dictionary];
   }
   return self;
 }
@@ -112,15 +117,79 @@ animatedFromTextView:(BOOL)animatedFromTextView
                        animatedFromTextView:self.textView];
 }
 
+#pragma mark Private Methods
+
+- (void)removeWriteItemForJid:(XMPPJID*)jid
+{
+  MVDiscussionMessageItem *writingItem = [self.composingItems objectForKey:jid.bare];
+  if(writingItem)
+  {
+    [self.composingItems removeObjectForKey:jid.bare];
+    [self.discussionView removeDiscussionItem:writingItem];
+    [self.discussionView layoutSubviews:YES];
+  }
+}
+
 #pragma mark XMPPStream Delegate
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
-	if ([message.from isEqualToJID:self.jid
-                         options:XMPPJIDCompareBare] &&
-      [message isChatMessageWithBody])
-	{
-    [self addMessage:message];
+  if ([message.from isEqualToJID:self.jid
+                         options:XMPPJIDCompareBare])
+  {
+    NSArray *nodes = message.children;
+    NSXMLElement *node;
+    NSString *state = nil;
+    for (node in nodes) {
+      NSArray *namespaces = [node namespaces];
+      NSXMLNode *namespace;
+      for (namespace in namespaces) {
+        if(namespace && [[namespace stringValue] isEqualToString:@"http://jabber.org/protocol/chatstates"]) {
+          state = [node name];
+          break;
+        }
+      }
+    }
+    
+    if(state)
+    {
+      BOOL composing = [state isEqualToString:@"cha:composing"];
+      MVDiscussionMessageItem *writingItem = [self.composingItems objectForKey:message.from.bare];
+      if(composing)
+      {
+        if(!writingItem)
+        {
+          XMPPvCardAvatarModule *module = (XMPPvCardAvatarModule*)[self.xmppStream moduleOfClass:
+                                                                   [XMPPvCardAvatarModule class]];
+          
+          writingItem = [[MVDiscussionMessageItem alloc] init];
+          writingItem.type = kMVDiscussionMessageTypeWriting;
+          if(module)
+          {
+            NSData *photoData = [module photoDataForJID:message.from];
+            if(photoData)
+            {
+              writingItem.avatar = [TUIImage imageWithData:photoData];
+            }
+          }
+          
+          writingItem.name = message.from.bare;
+          writingItem.senderRepresentedObject = message.from;
+          [self.discussionView addDiscussionItem:writingItem animated:YES];
+          [self.discussionView layoutSubviews:YES];
+          [self.composingItems setObject:writingItem forKey:message.from.bare];
+        }
+      }
+      else if(writingItem)
+      {
+        [self removeWriteItemForJid:message.from];
+      }    
+    }
+  
+    if ([message isChatMessageWithBody])
+    {
+      [self addMessage:message];
+    }
   }
 }
 
