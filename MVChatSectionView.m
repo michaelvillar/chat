@@ -375,7 +375,7 @@ static NSGradient *backgroundGradient;
 {
   [TUIView animateWithDuration:0.4 animations:^{
     CGRect frame = self.tabsBarView.frame;
-    if([self.tabsBarView countTabs] > 0)
+    if([self.tabsBarView countTabs] > 1)
     {
       frame.origin.y = self.frame.size.height - 23;
     }
@@ -587,7 +587,7 @@ shouldRetrySendingMessage:(MVDiscussionMessageItem*)discussionItem
                                            self.frame.size.width,
                                            self.frame.size.height -
                                            self.bottomBarView.frame.size.height -
-                                           ([self.tabsBarView countTabs] > 0 ? 23 : 0));
+                                           ([self.tabsBarView countTabs] > 1 ? 23 : 0));
 }
 
 - (void)setDiscussionViewFront:(BOOL)front

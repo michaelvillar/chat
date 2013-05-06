@@ -5,6 +5,8 @@
 #import "MVChatSectionView.h"
 #import "MVRoundedTextView.h"
 
+#define kMVBuddyListIdentifier @"kMVBuddyListIdentifier"
+
 @interface MVChatViewController () <MVChatSectionViewDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
@@ -48,6 +50,8 @@
     chatSectionView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                         TUIViewAutoresizingFlexibleHeight;
     chatSectionView_.delegate = self;
+    [chatSectionView_.tabsBarView addTab:@"Buddies" closable:NO sortable:NO online:NO
+                              identifier:kMVBuddyListIdentifier animated:NO];
     [view_ addSubview:chatSectionView_];
 
     controllers_ = [NSMutableDictionary dictionary];
@@ -167,7 +171,15 @@
                                        textView:nil];
     return;
   }
-  XMPPJID *jid = [XMPPJID jidWithString:(NSString*)identifier];
+  NSString *stringIdentifier = (NSString*)identifier;
+  if([stringIdentifier isEqualToString:kMVBuddyListIdentifier])
+  {
+    self.chatConversationController = nil;
+    [self.chatSectionView displayDiscussionView:nil
+                                       textView:nil];
+    return;
+  }
+  XMPPJID *jid = [XMPPJID jidWithString:stringIdentifier];
   MVChatConversationController *controller = [self controllerForJid:jid];
     
   [self displayController:controller];
