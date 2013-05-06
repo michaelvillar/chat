@@ -19,6 +19,8 @@
 @property (strong, readwrite) MVChatConversationController *chatConversationController;
 @property (strong, readwrite) NSMutableDictionary *controllers;
 
+@property (readwrite) int connectionState;
+
 - (void)displayController:(MVChatConversationController*)controller;
 - (void)addTab:(XMPPJID*)jid
       animated:(BOOL)animated;
@@ -33,13 +35,16 @@
             bottomBarView = bottomBarView_,
             chatSectionView = chatSectionView_,
             chatConversationController = chatConversationController_,
-            controllers = controllers_;
+            controllers = controllers_,
+            connectionState = connectionState_;
 
 - (id)initWithStream:(XMPPStream*)xmppStream
 {
   self = [super init];
   if(self)
   {
+    connectionState_ = kMVChatSectionViewStateOffline;
+
     xmppStream_ = xmppStream;
     [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
     
@@ -50,6 +55,7 @@
     chatSectionView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                         TUIViewAutoresizingFlexibleHeight;
     chatSectionView_.delegate = self;
+    chatSectionView_.state = self.connectionState;
     [chatSectionView_.tabsBarView addTab:@"Buddies" closable:NO sortable:NO online:NO
                               identifier:kMVBuddyListIdentifier animated:NO];
     [view_ addSubview:chatSectionView_];
@@ -57,6 +63,8 @@
     controllers_ = [NSMutableDictionary dictionary];
     
     chatConversationController_ = nil;
+    
+    [self addObserver:self forKeyPath:@"connectionState" options:0 context:NULL];
   }
   return self;
 }
@@ -64,6 +72,7 @@
 - (void)dealloc
 {
   [xmppStream_ removeDelegate:self delegateQueue:dispatch_get_main_queue()];
+  [self removeObserver:self forKeyPath:@"connectionState"];
 }
 
 - (void)newTab
@@ -76,6 +85,18 @@
   if(user)
   {
     [self selectTab:jid animated:YES];
+  }
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+  if(object == self && [keyPath isEqualToString:@"connectionState"]) {
+    self.chatSectionView.state = self.connectionState;
+  }
+  else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
 }
 
@@ -142,6 +163,26 @@
     
     [self selectTab:message.from animated:YES];
 	}
+}
+
+- (void)xmppStreamWillConnect:(XMPPStream *)sender
+{
+  self.connectionState = kMVChatSectionViewStateConnecting;
+}
+
+- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
+{
+  self.connectionState = kMVChatSectionViewStateOnline;
+}
+
+- (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
+{
+  self.connectionState = kMVChatSectionViewStateOffline;
+}
+
+- (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
+{
+  self.connectionState = kMVChatSectionViewStateOffline;
 }
 
 #pragma mark MVChatSectionViewDelegate
