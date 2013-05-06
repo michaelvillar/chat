@@ -18,7 +18,10 @@
 @property (strong, readwrite) MVRoundedTextView *textView;
 @property (strong, readwrite) MVDiscussionViewController *discussionViewController;
 @property (strong, readwrite) NSMutableDictionary *composingItems;
+@property (readwrite) BOOL composing;
+@property (strong, readwrite) NSTimer *composingTimer;
 
+- (void)sendComposingMessage:(BOOL)composing;
 - (void)removeWriteItemForJid:(XMPPJID*)jid;
 
 @end
@@ -31,6 +34,8 @@
             textView                  = textView_,
             discussionViewController  = discussionViewController_,
             composingItems            = composingItems_,
+            composing                 = composing_,
+            composingTimer            = composingTimer_,
             identifier                = identifier_;
 
 - (id)init
@@ -40,6 +45,8 @@
   {
     discussionView_ = nil;
     textView_ = nil;
+    composing_ = NO;
+    composingTimer_ = nil;
     identifier_ = nil;
   }
   return self;
@@ -84,6 +91,10 @@
 - (void)sendMessage:(NSString*)string
 animatedFromTextView:(BOOL)animatedFromTextView
 {
+  self.composing = NO;
+  if(self.composingTimer)
+    [self.composingTimer invalidate], self.composingTimer = nil;
+  
   string = [string stringByTrimmingCharactersInSet:
             [NSCharacterSet characterSetWithCharactersInString:@" "]];
   if(string.length <= 0)
@@ -105,11 +116,9 @@ animatedFromTextView:(BOOL)animatedFromTextView
   [body setStringValue:string];
   [message addChild:body];
 	
-//	if(state != nil) {
-//		NSXMLElement *stateElement = [NSXMLElement elementWithName:state];
-//		[stateElement addAttributeWithName:@"xmlns" stringValue:@"http://jabber.org/protocol/chatstates"];
-//		[message addChild:stateElement];
-//	}
+  NSXMLElement *stateElement = [NSXMLElement elementWithName:@"active"];
+  [stateElement addAttributeWithName:@"xmlns" stringValue:@"http://jabber.org/protocol/chatstates"];
+  [message addChild:stateElement];
 	
 	[self.xmppStream sendElement:message];
   
@@ -117,7 +126,51 @@ animatedFromTextView:(BOOL)animatedFromTextView
                        animatedFromTextView:self.textView];
 }
 
+- (void)textViewDidChange
+{
+  if(self.textView.text.length <= 0)
+    return;
+  if(self.composingTimer)
+    [self.composingTimer invalidate], self.composingTimer = nil;
+  self.composingTimer = [NSTimer scheduledTimerWithTimeInterval:5
+                                                         target:self
+                                                       selector:@selector(composingTimerAction)
+                                                       userInfo:nil
+                                                        repeats:NO];
+  if(!self.composing)
+  {
+    self.composing = YES;
+    [self sendComposingMessage:YES];
+  }
+}
+
+#pragma mark Timer Actions
+
+- (void)composingTimerAction
+{
+  self.composingTimer = nil;
+  if(self.composing)
+  {
+    self.composing = NO;
+    [self sendComposingMessage:NO];
+  }
+}
+
 #pragma mark Private Methods
+
+- (void)sendComposingMessage:(BOOL)composing
+{
+  XMPPMessage *message = [XMPPMessage elementWithName:@"message"];
+	[message addAttributeWithName:@"type" stringValue:@"chat"];
+	[message addAttributeWithName:@"to" stringValue:self.jid.full];
+  [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
+	
+  NSXMLElement *stateElement = [NSXMLElement elementWithName:(composing ? @"composing" : @"active")];
+  [stateElement addAttributeWithName:@"xmlns" stringValue:@"http://jabber.org/protocol/chatstates"];
+  [message addChild:stateElement];
+	
+	[self.xmppStream sendElement:message];
+}
 
 - (void)removeWriteItemForJid:(XMPPJID*)jid
 {

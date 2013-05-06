@@ -195,6 +195,11 @@
     [self.chatConversationController sendMessage:string
                             animatedFromTextView:YES];
 }
-
+- (void)chatSectionViewTextViewTextDidChange:(MVChatSectionView*)chatSectionView
+                              discussionView:(MVDiscussionView*)discussionView
+{
+  if(self.chatConversationController.discussionView == discussionView)
+    [self.chatConversationController textViewDidChange];
+}
 
 @end

@@ -16,5 +16,6 @@
 - (void)addMessage:(XMPPMessage*)message;
 - (void)sendMessage:(NSString*)string
 animatedFromTextView:(BOOL)animatedFromTextView;
+- (void)textViewDidChange;
 
 @end
