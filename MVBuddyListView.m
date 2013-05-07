@@ -61,7 +61,7 @@ static NSGradient *backgroundGradient = nil;
                                   TUIViewAutoresizingFlexibleHeight;
     tableView_.animateSelectionChanges = NO;
     
-//    [self addSubview:tableView_];
+    [self addSubview:tableView_];
     
     searchFieldContainerView_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0,
                                                                           self.bounds.size.width,

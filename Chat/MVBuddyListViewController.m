@@ -112,6 +112,10 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
   {
     cell.avatar = [TUIImage imageWithData:photoData];
   }
+  else
+  {
+    cell.avatar = nil;
+  }
   [cell setNeedsDisplay];
 	return cell;
 }
@@ -120,7 +124,6 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 
 - (void)xmppRosterDidChange:(XMPPRosterMemoryStorage *)sender
 {
-  NSLog(@"did change!");
   [self reload];
 }
 
@@ -140,7 +143,6 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
       [cell setNeedsDisplay];
     }
   }
-  NSLog(@"did receipve photo for %@",jid);
 }
 
 @end
