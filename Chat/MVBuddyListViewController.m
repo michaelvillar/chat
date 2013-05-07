@@ -8,8 +8,7 @@
 
 #import "MVBuddyListViewController.h"
 #import "MVBuddyViewCell.h"
-
-static NSGradient *backgroundGradient = nil;
+#import "MVBuddyListView.h"
 
 @interface MVBuddyListViewController () <TUITableViewDataSource, TUITableViewDelegate>
 
@@ -17,6 +16,7 @@ static NSGradient *backgroundGradient = nil;
 @property (strong, readwrite) XMPPRoster *xmppRoster;
 @property (strong, readwrite) XMPPvCardAvatarModule *xmppAvatarModule;
 @property (strong, readwrite) TUIView *view;
+@property (strong, readwrite) MVBuddyListView *buddyListView;
 @property (strong, readwrite) TUITableView *tableView;
 @property (strong, readwrite) NSArray *users;
 
@@ -27,27 +27,11 @@ static NSGradient *backgroundGradient = nil;
 @synthesize xmppStream = xmppStream_,
             xmppRoster = xmppRoster_,
             xmppAvatarModule = xmppAvatarModule_,
+            view = view_,
+            buddyListView = buddyListView_,
             tableView = tableView_,
             users = users_,
             delegate = delegate_;
-
-+ (void)initialize
-{
-  if(!backgroundGradient)
-  {
-    NSColor *bottomColor = [NSColor colorWithDeviceRed:0.8863
-                                                 green:0.9059
-                                                  blue:0.9529
-                                                 alpha:1.0000];
-    NSColor *topColor = [NSColor colorWithDeviceRed:0.9216
-                                              green:0.9373
-                                               blue:0.9686
-                                              alpha:1.0000];
-    
-    backgroundGradient = [[NSGradient alloc] initWithStartingColor:bottomColor
-                                                       endingColor:topColor];
-  }
-}
 
 - (id)initWithStream:(XMPPStream*)xmppStream
 {
@@ -64,26 +48,10 @@ static NSGradient *backgroundGradient = nil;
                   delegateQueue:dispatch_get_main_queue()
                toModulesOfClass:[XMPPvCardAvatarModule class]];
     
-    self.view = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
-    self.view.drawRect = ^(TUIView *view, CGRect rect) {
-      [backgroundGradient drawInRect:view.bounds
-                               angle:90];
-      
-      [[NSColor colorWithDeviceRed:0.9608 green:0.9686 blue:0.9843 alpha:1.0000] set];
-      NSRectFill(CGRectMake(0, view.bounds.size.height - 1, view.bounds.size.width, 1));
-    };
-
-    tableView_ = [[TUITableView alloc] initWithFrame:self.view.bounds
-                                               style:TUITableViewStylePlain];
-    tableView_.backgroundColor = [TUIColor clearColor];
-    tableView_.opaque = NO;
-    tableView_.delegate = self;
-    tableView_.dataSource = self;
-    tableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
-                                  TUIViewAutoresizingFlexibleHeight;
-    tableView_.animateSelectionChanges = NO;
-    
-    [self.view addSubview:tableView_];
+    self.view = self.buddyListView = [[MVBuddyListView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
+    self.tableView = self.buddyListView.tableView;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     
     users_ = [NSArray array];
     

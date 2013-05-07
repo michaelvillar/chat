@@ -260,6 +260,7 @@
 		4C7DFF89173834CF0048F8DA /* MVBuddyViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF88173834CF0048F8DA /* MVBuddyViewCell.m */; };
 		4C7DFF8B173884210048F8DA /* icon_online@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DFF8A173884210048F8DA /* icon_online@2x.png */; };
 		4C7DFF8D1738842A0048F8DA /* icon_online.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DFF8C1738842A0048F8DA /* icon_online.png */; };
+		4C7DFF90173890F00048F8DA /* MVBuddyListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -714,6 +715,8 @@
 		4C7DFF88173834CF0048F8DA /* MVBuddyViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVBuddyViewCell.m; sourceTree = "<group>"; };
 		4C7DFF8A173884210048F8DA /* icon_online@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_online@2x.png"; sourceTree = "<group>"; };
 		4C7DFF8C1738842A0048F8DA /* icon_online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_online.png; sourceTree = "<group>"; };
+		4C7DFF8E173890F00048F8DA /* MVBuddyListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVBuddyListView.h; sourceTree = "<group>"; };
+		4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVBuddyListView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1648,6 +1651,8 @@
 				4C1EFFBC1730CD1C005BDA73 /* MVAnimatedGIFView.m */,
 				4C7DFF87173834CF0048F8DA /* MVBuddyViewCell.h */,
 				4C7DFF88173834CF0048F8DA /* MVBuddyViewCell.m */,
+				4C7DFF8E173890F00048F8DA /* MVBuddyListView.h */,
+				4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -2006,6 +2011,7 @@
 				4C1E01F017324A7E005BDA73 /* MVConnectionManager.m in Sources */,
 				4C7DFF86173828FD0048F8DA /* MVBuddyListViewController.m in Sources */,
 				4C7DFF89173834CF0048F8DA /* MVBuddyViewCell.m in Sources */,
+				4C7DFF90173890F00048F8DA /* MVBuddyListView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
