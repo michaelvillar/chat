@@ -73,7 +73,7 @@ static NSGradient *backgroundGradient;
                                     CGRectMake(0, 0, self.frame.size.width, 30)];
     bottomBarView_.leftBottomCornerMask = YES;
     bottomBarView_.layer.zPosition = 2;
-    [self addSubview:bottomBarView_];
+//    [self addSubview:bottomBarView_];
 
     offlineButton_ = [[TUIButton alloc] initWithFrame:CGRectMake(0, 7, 16, 15)];
     offlineButton_.autoresizingMask = TUIViewAutoresizingFlexibleLeftMargin |

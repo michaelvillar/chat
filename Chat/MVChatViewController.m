@@ -4,10 +4,11 @@
 #import "MVBottomBarView.h"
 #import "MVChatSectionView.h"
 #import "MVRoundedTextView.h"
+#import "MVBuddyListViewController.h"
 
 #define kMVBuddyListIdentifier @"kMVBuddyListIdentifier"
 
-@interface MVChatViewController () <MVChatSectionViewDelegate>
+@interface MVChatViewController () <MVChatSectionViewDelegate, MVBuddyListViewControllerDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
 
@@ -18,6 +19,7 @@
 
 @property (strong, readwrite) MVChatConversationController *chatConversationController;
 @property (strong, readwrite) NSMutableDictionary *controllers;
+@property (strong, readwrite) MVBuddyListViewController *buddyListViewController;
 
 @property (readwrite) int connectionState;
 
@@ -36,6 +38,7 @@
             chatSectionView = chatSectionView_,
             chatConversationController = chatConversationController_,
             controllers = controllers_,
+            buddyListViewController = buddyListViewController_,
             connectionState = connectionState_;
 
 - (id)initWithStream:(XMPPStream*)xmppStream
@@ -48,6 +51,12 @@
     xmppStream_ = xmppStream;
     [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
     
+    controllers_ = [NSMutableDictionary dictionary];
+    chatConversationController_ = nil;
+    
+    buddyListViewController_ = [[MVBuddyListViewController alloc] initWithStream:self.xmppStream];
+    buddyListViewController_.delegate = self;
+
     view_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     view_.backgroundColor = [TUIColor whiteColor];
 
@@ -58,11 +67,8 @@
     chatSectionView_.state = self.connectionState;
     [chatSectionView_.tabsBarView addTab:@"Buddies" closable:NO sortable:NO online:NO
                               identifier:kMVBuddyListIdentifier animated:NO];
+    [chatSectionView_.tabsBarView setSelectedTab:kMVBuddyListIdentifier];
     [view_ addSubview:chatSectionView_];
-
-    controllers_ = [NSMutableDictionary dictionary];
-    
-    chatConversationController_ = nil;
     
     [self addObserver:self forKeyPath:@"connectionState" options:0 context:NULL];
   }
@@ -218,8 +224,16 @@
     self.chatConversationController = nil;
     [self.chatSectionView displayDiscussionView:nil
                                        textView:nil];
+    
+    self.buddyListViewController.view.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
+                                                         TUIViewAutoresizingFlexibleHeight;
+    self.buddyListViewController.view.frame = self.chatSectionView.bounds;
+    [self.chatSectionView addSubview:self.buddyListViewController.view];
     return;
   }
+  
+  [self.buddyListViewController.view removeFromSuperview];
+  
   XMPPJID *jid = [XMPPJID jidWithString:stringIdentifier];
   MVChatConversationController *controller = [self controllerForJid:jid];
     
@@ -241,6 +255,14 @@
 {
   if(self.chatConversationController.discussionView == discussionView)
     [self.chatConversationController textViewDidChange];
+}
+
+#pragma mark MVBuddyListViewControllerDelegate Methods
+
+- (void)buddyListViewController:(MVBuddyListViewController*)controller
+                  didClickBuddy:(NSObject<XMPPUser>*)user
+{
+  [self selectTab:user.jid animated:YES];
 }
 
 @end

@@ -1211,7 +1211,7 @@
 			<object class="NSWindowTemplate" id="972006081">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{989, 238}, {291, 427}}</string>
+				<string key="NSWindowRect">{{989, 238}, {245, 372}}</string>
 				<int key="NSWTFlags">1954021376</int>
 				<string key="NSWindowTitle">Chat</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -1221,10 +1221,9 @@
 				<object class="NSView" key="NSWindowView" id="439893737">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
-					<string key="NSFrameSize">{291, 427}</string>
+					<string key="NSFrameSize">{245, 372}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
-					<reference key="NSNextKeyView"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1280, 778}}</string>
 				<string key="NSMinSize">{250, 272}</string>
