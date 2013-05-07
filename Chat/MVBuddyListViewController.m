@@ -15,6 +15,7 @@ static NSGradient *backgroundGradient = nil;
 
 @property (strong, readwrite) XMPPStream *xmppStream;
 @property (strong, readwrite) XMPPRoster *xmppRoster;
+@property (strong, readwrite) XMPPvCardAvatarModule *xmppAvatarModule;
 @property (strong, readwrite) TUIView *view;
 @property (strong, readwrite) TUITableView *tableView;
 @property (strong, readwrite) NSArray *users;
@@ -25,6 +26,7 @@ static NSGradient *backgroundGradient = nil;
 
 @synthesize xmppStream = xmppStream_,
             xmppRoster = xmppRoster_,
+            xmppAvatarModule = xmppAvatarModule_,
             tableView = tableView_,
             users = users_,
             delegate = delegate_;
@@ -55,6 +57,12 @@ static NSGradient *backgroundGradient = nil;
     delegate_ = nil;
     xmppStream_ = xmppStream;
     xmppRoster_ = (XMPPRoster*)[xmppStream moduleOfClass:[XMPPRoster class]];
+    xmppAvatarModule_ = (XMPPvCardAvatarModule*)[xmppStream moduleOfClass:
+                                                 [XMPPvCardAvatarModule class]];
+    
+    [xmppStream_ autoAddDelegate:self
+                  delegateQueue:dispatch_get_main_queue()
+               toModulesOfClass:[XMPPvCardAvatarModule class]];
     
     self.view = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
     self.view.drawRect = ^(TUIView *view, CGRect rect) {
@@ -130,6 +138,12 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
   cell.firstRow = indexPath.row == 0;
   cell.lastRow = (indexPath.row == [self tableView:tableView
                              numberOfRowsInSection:indexPath.section] - 1);
+  cell.representedObject = user.jid;
+  NSData *photoData = [self.xmppAvatarModule photoDataForJID:user.jid];
+  if(photoData)
+  {
+    cell.avatar = [TUIImage imageWithData:photoData];
+  }
   [cell setNeedsDisplay];
 	return cell;
 }
@@ -140,6 +154,25 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 {
   NSLog(@"did change!");
   [self reload];
+}
+
+#pragma mark XMPPvCardAvatarModuleDelegate Methods
+
+- (void)xmppvCardAvatarModule:(XMPPvCardAvatarModule *)vCardTempModule
+              didReceivePhoto:(NSImage *)photo
+                       forJID:(XMPPJID *)jid
+{
+  NSArray *visibleCells = self.tableView.visibleCells;
+  for(MVBuddyViewCell *cell in visibleCells)
+  {
+    XMPPJID *cellJid = (XMPPJID*)cell.representedObject;
+    if(cellJid && [cellJid isEqualToJID:jid options:XMPPJIDCompareBare])
+    {
+      cell.avatar = [TUIImage imageWithNSImage:photo];
+      [cell setNeedsDisplay];
+    }
+  }
+  NSLog(@"did receipve photo for %@",jid);
 }
 
 @end

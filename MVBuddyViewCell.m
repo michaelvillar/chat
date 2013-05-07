@@ -23,7 +23,8 @@
             avatar = avatar_,
             alternate = alternate_,
             firstRow = firstRow_,
-            lastRow = lastRow_;
+            lastRow = lastRow_,
+            representedObject = representedObject_;
 
 @synthesize drawView = drawView_;
 
@@ -39,6 +40,7 @@
     alternate_ = NO;
     firstRow_ = NO;
     lastRow_ = NO;
+    representedObject_ = nil;
     
     self.opaque = NO;
     self.backgroundColor = [TUIColor clearColor];

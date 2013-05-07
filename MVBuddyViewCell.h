@@ -17,5 +17,6 @@
 @property (readwrite, getter = isAlternate) BOOL alternate;
 @property (readwrite, getter = isFirstRow) BOOL firstRow;
 @property (readwrite, getter = isLastRow) BOOL lastRow;
+@property (strong, readwrite) NSObject *representedObject;
 
 @end
