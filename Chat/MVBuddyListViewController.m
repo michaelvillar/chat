@@ -55,6 +55,7 @@
     self.view = self.buddyListView = [[MVBuddyListView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
     self.tableView = self.buddyListView.tableView;
     self.tableView.maintainContentOffsetAfterReload = YES;
+    [self.tableView scrollToTopAnimated:NO];
     self.buddyListView.delegate = self;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -85,7 +86,6 @@
   else
     self.filteredUsers = self.users;
   
-  [self.tableView scrollToTopAnimated:NO];
   [self.tableView reloadData];
 }
 
