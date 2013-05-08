@@ -10,7 +10,9 @@
 #import "MVBuddyViewCell.h"
 #import "MVBuddyListView.h"
 
-@interface MVBuddyListViewController () <TUITableViewDataSource, TUITableViewDelegate>
+@interface MVBuddyListViewController () <TUITableViewDataSource,
+                                         TUITableViewDelegate,
+                                         MVBuddyListViewDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
 @property (strong, readwrite) XMPPRoster *xmppRoster;
@@ -19,6 +21,7 @@
 @property (strong, readwrite) MVBuddyListView *buddyListView;
 @property (strong, readwrite) TUITableView *tableView;
 @property (strong, readwrite) NSArray *users;
+@property (strong, readwrite) NSArray *filteredUsers;
 
 @end
 
@@ -31,6 +34,7 @@
             buddyListView = buddyListView_,
             tableView = tableView_,
             users = users_,
+            filteredUsers = filteredUsers_,
             delegate = delegate_;
 
 - (id)initWithStream:(XMPPStream*)xmppStream
@@ -50,10 +54,13 @@
     
     self.view = self.buddyListView = [[MVBuddyListView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
     self.tableView = self.buddyListView.tableView;
+    self.tableView.hidden = YES;
+    self.buddyListView.delegate = self;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
     users_ = [NSArray array];
+    filteredUsers_ = [NSArray array];
     
     [self reload];
     
@@ -66,7 +73,21 @@
 {
   XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
   self.users = [storage sortedUsersByName];
+  
+  if(self.buddyListView.isSearchFieldVisible && self.buddyListView.searchFieldText.length > 0)
+  {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                              @"nickname CONTAINS[cd] %@ OR jid.bare CONTAINS[cd] %@",
+                              self.buddyListView.searchFieldText,
+                              self.buddyListView.searchFieldText];
+    self.filteredUsers = [self.users filteredArrayUsingPredicate:predicate];
+  }
+  else
+    self.filteredUsers = self.users;
+  
   [self.tableView reloadData];
+  [self.tableView scrollToTopAnimated:NO];
+  self.tableView.hidden = NO;
 }
 
 #pragma mark TUITableViewDelegate Methods
@@ -75,7 +96,7 @@
 didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath
         withEvent:(NSEvent *)event
 {
-  NSObject<XMPPUser> *user = [self.users objectAtIndex:indexPath.row];
+  NSObject<XMPPUser> *user = [self.filteredUsers objectAtIndex:indexPath.row];
   if([self.delegate respondsToSelector:@selector(buddyListViewController:didClickBuddy:)])
     [self.delegate buddyListViewController:self didClickBuddy:user];
 }
@@ -84,7 +105,7 @@ didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath
 
 - (NSInteger)tableView:(TUITableView *)table numberOfRowsInSection:(NSInteger)section
 {
-  return self.users.count;
+  return self.filteredUsers.count;
 }
 
 - (CGFloat)tableView:(TUITableView *)tableView
@@ -96,7 +117,7 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 - (TUITableViewCell *)tableView:(TUITableView *)tableView
           cellForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 {
-  NSObject<XMPPUser> *user = [self.users objectAtIndex:indexPath.row];
+  NSObject<XMPPUser> *user = [self.filteredUsers objectAtIndex:indexPath.row];
   
   MVBuddyViewCell *cell = reusableTableCellOfClass(tableView, MVBuddyViewCell);
   cell.email = user.jid.bare;
@@ -143,6 +164,18 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
       [cell setNeedsDisplay];
     }
   }
+}
+
+#pragma mark MVBuddyListViewDelegate Methods
+
+- (void)buddyListViewDidChangeSearchFieldValue:(MVBuddyListView *)buddyListView
+{
+  [self reload];
+}
+
+- (void)buddyListViewDidChangeSearchFieldVisibility:(MVBuddyListView *)buddyListView
+{
+  [self reload];
 }
 
 @end

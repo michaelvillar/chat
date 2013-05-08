@@ -39,6 +39,7 @@
   self.chatViewController.view.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                                   TUIViewAutoresizingFlexibleHeight;
   tUINSView.rootView = self.chatViewController.view;
+  [self.chatViewController makeFirstResponder];
   
   if (connectionManager.hasEmptyConnectionInformation)
     [self openPreferences:self];

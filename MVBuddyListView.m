@@ -28,7 +28,8 @@ static NSGradient *backgroundGradient = nil;
             searchFieldContainerView = searchFieldContainerView_,
             searchFieldView = searchFieldView_,
             searchField = searchField_,
-            searchFieldVisible = searchFieldVisible_;
+            searchFieldVisible = searchFieldVisible_,
+            delegate = delegate_;
 
 + (void)initialize
 {
@@ -106,6 +107,7 @@ static NSGradient *backgroundGradient = nil;
     [self addSubview:self.searchFieldContainerView];
 
     searchFieldVisible_ = NO;
+    delegate_ = nil;
   }
   return self;
 }
@@ -117,24 +119,50 @@ static NSGradient *backgroundGradient = nil;
   
   self.searchFieldVisible = visible;
   __block CGRect rect = self.searchFieldView.frame;
+  __block CGRect tableViewRect = self.tableView.frame;
   if(self.searchFieldVisible) {
     [TUIView animateWithDuration:0.2 animations:^{
       [TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];
       rect.origin.y = 0;
       self.searchFieldView.frame = rect;
+      
+      tableViewRect.origin.y = - (rect.size.height - 2);
+      self.tableView.frame = tableViewRect;
+    } completion:^(BOOL finished) {
+      tableViewRect.origin.y = 0;
+      tableViewRect.size.height = self.frame.size.height - (rect.size.height - 2);
+      self.tableView.frame = tableViewRect;
+      [self.tableView scrollToTopAnimated:NO];
     }];
     [self.searchField setEditable:YES];
     [self.searchField makeFirstResponder];
   }
   else {
+    tableViewRect.origin.y = - (rect.size.height - 2);
+    tableViewRect.size.height = self.frame.size.height;
+    self.tableView.frame = tableViewRect;
+    [self.tableView scrollToTopAnimated:NO];
+    [CATransaction flush];
+
     [TUIView animateWithDuration:0.2 animations:^{
       [TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];
       rect.origin.y = rect.size.height;
       self.searchFieldView.frame = rect;
+      
+      tableViewRect.origin.y = 0;
+      self.tableView.frame = tableViewRect;
     } completion:^(BOOL finished) {
       [self.searchField setEditable:NO];
     }];
   }
+  
+  if([self.delegate respondsToSelector:@selector(buddyListViewDidChangeSearchFieldVisibility:)])
+    [self.delegate buddyListViewDidChangeSearchFieldVisibility:self];
+}
+
+- (NSString*)searchFieldText
+{
+  return self.searchField.text.copy;
 }
 
 - (void)layoutSubviews
@@ -170,9 +198,10 @@ static NSGradient *backgroundGradient = nil;
 
 - (void)keyDown:(NSEvent *)event
 {
-  if(event.isDigit || event.isChar)
+  if(event.isDigit || event.isChar || self.isSearchFieldVisible)
   {
     [self.searchField setSelectedRange:NSMakeRange(0, self.searchField.text.length)];
+    [self.searchField makeFirstResponder];
     CGPoint location = CGPointMake(10, 5);
     location = [self.searchField convertPoint:location toView:nil];
     location = [self.nsView convertPoint:location toView:nil];
@@ -193,9 +222,17 @@ static NSGradient *backgroundGradient = nil;
 
 #pragma mark MVRoundedTextViewDelegate Methods
 
+- (void)roundedTextViewTextDidChange:(MVRoundedTextView *)textView
+{
+  if([self.delegate respondsToSelector:@selector(buddyListViewDidChangeSearchFieldValue:)])
+    [self.delegate buddyListViewDidChangeSearchFieldValue:self];
+}
+
 - (void)roundedTextViewCancelOperation:(MVRoundedTextView*)roundedTextView
 {
   [self setSearchFieldVisible:NO animated:YES];
+  roundedTextView.text = @"";
+  [self makeFirstResponder];
 }
 
 @end

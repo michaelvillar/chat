@@ -70,6 +70,8 @@
     [chatSectionView_.tabsBarView setSelectedTab:kMVBuddyListIdentifier];
     [view_ addSubview:chatSectionView_];
     
+    tabsView_ = chatSectionView_.tabsBarView;
+    
     [self addObserver:self forKeyPath:@"connectionState" options:0 context:NULL];
   }
   return self;
@@ -92,6 +94,14 @@
   {
     [self selectTab:jid animated:YES];
   }
+}
+
+- (void)makeFirstResponder
+{
+  if([self.tabsView.selectedTab isEqual:kMVBuddyListIdentifier])
+    [self.buddyListViewController.view makeFirstResponder];
+  else
+    [self.chatConversationController.textView makeFirstResponder];
 }
 
 #pragma mark KVO
@@ -238,7 +248,7 @@
   MVChatConversationController *controller = [self controllerForJid:jid];
     
   [self displayController:controller];
-  [self.chatSectionView.nsWindow tui_makeFirstResponder:controller.textView];
+  [self makeFirstResponder];
 }
 
 - (void)chatSectionView:(MVChatSectionView*)chatSectionView
