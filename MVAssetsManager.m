@@ -43,46 +43,55 @@
 }
 
 - (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
+                     download:(BOOL)download
 {
   MVAsset *asset = [[MVAsset alloc] initWithRemoteURL:remoteURL
-                                          assetsManager:self];
-  NSURL *localURL = asset.localURL;
-  if(!asset.isExisting)
+                                        assetsManager:self];
+  if(download)
   {
-    BOOL existsFileDownload = NO;
-    MVFileDownload *fileDownload;
-    // search for an existing fileDownload
-    for(fileDownload in self.fileDownloads)
+    NSURL *localURL = asset.localURL;
+    if(!asset.isExisting)
     {
-      if([fileDownload.destinationURL isEqual:localURL])
+      BOOL existsFileDownload = NO;
+      MVFileDownload *fileDownload;
+      // search for an existing fileDownload
+      for(fileDownload in self.fileDownloads)
       {
-        existsFileDownload = YES;
-        break;
+        if([fileDownload.destinationURL isEqual:localURL])
+        {
+          existsFileDownload = YES;
+          break;
+        }
       }
+      
+      if(!existsFileDownload)
+      {
+        fileDownload = [[MVFileDownload alloc] initWithSourceURL:remoteURL
+                                                  destinationURL:localURL
+                                                  operationQueue:self.operationQueue];
+        fileDownload.delegate = self;
+        [self.fileDownloads addObject:fileDownload];
+        [fileDownload start];
+      }
+      
+      asset.fileDownload = fileDownload;
     }
-
-    if(!existsFileDownload)
+    else
     {
-      fileDownload = [[MVFileDownload alloc] initWithSourceURL:remoteURL
-                                                 destinationURL:localURL
-                                                 operationQueue:self.operationQueue];
-      fileDownload.delegate = self;
-      [self.fileDownloads addObject:fileDownload];
-      [fileDownload start];
-    }
-
-    asset.fileDownload = fileDownload;
-  }
-  else
-  {
-    MVFileUpload *fileUpload = [self.fileUploadManager fileUploadWithRemoteURL:remoteURL];
-    if(fileUpload)
-    {
-      asset.fileUpload = fileUpload;
-      [self.fileUploadManager addAsset:asset usingFileUpload:fileUpload];
+      MVFileUpload *fileUpload = [self.fileUploadManager fileUploadWithRemoteURL:remoteURL];
+      if(fileUpload)
+      {
+        asset.fileUpload = fileUpload;
+        [self.fileUploadManager addAsset:asset usingFileUpload:fileUpload];
+      }
     }
   }
   return asset;
+}
+
+- (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
+{
+  return [self assetForRemoteURL:remoteURL download:YES];
 }
 
 - (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL

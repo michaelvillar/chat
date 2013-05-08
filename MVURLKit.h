@@ -37,6 +37,8 @@ uploadAuthorizationDidExpired:(MVUploadAuthorization*)uploadAuthorization;
                           data:(NSData*)data;
 - (MVAsset*)uploadAvatar:(NSData*)data;
 - (BOOL)isAssetExistingForRemoteURL:(NSURL*)remoteURL;
+- (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
+                     download:(BOOL)download;
 - (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL;
 - (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
                    withMaxSize:(CGSize)maxSize;

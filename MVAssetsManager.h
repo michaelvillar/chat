@@ -8,6 +8,8 @@
 @property (strong, readwrite) MVFileUploadManager *fileUploadManager;
 
 - (BOOL)isAssetExistingForRemoteURL:(NSURL*)remoteURL;
+- (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
+                     download:(BOOL)download;
 - (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL;
 - (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
                    withMaxSize:(CGSize)maxSize;

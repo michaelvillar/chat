@@ -63,6 +63,12 @@ static MVURLKit *sharedInstance = nil;
 }
 
 - (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
+                     download:(BOOL)download
+{
+  return [self.assetsManager assetForRemoteURL:remoteURL download:download];
+}
+
+- (MVAsset*)assetForRemoteURL:(NSURL*)remoteURL
 {
   return [self.assetsManager assetForRemoteURL:remoteURL];
 }
