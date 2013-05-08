@@ -61,6 +61,7 @@ static NSGradient *backgroundGradient = nil;
     tableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                   TUIViewAutoresizingFlexibleHeight;
     tableView_.animateSelectionChanges = NO;
+    tableView_.alwaysBounceVertical = YES;
     
     [self addSubview:tableView_];
     
