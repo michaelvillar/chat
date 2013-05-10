@@ -24,6 +24,7 @@
 - (MVTabView*)tabForIdentifier:(NSObject*)identifier;
 - (void)updateOverflowButtonVisibility;
 - (void)updateOverflowButtonAppearance;
+- (float)xForTabView:(MVTabView *)view;
 - (void)layoutTabs:(BOOL)animated;
 - (void)updateTabszPositions;
 - (void)reorderTabsFromSortingTabView;
@@ -149,17 +150,34 @@
     identifier:(NSObject*)identifier
       animated:(BOOL)animated
 {
+  [self addTab:name closable:closable sortable:sortable
+        online:online identifier:identifier atIndex:self.tabs.count animated:animated];
+}
+
+- (void)addTab:(NSString*)name
+      closable:(BOOL)closable
+      sortable:(BOOL)sortable
+        online:(BOOL)online
+    identifier:(NSObject*)identifier
+       atIndex:(NSUInteger)index
+      animated:(BOOL)animated
+{
   if([self tabForIdentifier:identifier])
     return;
-  MVTabView *tabView = [[MVTabView alloc] initWithFrame:CGRectMake(self.totalWidth, 0, 1, 23)];
+  index = MIN(index, self.tabs.count);
+  MVTabView *tabView = [[MVTabView alloc] initWithFrame:CGRectMake(0, 0, 1, 23)];
   tabView.name = name;
   tabView.identifier = identifier;
   tabView.closable = closable;
   tabView.sortable = sortable;
   tabView.online = online;
   tabView.delegate = self;
-  [self.tabs addObject:tabView];
-  [self.contentView insertSubview:tabView atIndex:0];
+  [self.tabs insertObject:tabView atIndex:index];
+  [self.contentView insertSubview:tabView atIndex:index];
+  
+  CGRect frame = tabView.frame;
+  frame.origin.x = [self xForTabView:tabView];
+  tabView.frame = frame;
 
   [tabView.layer setOpacity:0.0];
   if(animated)
@@ -196,7 +214,6 @@
       int index = (int)([self.tabs indexOfObject:tabView]);
       [self.tabs removeObject:tabView];
 
-      index++;
       if(index >= self.tabs.count)
         index = self.tabs.count - 1;
       if(self.tabs.count == 0)
@@ -566,6 +583,20 @@
     self.tabs = newTabs;
     [self layoutTabs:YES];
   }
+}
+
+- (float)xForTabView:(MVTabView *)view
+{
+  MVTabView *tabView;
+  float x = -1;
+  for(tabView in self.tabs)
+  {
+    float w = [tabView expectedWidth];
+    if(tabView == view)
+      return x;
+    x += w - 2;
+  }
+  return x;
 }
 
 - (void)layoutTabs:(BOOL)animated

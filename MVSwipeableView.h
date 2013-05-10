@@ -13,8 +13,12 @@
 @interface MVSwipeableView : TUIView
 
 @property (weak, readwrite) NSObject <MVSwipeableViewDelegate> *delegate;
+@property (readwrite, nonatomic) float contentViewTopMargin;
 
+- (void)insertSwipeableSubview:(TUIView *)view
+                       atIndex:(NSUInteger)index;
 - (void)addSwipeableSubview:(TUIView *)view;
+- (void)removeSwipeableSubview:(TUIView *)view;
 - (void)swipeToView:(TUIView *)view;
 
 @end

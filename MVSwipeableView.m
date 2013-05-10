@@ -29,7 +29,8 @@
             swipeableViews = swipeableViews_,
             currentView = currentView_,
             lastDeltaX = lastDeltaX_,
-            delegate = delegate_;
+            delegate = delegate_,
+            contentViewTopMargin = contentViewTopMargin_;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -44,6 +45,7 @@
     swipeableViews_ = [NSMutableArray array];
     currentView_ = nil;
     delegate_ = nil;
+    contentViewTopMargin_ = 0;
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(contentViewDidEndSwipe:)
@@ -59,18 +61,52 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)addSwipeableSubview:(TUIView *)view
+- (void)insertSwipeableSubview:(TUIView *)view
+                       atIndex:(NSUInteger)index
 {
-  if([self.swipeableViews containsObject:view])
-    return;
-  [self.swipeableViews addObject:view];
+  [self.swipeableViews removeObject:view];
+  index = MIN(index, self.swipeableViews.count);
+  [self.swipeableViews insertObject:view atIndex:index];
   if(!self.currentView)
     self.currentView = view;
   
   view.autoresizingMask = TUIViewAutoresizingNone;
   view.frame = self.bounds;
   [self layoutSubviews];
-  [self.contentView addSubview:view];
+  if(view.superview != self.contentView)
+    [self.contentView addSubview:view];
+}
+
+- (void)addSwipeableSubview:(TUIView *)view
+{
+  if([self.swipeableViews containsObject:view])
+    return;
+  [self insertSwipeableSubview:view atIndex:self.swipeableViews.count];
+}
+
+- (void)removeSwipeableSubview:(TUIView *)view
+{
+  if(![self.swipeableViews containsObject:view])
+    return;
+  NSUInteger index = [self.swipeableViews indexOfObject:view];
+  [self.swipeableViews removeObject:view];
+  [TUIView animateWithDuration:0.2 animations:^{
+    view.layer.opacity = 0;
+    view.layer.transform = CATransform3DMakeScale(0.9, 0.9, 0.9);
+  } completion:^(BOOL finished) {
+    [view removeFromSuperview];
+  }];
+  [TUIView animateWithDuration:0.4 animations:^{
+    [self layoutSubviews];
+  }];
+  if(self.currentView == view) {
+    if(index >= self.swipeableViews.count)
+      index--;
+    self.currentView = [self.swipeableViews objectAtIndex:index];
+    [self slideToCurrent];
+    if([self.delegate respondsToSelector:@selector(swipeableView:didSwipeToView:)])
+      [self.delegate swipeableView:self didSwipeToView:self.currentView];
+  }
 }
 
 - (void)swipeToView:(TUIView *)view
@@ -79,16 +115,28 @@
   [self slideToCurrent];
 }
 
-- (void)layoutSubviews
+- (void)updateContentViewFrame
 {
   CGRect frame = CGRectMake(self.contentView.frame.origin.x, 0,
                             (self.frame.size.width + 25) * [self.swipeableViews count],
-                            self.frame.size.height);
+                            self.frame.size.height - self.contentViewTopMargin);
+  frame.origin.x = [self offsetForSubview:self.currentView];
+  self.contentView.frame = frame;
+}
+
+- (void)layoutSubviews
+{
   if([self.nsView inLiveResize])
   {
-    frame.origin.x = [self offsetForSubview:self.currentView];
-    self.contentView.frame = frame;
+    [self updateContentViewFrame];
   }
+  [self layoutSwipeableSubviews];
+}
+
+- (void)setContentViewTopMargin:(float)contentViewTopMargin
+{
+  contentViewTopMargin_ = contentViewTopMargin;
+  [self updateContentViewFrame];
   [self layoutSwipeableSubviews];
 }
 
@@ -124,7 +172,7 @@
   return CGRectMake(round(i * (self.bounds.size.width + 25)),
                     0,
                     self.bounds.size.width,
-                    self.bounds.size.height);
+                    self.contentView.bounds.size.height);
 }
 
 - (float)offsetForSubview:(TUIView*)view

@@ -22,6 +22,13 @@
         online:(BOOL)online
     identifier:(NSObject*)identifier
       animated:(BOOL)animated;
+- (void)addTab:(NSString*)name
+      closable:(BOOL)closable
+      sortable:(BOOL)sortable
+        online:(BOOL)online
+    identifier:(NSObject*)identifier
+       atIndex:(NSUInteger)index
+      animated:(BOOL)animated;
 - (void)renameTab:(NSString*)name
    withIdentifier:(NSObject*)identifier
          animated:(BOOL)animated;

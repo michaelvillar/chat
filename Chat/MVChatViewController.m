@@ -3,16 +3,19 @@
 #import "MVRoundedTextView.h"
 #import "MVBuddyListViewController.h"
 #import "MVSwipeableView.h"
+#import "MVTabsView.h"
 
 #define kMVBuddyListIdentifier @"kMVBuddyListIdentifier"
 
 @interface MVChatViewController () <MVBuddyListViewControllerDelegate,
-                                    MVSwipeableViewDelegate>
+                                    MVSwipeableViewDelegate,
+                                    MVTabsViewDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
 
 @property (strong, readwrite) TUIView *view;
 @property (strong, readwrite) MVSwipeableView *swipeableView;
+@property (strong, readwrite) MVTabsView *tabsView;
 
 @property (strong, readwrite) NSObject<MVController> *currentController;
 @property (strong, readwrite) NSMutableDictionary *controllers;
@@ -30,6 +33,7 @@
 @synthesize xmppStream = xmppStream_,
             view = view_,
             swipeableView = swipeableView_,
+            tabsView = tabsView_,
             currentController = currentController_,
             controllers = controllers_,
             buddyListViewController = buddyListViewController_,
@@ -51,6 +55,14 @@
     view_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     view_.backgroundColor = [TUIColor blackColor];
     
+    tabsView_ = [[MVTabsView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height,
+                                                             self.view.frame.size.width, 23)];
+    tabsView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
+                                 TUIViewAutoresizingFlexibleBottomMargin;
+    tabsView_.delegate = self;
+    tabsView_.layer.zPosition = 10;
+    [view_ addSubview:tabsView_];
+    
     swipeableView_ = [[MVSwipeableView alloc] initWithFrame:view_.bounds];
     swipeableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                       TUIViewAutoresizingFlexibleHeight;
@@ -59,10 +71,7 @@
 
     buddyListViewController_ = [[MVBuddyListViewController alloc] initWithStream:self.xmppStream];
     buddyListViewController_.delegate = self;
-    [swipeableView_ addSwipeableSubview:buddyListViewController_.view];
-    
-    currentController_ = buddyListViewController_;
-    [currentController_ makeFirstResponder];
+    [self displayController:buddyListViewController_];
     
     [self updateWindowTitle];
       
@@ -86,20 +95,13 @@
   XMPPUserMemoryStorageObject *user = [rosterStorage userForJID:jid];
   if(user)
   {
-    [self selectTab:jid animated:YES];
+//    [self selectTab:jid animated:YES];
   }
 }
 
 - (void)makeFirstResponder
 {
   [self.currentController makeFirstResponder];
-}
-
-- (void)selectTab:(XMPPJID*)jid
-         animated:(BOOL)animated
-{
-  MVChatConversationController *controller = [self controllerForJid:jid];
-  [self displayController:controller];
 }
 
 #pragma mark KVO
@@ -116,27 +118,43 @@
 
 #pragma mark Private Methods
 
-- (void)updateWindowTitle
+- (NSString*)titleForController:(NSObject<MVController>*)controller
 {
-  if(!self.currentController)
-    return;
+  if(!controller)
+    return @"";
   NSString *title = NSLocalizedString(@"Buddies", @"Window Title for Buddies");
-  if(self.currentController != self.buddyListViewController)
+  if(controller != self.buddyListViewController)
   {
-    MVChatConversationController *chatConversationController =
-                          (MVChatConversationController*)self.currentController;
+    MVChatConversationController *chatConversationController = (MVChatConversationController*)controller;
     title = chatConversationController.jid.bare;
   }
-  self.view.nsWindow.title = title;
+  return title;
+}
+
+- (void)updateWindowTitle
+{
+  self.view.nsWindow.title = [self titleForController:self.currentController];
 }
 
 - (void)displayController:(NSObject<MVController>*)controller
 {
+  if(![self.tabsView hasTabForIdentifier:controller])
+  {
+    [self.tabsView addTab:[self titleForController:controller]
+                 closable:(controller != self.buddyListViewController)
+                 sortable:(controller != self.buddyListViewController)
+                   online:YES
+               identifier:controller
+                  atIndex:1
+                 animated:YES];
+    [self.swipeableView insertSwipeableSubview:controller.view atIndex:1];
+  }
+  
   self.currentController = controller;
-  [self.swipeableView addSwipeableSubview:controller.view];
   [self.swipeableView swipeToView:controller.view];
   [controller makeFirstResponder];
   [self updateWindowTitle];
+  [self.tabsView setSelectedTab:controller];
 }
 
 - (NSObject<MVController>*)controllerForView:(TUIView *)view
@@ -200,7 +218,7 @@
 - (void)buddyListViewController:(MVBuddyListViewController*)controller
                   didClickBuddy:(NSObject<XMPPUser>*)user
 {
-  [self selectTab:user.jid animated:YES];
+  [self displayController:[self controllerForJid:user.jid]];
 }
 
 #pragma mark MVSwipeableViewDelegate Methods
@@ -213,7 +231,49 @@
     self.currentController = controller;
     [controller makeFirstResponder];
     [self updateWindowTitle];
+    [self.tabsView setSelectedTab:controller];
   }
+}
+
+#pragma mark MVTabsViewDelegate
+
+- (void)tabsViewDidChangeTabs:(MVTabsView *)tabsView
+{
+  for(NSString *bareJid in self.controllers.allKeys)
+  {
+    NSObject<MVController> *controller = [self.controllers objectForKey:bareJid];
+    if(![tabsView.tabsIdentifiers containsObject:controller])
+    {
+      [self.controllers removeObjectForKey:bareJid];
+      [self.swipeableView removeSwipeableSubview:controller.view];
+    }
+  }
+  
+  [TUIView animateWithDuration:0.4 animations:^{
+    CGRect frame = self.tabsView.frame;
+    if([self.tabsView countTabs] > 0)
+    {
+      frame.origin.y = self.view.frame.size.height - 23;
+    }
+    else
+    {
+      frame.origin.y = self.view.frame.size.height;
+    }
+    self.tabsView.frame = frame;
+    self.swipeableView.contentViewTopMargin = ([self.tabsView countTabs] > 0 ? 23 : 0);
+  }];
+}
+
+- (void)tabsViewDidChangeSelection:(MVTabsView*)tabsView
+{
+  NSObject<MVController> *controller = (NSObject<MVController> *)tabsView.selectedTab;
+  if(controller)
+    [self displayController:controller];
+}
+
+- (void)tabsViewDidChangeOrder:(MVTabsView*)tabsView
+{
+  
 }
 
 @end

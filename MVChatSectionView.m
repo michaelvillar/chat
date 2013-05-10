@@ -2,7 +2,6 @@
 #import "MVDiscussionView.h"
 #import "MVBottomBarView.h"
 #import "MVRoundedTextView.h"
-#import "MVTabsView.h"
 #import "MVChatBlankslateView.h"
 #import "MVActivityIndicatorView.h"
 #import "NSObject+PerformBlockAfterDelay.h"
@@ -10,14 +9,12 @@
 static NSGradient *backgroundGradient;
 
 @interface MVChatSectionView () <MVRoundedTextViewDelegate,
-                                  MVTabsViewDelegate,
-                                  MVDiscussionViewDelegate>
+                                 MVDiscussionViewDelegate>
 
 @property (strong, readwrite) MVBottomBarView *bottomBarView;
 @property (strong, readwrite) MVRoundedTextView *textView;
 @property (strong, readwrite) TUIButton *offlineButton;
 @property (strong, readwrite) MVActivityIndicatorView *connectingSpinner;
-@property (strong, readwrite) MVTabsView *tabsBarView;
 @property (strong, readwrite) MVDiscussionView *discussionView;
 @property (strong, readwrite) MVChatBlankslateView *blankslateView;
 @property (readwrite) BOOL blankslateDisplayed;
@@ -36,7 +33,6 @@ static NSGradient *backgroundGradient;
             textView              = textView_,
             offlineButton         = offlineButton_,
             connectingSpinner     = connectingSpinner_,
-            tabsBarView           = tabsBarView_,
             discussionView        = discussionView_,
             blankslateView        = blankslateView_,
             blankslateDisplayed   = blankslateDisplayed_,
@@ -94,14 +90,6 @@ static NSGradient *backgroundGradient;
     connectingSpinner_.autoresizingMask = TUIViewAutoresizingFlexibleLeftMargin |
                                           TUIViewAutoresizingFlexibleRightMargin;
 
-    tabsBarView_ = [[MVTabsView alloc] initWithFrame:CGRectMake(0, self.frame.size.height,
-                                                                 self.frame.size.width, 23)];
-    tabsBarView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
-                                    TUIViewAutoresizingFlexibleBottomMargin;
-    tabsBarView_.delegate = self;
-    tabsBarView_.layer.zPosition = 10;
-    [self addSubview:tabsBarView_];
-    
     discussionView_ = [[MVDiscussionView alloc] initWithFrame:
                        CGRectMake(0, 30,
                                   self.frame.size.width, self.frame.size.height - 30 - 23)];
@@ -323,41 +311,6 @@ static NSGradient *backgroundGradient;
 }
 
 #pragma mark -
-#pragma mark MVTabsViewDelegate
-
-- (void)tabsViewDidChangeTabs:(MVTabsView *)tabsView
-{
-  [TUIView animateWithDuration:0.4 animations:^{
-    CGRect frame = self.tabsBarView.frame;
-    if([self.tabsBarView countTabs] > 1)
-    {
-      frame.origin.y = self.frame.size.height - 23;
-    }
-    else
-    {
-      frame.origin.y = self.frame.size.height;
-    }
-    self.tabsBarView.frame = frame;
-    [self updateDiscussionViewFrame];
-  }];
-
-  if([self.delegate respondsToSelector:@selector(chatSectionViewDidChangeTabs:)])
-    [self.delegate chatSectionViewDidChangeTabs:self];
-}
-
-- (void)tabsViewDidChangeSelection:(MVTabsView*)tabsView
-{
-  if([self.delegate respondsToSelector:@selector(chatSectionView:didChangeTabSelection:)])
-    [self.delegate chatSectionView:self didChangeTabSelection:tabsView.selectedTab];
-}
-
-- (void)tabsViewDidChangeOrder:(MVTabsView*)tabsView
-{
-  if([self.delegate respondsToSelector:@selector(chatSectionView:tabsViewDidChangeOrder:)])
-    [self.delegate chatSectionView:self tabsViewDidChangeOrder:tabsView];
-}
-
-#pragma mark -
 #pragma mark MVDiscussionViewDelegate
 
 - (void)discussionView:(MVDiscussionView*)discussionView
@@ -531,17 +484,6 @@ shouldRetrySendingMessage:(MVDiscussionMessageItem*)discussionItem
     rect.size.height = self.textView.frame.size.height + 1;
   }
   [self.bottomBarView setFrame:rect];
-  [self updateDiscussionViewFrame];
-}
-
-- (void)updateDiscussionViewFrame
-{
-  if(self.discussionView)
-    self.discussionView.frame = CGRectMake(0, self.bottomBarView.frame.size.height,
-                                           self.frame.size.width,
-                                           self.frame.size.height -
-                                           self.bottomBarView.frame.size.height -
-                                           ([self.tabsBarView countTabs] > 1 ? 23 : 0));
 }
 
 - (void)setDiscussionViewFront:(BOOL)front
