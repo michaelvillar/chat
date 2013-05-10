@@ -3,6 +3,7 @@
 #import "MVvCardFileDiskModuleStorage.h"
 #import "MVAccountController.h"
 #import "MVConnectionManager.h"
+#import "MVNSContentView.h"
 
 #import "DDLog.h"
 #import "DDTTYLogger.h"
@@ -26,11 +27,11 @@
   MVConnectionManager *connectionManager = [MVConnectionManager sharedInstance];
   self.xmppStream = connectionManager.xmppStream;
   
-  [DDLog addLogger:[DDTTYLogger sharedInstance]];
+//  [DDLog addLogger:[DDTTYLogger sharedInstance]];
   
   NSView *contentView = self.window.contentView;
   
-  TUINSView *tUINSView = [[TUINSView alloc] initWithFrame:contentView.bounds];
+  MVNSContentView *tUINSView = [[MVNSContentView alloc] initWithFrame:contentView.bounds];
   tUINSView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
   [contentView addSubview:tUINSView];
   

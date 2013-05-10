@@ -1,11 +1,8 @@
-#import <Foundation/Foundation.h>
+#import "MVController.h"
 
-@interface MVChatViewController : NSObject
-
-@property (strong, readonly) TUIView *view;
+@interface MVChatViewController : NSObject <MVController>
 
 - (id)initWithStream:(XMPPStream*)xmppStream;
 - (void)newTab;
-- (void)makeFirstResponder;
 
 @end

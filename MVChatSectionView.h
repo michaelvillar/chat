@@ -51,10 +51,6 @@ shouldRetrySendingMessage:(MVDiscussionMessageItem*)discussionItem;
 @property (readwrite, nonatomic) int state;
 @property (weak, readwrite) NSObject <MVChatSectionViewDelegate> *delegate;
 
-- (void)getDiscussionView:(MVDiscussionView**)discussionView
-                 textView:(MVRoundedTextView**)textView;
-- (void)displayDiscussionView:(MVDiscussionView*)discussionView
-                     textView:(MVRoundedTextView*)textView;
 - (void)forwardKeyDownEventToTextView:(NSEvent*)event;
 
 @end

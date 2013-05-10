@@ -68,6 +68,7 @@ static NSGradient *backgroundGradient = nil;
     searchFieldContainerView_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0,
                                                                           self.bounds.size.width,
                                                                           39)];
+    searchFieldContainerView_.userInteractionEnabled = NO;
     
     CGRect searchFieldViewFrame = CGRectMake(0, searchFieldContainerView_.bounds.size.height,
                                              searchFieldContainerView_.bounds.size.width,
@@ -121,6 +122,7 @@ static NSGradient *backgroundGradient = nil;
   self.searchFieldVisible = visible;
   __block CGRect rect = self.searchFieldView.frame;
   __block CGRect tableViewRect = self.tableView.frame;
+  self.searchFieldContainerView.userInteractionEnabled = self.searchFieldVisible;
   if(self.searchFieldVisible) {
     [TUIView animateWithDuration:0.2 animations:^{
       [TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];

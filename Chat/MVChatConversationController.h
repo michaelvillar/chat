@@ -1,21 +1,17 @@
-#import <Foundation/Foundation.h>
+#import "MVController.h"
 
 @class MVDiscussionView,
        MVRoundedTextView;
 
-@interface MVChatConversationController : NSObject
+@interface MVChatConversationController : NSObject <MVController>
 
+@property (strong, readonly) XMPPJID *jid;
 @property (strong, readwrite) NSObject *identifier;
-@property (strong, readonly) MVDiscussionView *discussionView;
-@property (strong, readonly) MVRoundedTextView *textView;
 
 - (id)initWithStream:(XMPPStream*)xmppStream
-                 jid:(XMPPJID*)jid
-      discussionView:(MVDiscussionView*)discussionView
-            textView:(MVRoundedTextView*)textView;
+                 jid:(XMPPJID*)jid;
 - (void)addMessage:(XMPPMessage*)message;
 - (void)sendMessage:(NSString*)string
 animatedFromTextView:(BOOL)animatedFromTextView;
-- (void)textViewDidChange;
 
 @end

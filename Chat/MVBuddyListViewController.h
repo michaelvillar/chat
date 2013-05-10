@@ -1,18 +1,10 @@
-//
-//  MVBuddyListViewController.h
-//  Chat
-//
-//  Created by Michaël Villar on 5/6/13.
-//
-//
-
 #import <TwUI/TUIKit.h>
+#import "MVController.h"
 
 @protocol MVBuddyListViewControllerDelegate;
 
-@interface MVBuddyListViewController : NSObject
+@interface MVBuddyListViewController : NSObject <MVController>
 
-@property (strong, readonly) TUIView *view;
 @property (weak, readwrite) NSObject <MVBuddyListViewControllerDelegate> *delegate;
 
 - (id)initWithStream:(XMPPStream*)xmppStream;

@@ -1,11 +1,3 @@
-//
-//  MVBuddyListViewController.m
-//  Chat
-//
-//  Created by Michaël Villar on 5/6/13.
-//
-//
-
 #import "MVBuddyListViewController.h"
 #import "MVBuddyViewCell.h"
 #import "MVBuddyListView.h"
@@ -68,6 +60,11 @@
     [xmppRoster_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
   }
   return self;
+}
+
+- (void)makeFirstResponder
+{
+  [self.view makeFirstResponder];
 }
 
 - (void)reload

@@ -1,31 +1,27 @@
 #import "MVChatViewController.h"
 #import "MVChatConversationController.h"
-#import "MVTabsView.h"
-#import "MVBottomBarView.h"
-#import "MVChatSectionView.h"
 #import "MVRoundedTextView.h"
 #import "MVBuddyListViewController.h"
+#import "MVSwipeableView.h"
 
 #define kMVBuddyListIdentifier @"kMVBuddyListIdentifier"
 
-@interface MVChatViewController () <MVChatSectionViewDelegate, MVBuddyListViewControllerDelegate>
+@interface MVChatViewController () <MVBuddyListViewControllerDelegate,
+                                    MVSwipeableViewDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
 
 @property (strong, readwrite) TUIView *view;
-@property (strong, readwrite) MVTabsView *tabsView;
-@property (strong, readwrite) MVBottomBarView *bottomBarView;
-@property (strong, readwrite) MVChatSectionView *chatSectionView;
+@property (strong, readwrite) MVSwipeableView *swipeableView;
 
-@property (strong, readwrite) MVChatConversationController *chatConversationController;
+@property (strong, readwrite) NSObject<MVController> *currentController;
 @property (strong, readwrite) NSMutableDictionary *controllers;
 @property (strong, readwrite) MVBuddyListViewController *buddyListViewController;
 
 @property (readwrite) int connectionState;
 
-- (void)displayController:(MVChatConversationController*)controller;
-- (void)addTab:(XMPPJID*)jid
-      animated:(BOOL)animated;
+- (void)displayController:(NSObject<MVController>*)controller;
+- (NSObject<MVController>*)controllerForView:(TUIView *)view;
 
 @end
 
@@ -33,10 +29,8 @@
 
 @synthesize xmppStream = xmppStream_,
             view = view_,
-            tabsView = tabsView_,
-            bottomBarView = bottomBarView_,
-            chatSectionView = chatSectionView_,
-            chatConversationController = chatConversationController_,
+            swipeableView = swipeableView_,
+            currentController = currentController_,
             controllers = controllers_,
             buddyListViewController = buddyListViewController_,
             connectionState = connectionState_;
@@ -46,32 +40,32 @@
   self = [super init];
   if(self)
   {
-    connectionState_ = kMVChatSectionViewStateOffline;
+//    connectionState_ = kMVChatSectionViewStateOffline;
 
     xmppStream_ = xmppStream;
     [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
     
     controllers_ = [NSMutableDictionary dictionary];
-    chatConversationController_ = nil;
+    currentController_ = nil;
     
+    view_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    view_.backgroundColor = [TUIColor blackColor];
+    
+    swipeableView_ = [[MVSwipeableView alloc] initWithFrame:view_.bounds];
+    swipeableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
+                                      TUIViewAutoresizingFlexibleHeight;
+    swipeableView_.delegate = self;
+    [view_ addSubview:swipeableView_];
+
     buddyListViewController_ = [[MVBuddyListViewController alloc] initWithStream:self.xmppStream];
     buddyListViewController_.delegate = self;
-
-    view_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    view_.backgroundColor = [TUIColor whiteColor];
-
-    chatSectionView_ = [[MVChatSectionView alloc] initWithFrame:view_.bounds];
-    chatSectionView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
-                                        TUIViewAutoresizingFlexibleHeight;
-    chatSectionView_.delegate = self;
-    chatSectionView_.state = self.connectionState;
-    [chatSectionView_.tabsBarView addTab:@"Buddies" closable:NO sortable:NO online:NO
-                              identifier:kMVBuddyListIdentifier animated:NO];
-    [chatSectionView_.tabsBarView setSelectedTab:kMVBuddyListIdentifier];
-    [view_ addSubview:chatSectionView_];
+    [swipeableView_ addSwipeableSubview:buddyListViewController_.view];
     
-    tabsView_ = chatSectionView_.tabsBarView;
+    currentController_ = buddyListViewController_;
+    [currentController_ makeFirstResponder];
     
+    [self updateWindowTitle];
+      
     [self addObserver:self forKeyPath:@"connectionState" options:0 context:NULL];
   }
   return self;
@@ -98,64 +92,71 @@
 
 - (void)makeFirstResponder
 {
-  if([self.tabsView.selectedTab isEqual:kMVBuddyListIdentifier])
-    [self.buddyListViewController.view makeFirstResponder];
-  else
-    [self.chatConversationController.textView makeFirstResponder];
-}
-
-#pragma mark KVO
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-  if(object == self && [keyPath isEqualToString:@"connectionState"]) {
-    self.chatSectionView.state = self.connectionState;
-  }
-  else {
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-  }
-}
-
-#pragma mark Private Methods
-
-- (void)displayController:(MVChatConversationController*)controller
-{
-  self.chatConversationController = controller;
-  [self.chatSectionView displayDiscussionView:controller.discussionView
-                                     textView:controller.textView];
-}
-
-- (void)addTab:(XMPPJID*)jid
-      animated:(BOOL)animated
-{
-  [self.chatSectionView.tabsBarView addTab:jid.bare
-                                  closable:YES
-                                  sortable:YES
-                                    online:YES
-                                identifier:jid.bare
-                                  animated:animated];
-  
+  [self.currentController makeFirstResponder];
 }
 
 - (void)selectTab:(XMPPJID*)jid
          animated:(BOOL)animated
 {
-  [self addTab:jid animated:animated];
-  [self.chatSectionView.tabsBarView setSelectedTab:jid.bare];
+  MVChatConversationController *controller = [self controllerForJid:jid];
+  [self displayController:controller];
+}
+
+#pragma mark KVO
+
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//  if(object == self && [keyPath isEqualToString:@"connectionState"]) {
+//    self.chatSectionView.state = self.connectionState;
+//  }
+//  else {
+//    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+//  }
+//}
+
+#pragma mark Private Methods
+
+- (void)updateWindowTitle
+{
+  if(!self.currentController)
+    return;
+  NSString *title = NSLocalizedString(@"Buddies", @"Window Title for Buddies");
+  if(self.currentController != self.buddyListViewController)
+  {
+    MVChatConversationController *chatConversationController =
+                          (MVChatConversationController*)self.currentController;
+    title = chatConversationController.jid.bare;
+  }
+  self.view.nsWindow.title = title;
+}
+
+- (void)displayController:(NSObject<MVController>*)controller
+{
+  self.currentController = controller;
+  [self.swipeableView addSwipeableSubview:controller.view];
+  [self.swipeableView swipeToView:controller.view];
+  [controller makeFirstResponder];
+  [self updateWindowTitle];
+}
+
+- (NSObject<MVController>*)controllerForView:(TUIView *)view
+{
+  if(self.buddyListViewController.view == view)
+    return self.buddyListViewController;
+  for(MVChatConversationController *controller in self.controllers.allValues)
+  {
+    if(controller.view == view)
+      return controller;
+  }
+  return nil;
 }
 
 - (MVChatConversationController*)controllerForJid:(XMPPJID*)jid
 {
   MVChatConversationController *controller = [self.controllers objectForKey:jid.bare];
   if(!controller) {
-    MVDiscussionView *discussionView = nil;
-    MVRoundedTextView *textView = nil;
-    [self.chatSectionView getDiscussionView:&discussionView
-                                   textView:&textView];
     controller = [[MVChatConversationController alloc] initWithStream:self.xmppStream
-                                                                  jid:jid
-                                                       discussionView:discussionView
-                                                             textView:textView];
+                                                                  jid:jid];
     [self.controllers setObject:controller forKey:jid.bare];
   }
   return controller;
@@ -171,100 +172,27 @@
     MVChatConversationController *controller = [self controllerForJid:message.from];
     if (!controllerExisted)
       [controller addMessage:message];
-
-    if(![self.chatSectionView.tabsBarView hasTabForIdentifier:message.from])
-    {
-      [self addTab:message.from animated:YES];
-    }
-    
-    [self selectTab:message.from animated:YES];
 	}
 }
 
 - (void)xmppStreamWillConnect:(XMPPStream *)sender
 {
-  self.connectionState = kMVChatSectionViewStateConnecting;
+//  self.connectionState = kMVChatSectionViewStateConnecting;
 }
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
 {
-  self.connectionState = kMVChatSectionViewStateOnline;
+//  self.connectionState = kMVChatSectionViewStateOnline;
 }
 
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
 {
-  self.connectionState = kMVChatSectionViewStateOffline;
+//  self.connectionState = kMVChatSectionViewStateOffline;
 }
 
 - (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
 {
-  self.connectionState = kMVChatSectionViewStateOffline;
-}
-
-#pragma mark MVChatSectionViewDelegate
-
-- (void)chatSectionViewDidChangeTabs:(MVChatSectionView*)chatSectionView
-{
-  NSArray *identifiers = self.chatSectionView.tabsBarView.tabsIdentifiers;
-  // check controllers that aren't in tabs anymore
-  NSString *controllerKey;
-  NSMutableArray *toRemoveControllersKey = [NSMutableArray array];
-  for(controllerKey in self.controllers.allKeys)
-  {
-    if(![identifiers containsObject:controllerKey])
-    {
-      [toRemoveControllersKey addObject:controllerKey];
-    }
-  }
-  [self.controllers removeObjectsForKeys:toRemoveControllersKey];
-}
-
-- (void)chatSectionView:(MVChatSectionView*)chatSectionView
-  didChangeTabSelection:(NSObject*)identifier
-{
-  if(!identifier) {
-    self.chatConversationController = nil;
-    [self.chatSectionView displayDiscussionView:nil
-                                       textView:nil];
-    return;
-  }
-  NSString *stringIdentifier = (NSString*)identifier;
-  if([stringIdentifier isEqualToString:kMVBuddyListIdentifier])
-  {
-    self.chatConversationController = nil;
-    [self.chatSectionView displayDiscussionView:nil
-                                       textView:nil];
-    
-    self.buddyListViewController.view.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
-                                                         TUIViewAutoresizingFlexibleHeight;
-    self.buddyListViewController.view.frame = self.chatSectionView.bounds;
-    [self.chatSectionView addSubview:self.buddyListViewController.view];
-    return;
-  }
-  
-  [self.buddyListViewController.view removeFromSuperview];
-  
-  XMPPJID *jid = [XMPPJID jidWithString:stringIdentifier];
-  MVChatConversationController *controller = [self controllerForJid:jid];
-    
-  [self displayController:controller];
-  [self makeFirstResponder];
-}
-
-- (void)chatSectionView:(MVChatSectionView*)chatSectionView
-             sendString:(NSString*)string
-{
-  if([string length] <= 0)
-    return;
-  if(self.chatConversationController.discussionView == chatSectionView.discussionView)
-    [self.chatConversationController sendMessage:string
-                            animatedFromTextView:YES];
-}
-- (void)chatSectionViewTextViewTextDidChange:(MVChatSectionView*)chatSectionView
-                              discussionView:(MVDiscussionView*)discussionView
-{
-  if(self.chatConversationController.discussionView == discussionView)
-    [self.chatConversationController textViewDidChange];
+//  self.connectionState = kMVChatSectionViewStateOffline;
 }
 
 #pragma mark MVBuddyListViewControllerDelegate Methods
@@ -273,6 +201,19 @@
                   didClickBuddy:(NSObject<XMPPUser>*)user
 {
   [self selectTab:user.jid animated:YES];
+}
+
+#pragma mark MVSwipeableViewDelegate Methods
+
+- (void)swipeableView:(MVSwipeableView *)swipeableView didSwipeToView:(TUIView *)view
+{
+  NSObject<MVController> *controller = [self controllerForView:view];
+  if(controller)
+  {
+    self.currentController = controller;
+    [controller makeFirstResponder];
+    [self updateWindowTitle];
+  }
 }
 
 @end

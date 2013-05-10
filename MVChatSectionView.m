@@ -71,9 +71,8 @@ static NSGradient *backgroundGradient;
 
     bottomBarView_ = [[MVBottomBarView alloc] initWithFrame:
                                     CGRectMake(0, 0, self.frame.size.width, 30)];
-    bottomBarView_.leftBottomCornerMask = YES;
     bottomBarView_.layer.zPosition = 2;
-//    [self addSubview:bottomBarView_];
+    [self addSubview:bottomBarView_];
 
     offlineButton_ = [[TUIButton alloc] initWithFrame:CGRectMake(0, 7, 16, 15)];
     offlineButton_.autoresizingMask = TUIViewAutoresizingFlexibleLeftMargin |
@@ -102,7 +101,37 @@ static NSGradient *backgroundGradient;
     tabsBarView_.delegate = self;
     tabsBarView_.layer.zPosition = 10;
     [self addSubview:tabsBarView_];
-
+    
+    discussionView_ = [[MVDiscussionView alloc] initWithFrame:
+                       CGRectMake(0, 30,
+                                  self.frame.size.width, self.frame.size.height - 30 - 23)];
+    discussionView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
+                                       TUIViewAutoresizingFlexibleHeight;
+    discussionView_.delegate = self;
+    
+    textView_ = [[MVRoundedTextView alloc] initWithFrame:
+                 CGRectMake(31, 0,
+                            self.bottomBarView.bounds.size.width - 63, 29)];
+    textView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
+    textView_.delegate = self;
+    textView_.layer.zPosition = 2;
+    [textView_ registerForDraggedTypes:[NSArray arrayWithObjects:
+                                        NSPasteboardTypeTIFF,
+                                        NSPasteboardTypePNG,
+                                        NSFilenamesPboardType,
+                                        nil]];
+    
+    [self addSubview:self.discussionView];
+    [self setDiscussionViewFront:NO];
+    [self.discussionView addObserver:self forKeyPath:@"countItems" options:0 context:NULL];
+    [self.discussionView addObserver:self forKeyPath:@"allowsBlankslate" options:0 context:NULL];
+    
+    [self addSubview:self.textView];
+    
+    CGRect textViewFrame = self.textView.frame;
+    textViewFrame.size.width = self.bottomBarView.bounds.size.width - 63;
+    self.textView.frame = textViewFrame;
+    
     blankslateView_ = [[MVChatBlankslateView alloc] initWithFrame:CGRectMake(0, 0, 226, 130)];
     blankslateView_.label = NSLocalizedString(@"Start discussing", @"Chat blankslate label");
     blankslateView_.layer.opacity = 0.0;
@@ -149,81 +178,6 @@ static NSGradient *backgroundGradient;
     [self.discussionView removeObserver:self forKeyPath:@"countItems"];
     [self.discussionView removeObserver:self forKeyPath:@"allowsBlankslate"];
   }
-}
-
-- (void)getDiscussionView:(MVDiscussionView**)discussionView
-                 textView:(MVRoundedTextView**)textView
-{
-  MVDiscussionView *aDiscussionView = [[MVDiscussionView alloc] initWithFrame:
-                     CGRectMake(0, 30,
-                                self.frame.size.width, self.frame.size.height - 30 - 23)];
-  aDiscussionView.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
-                                     TUIViewAutoresizingFlexibleHeight;
-  aDiscussionView.delegate = self;
-
-  MVRoundedTextView *aTextView = [[MVRoundedTextView alloc] initWithFrame:
-                                CGRectMake(31, 0,
-                                           self.bottomBarView.bounds.size.width - 63, 29)];
-  aTextView.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
-  aTextView.delegate = self;
-  aTextView.layer.zPosition = 2;
-  [aTextView registerForDraggedTypes:[NSArray arrayWithObjects:
-                                      NSPasteboardTypeTIFF,
-                                      NSPasteboardTypePNG,
-                                      NSFilenamesPboardType,
-                                      nil]];
-
-  *discussionView = aDiscussionView;
-  *textView = aTextView;
-}
-
-- (void)displayDiscussionView:(MVDiscussionView*)discussionView
-                     textView:(MVRoundedTextView*)textView
-{
-  if(discussionView != self.discussionView)
-  {
-    if(self.discussionView)
-    {
-      [self.discussionView removeObserver:self forKeyPath:@"countItems"];
-      [self.discussionView removeObserver:self forKeyPath:@"allowsBlankslate"];
-    }
-    BOOL firstResponder = (self.nsWindow.firstResponder == self.discussionView);
-    [self.discussionView removeFromSuperview];
-    self.discussionView = discussionView;
-    
-    if(self.discussionView)
-    {
-      [self addSubview:self.discussionView];
-      [self setDiscussionViewFront:NO];
-      if(firstResponder)
-        [self.nsWindow tui_makeFirstResponder:self.discussionView];
-      [self.discussionView addObserver:self forKeyPath:@"countItems" options:0 context:NULL];
-      [self.discussionView addObserver:self forKeyPath:@"allowsBlankslate" options:0 context:NULL];
-    }
-    [self updateBlankslateVisibility:NO];
-  }
-  if(textView != self.textView)
-  {
-    BOOL firstResponder = [self.textView isFirstResponder];
-    [self.textView removeFromSuperview];
-    self.textView = textView;
-    if(self.textView)
-    {
-      [self addSubview:self.textView];
-      if(firstResponder && !self.textView.isFirstResponder)
-      {
-        self.textView.animatesNextFirstResponder = NO;
-        [self.nsWindow tui_makeFirstResponder:self.textView];
-      }
-    }
-  }
-
-  CGRect textViewFrame = self.textView.frame;
-  textViewFrame.size.width = self.bottomBarView.bounds.size.width - 63;
-  self.textView.frame = textViewFrame;
-
-  [self updateFromOnline];
-  [self updateBottomBarViewFrame];
 }
 
 - (void)drawRect:(CGRect)rect

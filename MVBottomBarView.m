@@ -17,7 +17,6 @@
 @interface MVBottomBarView ()
 
 @property (strong, readwrite) TUIView *bottomView;
-@property (strong, readwrite) TUIView *leftView;
 @property (strong, readwrite) TUIView *topView;
 @property (strong, readwrite) TUIView *backgroundView;
 
@@ -25,10 +24,7 @@
 
 @implementation MVBottomBarView
 
-@synthesize leftBottomCornerMask      = leftBottomCornerMask_,
-            rightBottomCornerMask     = rightBottomCornerMask_,
-            bottomView                = bottomView_,
-            leftView                  = leftView_,
+@synthesize bottomView                = bottomView_,
             topView                   = topView_,
             backgroundView            = backgroundView_;
 
@@ -74,22 +70,12 @@
       float radius = 3.5;
       NSBezierPath *path = [NSBezierPath bezierPath];
       [path moveToPoint:CGPointMake(rect.size.width, rect.size.height / 2)];
-      if(parent.rightBottomCornerMask) {
-        [path appendBezierPathWithArcFromPoint:CGPointMake(rect.size.width, 0)
-                                       toPoint:CGPointMake(rect.size.width / 2, 0)
-                                        radius:radius];
-      }
-      else {
-        [path lineToPoint:CGPointMake(rect.size.width, 0)];
-      }
-      if(parent.leftBottomCornerMask) {
-        [path appendBezierPathWithArcFromPoint:CGPointMake(0, 0)
-                                       toPoint:CGPointMake(0, rect.size.height / 2)
-                                        radius:radius];
-      }
-      else {
-        [path lineToPoint:CGPointMake(0, 0)];
-      }
+      [path appendBezierPathWithArcFromPoint:CGPointMake(rect.size.width, 0)
+                                     toPoint:CGPointMake(rect.size.width / 2, 0)
+                                      radius:radius];
+      [path appendBezierPathWithArcFromPoint:CGPointMake(0, 0)
+                                     toPoint:CGPointMake(0, rect.size.height / 2)
+                                      radius:radius];
       [path lineToPoint:CGPointMake(0, rect.size.height)];
       [path lineToPoint:CGPointMake(rect.size.width, rect.size.height)];
       [path closePath];
@@ -145,31 +131,13 @@
       [[NSGraphicsContext currentContext] restoreGraphicsState];
     };
 
-    leftView_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 2, frame.size.height -1)];
-    leftView_.backgroundColor = [TUIColor clearColor];
-    leftView_.shouldDisplayWhenWindowChangesFocus = YES;
-    leftView_.drawRect = ^(TUIView *view, CGRect rect) {
-      if(!parent.leftBottomCornerMask) {
-        [(view.windowHasFocus ? MV_COLOR_MAIN_INTER : MV_COLOR_NOTMAIN_INTER) set];
-        [NSBezierPath fillRect:CGRectMake(0, 0, 1, rect.size.height)];
-
-        NSColor *startColor = MV_COLOR_MAIN_INTER_HIGHLIGHT_TOP;
-        NSColor *endColor = MV_COLOR_MAIN_INTER_HIGHLIGHT_BOTTOM;
-        NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:startColor
-                                                             endingColor:endColor];
-        [gradient drawInRect:CGRectMake(1, 0, 1, rect.size.height) angle:90];
-      }
-    };
-
     [self addSubview:backgroundView_];
     [self addSubview:bottomView_];
     [self addSubview:topView_];
-    [self addSubview:leftView_];
 
-    self.moveWindowByDragging = YES;
-    bottomView_.moveWindowByDragging = YES;
-    topView_.moveWindowByDragging = YES;
-    leftView_.moveWindowByDragging = YES;
+//    self.moveWindowByDragging = YES;
+//    bottomView_.moveWindowByDragging = YES;
+//    topView_.moveWindowByDragging = YES;
   }
   return self;
 }
@@ -201,7 +169,6 @@
   [self.backgroundView setNeedsDisplay];
   [self.bottomView setNeedsDisplay];
   [self.topView setNeedsDisplay];
-  [self.leftView setNeedsDisplay];
 }
 
 @end

@@ -6,20 +6,23 @@
 #import "NSMutableAttributedString+LinksDetection.h"
 #import "MVDiscussionMessageItem.h"
 #import "MVDiscussionViewController.h"
+#import "MVChatSectionView.h"
 
 #define kMVChatConversationDateDisplayInterval 900
 #define kMVComposingMaxDuration 30
 
-@interface MVChatConversationController ()
+@interface MVChatConversationController () <MVChatSectionViewDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
 @property (strong, readwrite) XMPPJID *jid;
+@property (strong, readwrite) MVChatSectionView *chatSectionView;
 @property (strong, readwrite) MVDiscussionView *discussionView;
 @property (strong, readwrite) MVRoundedTextView *textView;
 @property (strong, readwrite) MVDiscussionViewController *discussionViewController;
 @property (strong, readwrite) NSMutableDictionary *composingItems;
 @property (readwrite) BOOL composing;
 @property (strong, readwrite) NSTimer *composingTimer;
+@property (strong, readwrite) TUIView *view;
 
 - (void)sendComposingMessage:(BOOL)composing;
 - (void)removeWriteItemForJid:(XMPPJID*)jid;
@@ -30,12 +33,14 @@
 
 @synthesize xmppStream                = xmppStream_,
             jid                       = jid_,
+            chatSectionView           = chatSectionView_,
             discussionView            = discussionView_,
             textView                  = textView_,
             discussionViewController  = discussionViewController_,
             composingItems            = composingItems_,
             composing                 = composing_,
             composingTimer            = composingTimer_,
+            view                      = view_,
             identifier                = identifier_;
 
 - (id)init
@@ -43,6 +48,7 @@
   self = [super init];
   if(self)
   {
+    chatSectionView_ = nil;
     discussionView_ = nil;
     textView_ = nil;
     composing_ = NO;
@@ -54,8 +60,6 @@
 
 - (id)initWithStream:(XMPPStream*)xmppStream
                  jid:(XMPPJID*)jid
-      discussionView:(MVDiscussionView*)discussionView
-            textView:(MVRoundedTextView*)textView
 {
   self = [self init];
   if(self)
@@ -64,14 +68,19 @@
     [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
     jid_ = jid;
     
-    discussionView_ = discussionView;
-    textView_ = textView;
+    chatSectionView_ = [[MVChatSectionView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    chatSectionView_.state = kMVChatSectionViewStateOnline;
+    chatSectionView_.delegate = self;
+    
+    view_ = chatSectionView_;
+    discussionView_ = chatSectionView_.discussionView;
+    textView_ = chatSectionView_.textView;
 
     textView_.autocompletionEnabled = YES;
     textView_.autocompletionTriggerCharCount = 1;
     
     discussionViewController_ = [[MVDiscussionViewController alloc]
-                                 initWithDiscussionView:discussionView
+                                 initWithDiscussionView:discussionView_
                                  xmppStream:xmppStream jid:jid];
     composingItems_ = [NSMutableDictionary dictionary];
   }
@@ -81,6 +90,11 @@
 - (void)dealloc
 {
   [xmppStream_ removeDelegate:self delegateQueue:dispatch_get_main_queue()];
+}
+
+- (void)makeFirstResponder
+{
+  [self.textView makeFirstResponder];
 }
 
 - (void)addMessage:(XMPPMessage*)message
@@ -124,24 +138,6 @@ animatedFromTextView:(BOOL)animatedFromTextView
   
   [self.discussionViewController addMessage:message
                        animatedFromTextView:self.textView];
-}
-
-- (void)textViewDidChange
-{
-  if(self.textView.text.length <= 0)
-    return;
-  if(self.composingTimer)
-    [self.composingTimer invalidate], self.composingTimer = nil;
-  self.composingTimer = [NSTimer scheduledTimerWithTimeInterval:5
-                                                         target:self
-                                                       selector:@selector(composingTimerAction)
-                                                       userInfo:nil
-                                                        repeats:NO];
-  if(!self.composing)
-  {
-    self.composing = YES;
-    [self sendComposingMessage:YES];
-  }
 }
 
 #pragma mark Timer Actions
@@ -245,5 +241,35 @@ animatedFromTextView:(BOOL)animatedFromTextView
     }
   }
 }
+
+#pragma mark MVChatSectionViewDelegate Methods
+
+- (void)chatSectionView:(MVChatSectionView*)chatSectionView
+             sendString:(NSString*)string
+{
+  if([string length] <= 0)
+    return;
+  [self sendMessage:string animatedFromTextView:YES];
+}
+
+- (void)chatSectionViewTextViewTextDidChange:(MVChatSectionView*)chatSectionView
+                              discussionView:(MVDiscussionView*)discussionView
+{
+  if(self.textView.text.length <= 0)
+    return;
+  if(self.composingTimer)
+    [self.composingTimer invalidate], self.composingTimer = nil;
+  self.composingTimer = [NSTimer scheduledTimerWithTimeInterval:5
+                                                         target:self
+                                                       selector:@selector(composingTimerAction)
+                                                       userInfo:nil
+                                                        repeats:NO];
+  if(!self.composing)
+  {
+    self.composing = YES;
+    [self sendComposingMessage:YES];
+  }
+}
+
 
 @end

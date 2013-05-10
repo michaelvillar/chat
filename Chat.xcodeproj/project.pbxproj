@@ -261,6 +261,8 @@
 		4C7DFF8B173884210048F8DA /* icon_online@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DFF8A173884210048F8DA /* icon_online@2x.png */; };
 		4C7DFF8D1738842A0048F8DA /* icon_online.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DFF8C1738842A0048F8DA /* icon_online.png */; };
 		4C7DFF90173890F00048F8DA /* MVBuddyListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */; };
+		4C7DFF93173B316C0048F8DA /* MVSwipeableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF92173B316C0048F8DA /* MVSwipeableView.m */; };
+		4C7DFF96173B34020048F8DA /* MVNSContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF95173B34020048F8DA /* MVNSContentView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -717,6 +719,11 @@
 		4C7DFF8C1738842A0048F8DA /* icon_online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_online.png; sourceTree = "<group>"; };
 		4C7DFF8E173890F00048F8DA /* MVBuddyListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVBuddyListView.h; sourceTree = "<group>"; };
 		4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVBuddyListView.m; sourceTree = "<group>"; };
+		4C7DFF91173B316C0048F8DA /* MVSwipeableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVSwipeableView.h; sourceTree = "<group>"; };
+		4C7DFF92173B316C0048F8DA /* MVSwipeableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVSwipeableView.m; sourceTree = "<group>"; };
+		4C7DFF94173B34020048F8DA /* MVNSContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVNSContentView.h; sourceTree = "<group>"; };
+		4C7DFF95173B34020048F8DA /* MVNSContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVNSContentView.m; sourceTree = "<group>"; };
+		4CCB3C6F173C6EA3004F98D1 /* MVController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MVController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1584,10 +1591,13 @@
 				4C1E01E81732485B005BDA73 /* MVConstants.h */,
 				4C1EFF6C1730C65C005BDA73 /* MVAppDelegate.h */,
 				4C1EFF6D1730C65C005BDA73 /* MVAppDelegate.m */,
+				4CCB3C6F173C6EA3004F98D1 /* MVController.h */,
 				4C1EFF941730C970005BDA73 /* MVChatViewController.h */,
 				4C1EFF951730C970005BDA73 /* MVChatViewController.m */,
 				4C1E000D1730CF0B005BDA73 /* MVChatConversationController.h */,
 				4C1E000E1730CF0B005BDA73 /* MVChatConversationController.m */,
+				4C7DFF84173828FD0048F8DA /* MVBuddyListViewController.h */,
+				4C7DFF85173828FD0048F8DA /* MVBuddyListViewController.m */,
 				4C1E01AB1730EFEF005BDA73 /* MVDiscussionViewController.h */,
 				4C1E01AC1730EFEF005BDA73 /* MVDiscussionViewController.m */,
 				4C1E01DC17320809005BDA73 /* MVvCardFileDiskModuleStorage.h */,
@@ -1596,8 +1606,6 @@
 				4C1E01E617324589005BDA73 /* MVAccountController.m */,
 				4C1E01EE17324A7C005BDA73 /* MVConnectionManager.h */,
 				4C1E01EF17324A7D005BDA73 /* MVConnectionManager.m */,
-				4C7DFF84173828FD0048F8DA /* MVBuddyListViewController.h */,
-				4C7DFF85173828FD0048F8DA /* MVBuddyListViewController.m */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -1653,6 +1661,10 @@
 				4C7DFF88173834CF0048F8DA /* MVBuddyViewCell.m */,
 				4C7DFF8E173890F00048F8DA /* MVBuddyListView.h */,
 				4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */,
+				4C7DFF91173B316C0048F8DA /* MVSwipeableView.h */,
+				4C7DFF92173B316C0048F8DA /* MVSwipeableView.m */,
+				4C7DFF94173B34020048F8DA /* MVNSContentView.h */,
+				4C7DFF95173B34020048F8DA /* MVNSContentView.m */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -2012,6 +2024,8 @@
 				4C7DFF86173828FD0048F8DA /* MVBuddyListViewController.m in Sources */,
 				4C7DFF89173834CF0048F8DA /* MVBuddyViewCell.m in Sources */,
 				4C7DFF90173890F00048F8DA /* MVBuddyListView.m in Sources */,
+				4C7DFF93173B316C0048F8DA /* MVSwipeableView.m in Sources */,
+				4C7DFF96173B34020048F8DA /* MVNSContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2069,7 +2083,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -2097,7 +2111,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
