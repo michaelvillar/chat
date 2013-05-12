@@ -55,7 +55,27 @@
     currentController_ = nil;
     
     view_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    view_.backgroundColor = [TUIColor blackColor];
+    view_.opaque = NO;
+    view_.backgroundColor = [TUIColor clearColor];
+    view_.drawRect = ^(TUIView *view, CGRect rect) {
+      // clipping mask
+      float radius = 3.5;
+      rect = view.bounds;
+      NSBezierPath *path = [NSBezierPath bezierPath];
+      [path moveToPoint:CGPointMake(rect.size.width, rect.size.height / 2)];
+      [path appendBezierPathWithArcFromPoint:CGPointMake(rect.size.width, 0)
+                                     toPoint:CGPointMake(rect.size.width / 2, 0)
+                                      radius:radius];
+      [path appendBezierPathWithArcFromPoint:CGPointMake(0, 0)
+                                     toPoint:CGPointMake(0, rect.size.height / 2)
+                                      radius:radius];
+      [path lineToPoint:CGPointMake(0, rect.size.height)];
+      [path lineToPoint:CGPointMake(rect.size.width, rect.size.height)];
+      [path closePath];
+      
+      [[NSColor blackColor] set];
+      [path fill];
+    };
     
     tabsView_ = [[MVTabsView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height,
                                                              self.view.frame.size.width, 23)];

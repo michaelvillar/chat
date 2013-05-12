@@ -19,6 +19,7 @@ static NSGradient *backgroundGradient = nil;
 @property (strong, readwrite) TUIView *searchFieldView;
 @property (strong, readwrite) MVRoundedTextView *searchField;
 @property (readwrite, getter = isSearchFieldVisible) BOOL searchFieldVisible;
+@property (strong, readwrite) TUIView *maskView;
 
 @end
 
@@ -29,6 +30,7 @@ static NSGradient *backgroundGradient = nil;
             searchFieldView = searchFieldView_,
             searchField = searchField_,
             searchFieldVisible = searchFieldVisible_,
+            maskView = maskView_,
             delegate = delegate_;
 
 + (void)initialize
@@ -110,6 +112,38 @@ static NSGradient *backgroundGradient = nil;
 
     searchFieldVisible_ = NO;
     delegate_ = nil;
+    
+    maskView_ = [[TUIView alloc] initWithFrame:self.bounds];
+    maskView_.opaque = NO;
+    maskView_.backgroundColor = [TUIColor clearColor];
+    maskView_.drawRect = ^(TUIView *view, CGRect rect)
+    {
+      // clipping mask
+      float radius = 3.5;
+      rect = view.bounds;
+      NSBezierPath *path = [NSBezierPath bezierPath];
+      [path moveToPoint:CGPointMake(rect.size.width, rect.size.height / 2)];
+      [path appendBezierPathWithArcFromPoint:CGPointMake(rect.size.width, 0)
+                                     toPoint:CGPointMake(rect.size.width / 2, 0)
+                                      radius:radius];
+      [path appendBezierPathWithArcFromPoint:CGPointMake(0, 0)
+                                     toPoint:CGPointMake(0, rect.size.height / 2)
+                                      radius:radius];
+      [path lineToPoint:CGPointMake(0, rect.size.height)];
+      [path lineToPoint:CGPointMake(rect.size.width, rect.size.height)];
+      [path closePath];
+      
+      [[NSColor blackColor] set];
+      [path fill];
+    };
+    [maskView_ setNeedsDisplay];
+    
+    // to make it work with retina graphics
+    maskView_.userInteractionEnabled = NO;
+    [self addSubview:maskView_];
+    
+    // apply mask
+    self.layer.mask = maskView_.layer;
   }
   return self;
 }
@@ -171,6 +205,7 @@ static NSGradient *backgroundGradient = nil;
 
 - (void)layoutSubviews
 {
+  self.maskView.frame = self.bounds;
   self.searchFieldContainerView.frame = CGRectMake(0, self.bounds.size.height -
                                                    self.searchFieldContainerView.frame.size.height,
                                                    self.bounds.size.width,
