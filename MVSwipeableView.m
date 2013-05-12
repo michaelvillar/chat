@@ -110,6 +110,14 @@
   }
 }
 
+- (void)setSwipeableSubviewsOrder:(NSArray *)views
+{
+  [self.swipeableViews removeAllObjects];
+  [self.swipeableViews addObjectsFromArray:views];
+  [self layoutSwipeableSubviews];
+  [self updateContentViewFrame:YES];
+}
+
 - (void)swipeToView:(TUIView *)view
 {
   self.currentView = view;

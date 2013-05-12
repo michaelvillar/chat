@@ -27,6 +27,7 @@
 
 - (void)sendComposingMessage:(BOOL)composing;
 - (void)removeWriteItemForJid:(XMPPJID*)jid;
+- (BOOL)isViewVisibleAndApplicationActive;
 - (void)updateUnreadMessages;
 
 @end
@@ -116,9 +117,13 @@
 {
   [self.discussionViewController addMessage:message animated:YES];
   
-  [self willChangeValueForKey:@"unreadMessagesCount"];
-  [self.unreadMessages addObject:message];
-  [self didChangeValueForKey:@"unreadMessagesCount"];
+  BOOL scrollAtBottom = (self.discussionView.contentOffset.y > -10);
+  if(!(scrollAtBottom && self.isViewVisibleAndApplicationActive))
+  {
+    [self willChangeValueForKey:@"unreadMessagesCount"];
+    [self.unreadMessages addObject:message];
+    [self didChangeValueForKey:@"unreadMessagesCount"];
+  }
 }
 
 - (void)sendMessage:(NSString*)string
@@ -212,10 +217,10 @@ animatedFromTextView:(BOOL)animatedFromTextView
   }
 }
 
-- (void)updateUnreadMessages
+- (BOOL)isViewVisibleAndApplicationActive
 {
   if(![NSApp isActive] || !self.discussionView.nsView)
-    return;
+    return NO;
   // check if the view in within the window visible rect
   CGSize windowVisibleSize = ((NSView*)(self.discussionView.nsWindow.contentView)).frame.size;
   CGRect viewFrame = [self.discussionView convertRect:self.discussionView.bounds toView:nil];
@@ -225,6 +230,13 @@ animatedFromTextView:(BOOL)animatedFromTextView
                                                       windowVisibleSize.height),
                                            viewFrame);
   if(abs(intersection.size.width - viewFrame.size.width) > 10)
+    return NO;
+  return YES;
+}
+
+- (void)updateUnreadMessages
+{
+  if(!self.isViewVisibleAndApplicationActive)
     return;
   MVDiscussionMessageItem *item = self.discussionView.lastVisibleItemHavingMessage;
   if(item)

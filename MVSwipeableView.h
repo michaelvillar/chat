@@ -19,6 +19,7 @@
                        atIndex:(NSUInteger)index;
 - (void)addSwipeableSubview:(TUIView *)view;
 - (void)removeSwipeableSubview:(TUIView *)view;
+- (void)setSwipeableSubviewsOrder:(NSArray *)views;
 - (void)swipeToView:(TUIView *)view;
 
 @end

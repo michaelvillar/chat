@@ -324,7 +324,12 @@
 
 - (void)tabsViewDidChangeOrder:(MVTabsView*)tabsView
 {
-  
+  NSMutableArray *viewsOrder = [NSMutableArray array];
+  for(NSObject<MVController>* controller in tabsView.tabsIdentifiers)
+  {
+    [viewsOrder addObject:controller.view];
+  }
+  [self.swipeableView setSwipeableSubviewsOrder:viewsOrder];
 }
 
 @end

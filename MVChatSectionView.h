@@ -13,11 +13,6 @@
 
 @protocol MVChatSectionViewDelegate
 @optional
-- (void)chatSectionViewDidChangeTabs:(MVChatSectionView*)chatSectionView;
-- (void)chatSectionView:(MVChatSectionView*)chatSectionView
- tabsViewDidChangeOrder:(MVTabsView*)tabsView;
-- (void)chatSectionView:(MVChatSectionView*)chatSectionView
-  didChangeTabSelection:(NSObject*)identifier;
 - (void)chatSectionView:(MVChatSectionView*)chatSectionView
              sendString:(NSString*)string;
 - (BOOL)chatSectionView:(MVChatSectionView*)chatSectionView
