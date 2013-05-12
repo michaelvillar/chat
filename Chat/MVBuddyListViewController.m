@@ -100,6 +100,7 @@ didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath
         withEvent:(NSEvent *)event
 {
   NSObject<XMPPUser> *user = [self.filteredUsers objectAtIndex:indexPath.row];
+  [self.buddyListView setSearchFieldVisible:NO animated:YES];
   if([self.delegate respondsToSelector:@selector(buddyListViewController:didClickBuddy:)])
     [self.delegate buddyListViewController:self didClickBuddy:user];
 }

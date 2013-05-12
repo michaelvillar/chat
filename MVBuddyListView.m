@@ -156,6 +156,7 @@ static NSGradient *backgroundGradient = nil;
       self.tableView.frame = tableViewRect;
     } completion:^(BOOL finished) {
       [self.searchField setEditable:NO];
+      self.searchField.text = @"";
     }];
   }
   

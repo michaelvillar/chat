@@ -92,7 +92,7 @@ static NSGradient *backgroundGradient;
 
     discussionView_ = [[MVDiscussionView alloc] initWithFrame:
                        CGRectMake(0, 30,
-                                  self.frame.size.width, self.frame.size.height - 30 - 23)];
+                                  self.frame.size.width, self.frame.size.height)];
     discussionView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                        TUIViewAutoresizingFlexibleHeight;
     discussionView_.delegate = self;
@@ -151,6 +151,8 @@ static NSGradient *backgroundGradient;
     blankslateDisplayed_ = NO;
 
     delegate_ = nil;
+    
+    [self updateDiscussionViewFrame];
   }
   return self;
 }
