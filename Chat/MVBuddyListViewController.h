@@ -9,6 +9,7 @@
 
 - (id)initWithStream:(XMPPStream*)xmppStream;
 - (void)reload;
+- (void)setSearchFieldVisible:(BOOL)visible;
 
 @end
 

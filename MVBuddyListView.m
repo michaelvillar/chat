@@ -148,6 +148,13 @@ static NSGradient *backgroundGradient = nil;
   return self;
 }
 
+- (BOOL)makeFirstResponder
+{
+  if(self.isSearchFieldVisible)
+    return [self.searchField makeFirstResponder];
+  return [super makeFirstResponder];
+}
+
 - (void)setSearchFieldVisible:(BOOL)visible animated:(BOOL)animated
 {
   if(self.searchFieldVisible == visible)

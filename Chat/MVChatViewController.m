@@ -125,15 +125,8 @@
 
 - (void)newTab
 {
-  XMPPRoster *roster = (XMPPRoster*)[self.xmppStream moduleOfClass:[XMPPRoster class]];
-  XMPPRosterMemoryStorage *rosterStorage = roster.xmppRosterStorage;
-  
-  XMPPJID *jid = [XMPPJID jidWithString:@"michaelvillar.com@gmail.com"];
-  XMPPUserMemoryStorageObject *user = [rosterStorage userForJID:jid];
-  if(user)
-  {
-//    [self selectTab:jid animated:YES];
-  }
+  [self displayController:self.buddyListViewController];
+  [self.buddyListViewController setSearchFieldVisible:YES];
 }
 
 - (void)previousTab

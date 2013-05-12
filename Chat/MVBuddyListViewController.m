@@ -106,6 +106,12 @@
   }
 }
 
+- (void)setSearchFieldVisible:(BOOL)visible
+{
+  [self.buddyListView setSearchFieldVisible:visible animated:YES];
+  [self.buddyListView makeFirstResponder];
+}
+
 #pragma mark TUITableViewDelegate Methods
 
 - (void)tableView:(TUITableView *)tableView
