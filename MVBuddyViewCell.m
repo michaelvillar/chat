@@ -60,13 +60,16 @@
       if(weakSelf.isHighlighted)
       {
         [[NSColor colorWithDeviceRed:0.7961 green:0.8196 blue:0.8706 alpha:1.0000] set];
-        [NSBezierPath fillRect:view.bounds];
       }
       else if(weakSelf.isAlternate)
       {
-        [[NSColor colorWithCalibratedWhite:1 alpha:0.43] set];
-        [NSBezierPath fillRect:view.bounds];
+        [[NSColor colorWithDeviceRed:0.9451 green:0.9569 blue:0.9765 alpha:1.0000] set];
       }
+      else
+      {
+        [[NSColor colorWithDeviceRed:0.9059 green:0.9216 blue:0.9608 alpha:1.0000] set];
+      }
+      [NSBezierPath fillRect:view.bounds];
 
       if(!weakSelf.isHighlighted)
         [[NSColor colorWithDeviceRed:0.5686 green:0.6353 blue:0.7804 alpha:0.37] set];
