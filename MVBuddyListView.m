@@ -306,7 +306,7 @@ static NSGradient *backgroundGradient = nil;
       indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
     else
       indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
-    [self.tableView selectRowAtIndexPath:indexPath animated:YES
+    [self.tableView selectRowAtIndexPath:indexPath animated:NO
                           scrollPosition:TUITableViewScrollPositionToVisible];
     return YES;
   }
@@ -318,7 +318,7 @@ static NSGradient *backgroundGradient = nil;
                                           inSection:0];
     else
       indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row - 1 inSection:0];
-    [self.tableView selectRowAtIndexPath:indexPath animated:YES
+    [self.tableView selectRowAtIndexPath:indexPath animated:NO
                           scrollPosition:TUITableViewScrollPositionToVisible];
     return YES;
   }

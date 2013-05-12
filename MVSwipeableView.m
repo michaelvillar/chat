@@ -158,7 +158,7 @@
   CGRect frame = self.contentView.frame;
   float toX = [self offsetForSubview:self.currentView];
   if(toX == frame.origin.x)
-    return;
+    return [self updateContentViewFrame:NO];
   frame.origin.x = toX;
 
   [TUIView animateWithDuration:0.3 animations:^{

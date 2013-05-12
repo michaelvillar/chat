@@ -95,14 +95,14 @@
   if(self.buddyListView.isSearchFieldVisible)
   {
     TUIFastIndexPath *indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView selectRowAtIndexPath:indexPath animated:YES
-                          scrollPosition:TUITableViewScrollPositionTop];
+    [self.tableView selectRowAtIndexPath:indexPath animated:NO
+                          scrollPosition:TUITableViewScrollPositionToVisible];
   }
   else
   {
     TUIFastIndexPath *selectedIndexPath = self.tableView.indexPathForSelectedRow;
     if(selectedIndexPath)
-      [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:YES];
+      [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:NO];
   }
 }
 

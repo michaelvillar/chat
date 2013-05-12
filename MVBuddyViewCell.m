@@ -71,7 +71,7 @@
       }
       [NSBezierPath fillRect:view.bounds];
 
-      if(!weakSelf.isHighlighted || weakSelf.isSelected)
+      if(!weakSelf.isHighlighted && !weakSelf.isSelected)
         [[NSColor colorWithDeviceRed:0.5686 green:0.6353 blue:0.7804 alpha:0.37] set];
       else
         [[NSColor colorWithDeviceRed:0.5804 green:0.6118 blue:0.6706 alpha:1.0000] set];
@@ -92,7 +92,7 @@
         
       }
 
-      if(!weakSelf.isHighlighted || weakSelf.isSelected)
+      if(!weakSelf.isHighlighted && !weakSelf.isSelected)
       {
         [[NSColor colorWithCalibratedWhite:1 alpha:0.9] set];
         [NSBezierPath fillRect:CGRectMake(0, view.bounds.size.height - 2, view.bounds.size.width, 1)];
@@ -113,12 +113,16 @@
        CGRectMake(avatarRrect.origin.x, avatarRrect.origin.y - 1,
                   avatarRrect.size.width, avatarRrect.size.height + 1)];
       
+      NSColor *shadowColor = [NSColor whiteColor];
+      if(weakSelf.isHighlighted || weakSelf.isSelected)
+        shadowColor = [NSColor colorWithCalibratedWhite:1 alpha:0.6];
+      
       CGRect labelRect = CGRectMake(35, 7, view.bounds.size.width - 30 - 30, 20);
       MVDrawString(weakSelf.fullname ? weakSelf.fullname : weakSelf.email,
                    labelRect,
                    [NSColor blackColor],
                    12, NO,
-                   [NSColor whiteColor], CGSizeMake(0, -1), 0);
+                   shadowColor, CGSizeMake(0, -1), 0);
       
       if(weakSelf.isOnline)
       {
@@ -134,6 +138,11 @@
 - (void)setNeedsDisplay
 {
   [self.drawView setNeedsDisplay];
+}
+
+- (void)redraw
+{
+  [self.drawView redraw];
 }
 
 - (void)drawRect:(CGRect)rect
