@@ -13,7 +13,7 @@
 
 @protocol MVChatSectionViewDelegate
 @optional
-- (void)chatSectionView:(MVChatSectionView*)chatSectionView
+- (BOOL)chatSectionView:(MVChatSectionView*)chatSectionView
              sendString:(NSString*)string;
 - (BOOL)chatSectionView:(MVChatSectionView*)chatSectionView
         pastePasteboard:(NSPasteboard*)pasteboard;

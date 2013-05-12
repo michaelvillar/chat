@@ -621,6 +621,12 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
 
 - (BOOL)textView:(TUITextView *)textView doCommandBySelector:(SEL)commandSelector
 {
+  if([self.delegate respondsToSelector:@selector(roundedTextView:doCommandBySelector:)])
+  {
+    BOOL res = [self.delegate roundedTextView:self doCommandBySelector:commandSelector];
+    if(res)
+      return YES;
+  }
   if(self.inCompletionMode &&
      (commandSelector == @selector(insertNewline:) || commandSelector == @selector(insertTab:)))
   {
@@ -639,8 +645,9 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
     if([self.delegate respondsToSelector:@selector(roundedTextView:sendString:)])
     {
       NSString *string = self.textView.text;
-      [self.delegate roundedTextView:self sendString:string];
-      self.textView.text = @"";
+      BOOL shouldClear = [self.delegate roundedTextView:self sendString:string];
+      if(shouldClear)
+        self.textView.text = @"";
       return YES;
     }
   }

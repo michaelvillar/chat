@@ -274,4 +274,48 @@ static NSGradient *backgroundGradient = nil;
   [self makeFirstResponder];
 }
 
+- (BOOL)roundedTextView:(MVRoundedTextView *)roundedTextView sendString:(NSString *)string
+{
+  if(self.tableView.indexPathForSelectedRow)
+  {
+    if([self.tableView.delegate respondsToSelector:@selector(tableView:
+                                                             didClickRowAtIndexPath:withEvent:)])
+      [self.tableView.delegate tableView:self.tableView
+                  didClickRowAtIndexPath:self.tableView.indexPathForSelectedRow
+                               withEvent:nil];
+    return YES;
+  }
+  return NO;
+}
+
+- (BOOL)roundedTextView:(MVRoundedTextView *)roundedTextView doCommandBySelector:(SEL)selector
+{
+  if(!self.isSearchFieldVisible || [self.tableView numberOfRowsInSection:0] == 0)
+    return NO;
+  if(selector == @selector(moveDown:))
+  {
+    TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+    if(!indexPath || indexPath.row + 1 >= [self.tableView numberOfRowsInSection:0])
+      indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
+    else
+      indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES
+                          scrollPosition:TUITableViewScrollPositionToVisible];
+    return YES;
+  }
+  else if(selector == @selector(moveUp:))
+  {
+    TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+    if(!indexPath || indexPath.row == 0)
+      indexPath = [TUIFastIndexPath indexPathForRow:[self.tableView numberOfRowsInSection:0] - 1
+                                          inSection:0];
+    else
+      indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row - 1 inSection:0];
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES
+                          scrollPosition:TUITableViewScrollPositionToVisible];
+    return YES;
+  }
+  return NO;
+}
+
 @end

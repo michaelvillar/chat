@@ -259,11 +259,12 @@ static NSGradient *backgroundGradient;
   }];
 }
 
-- (void)roundedTextView:(MVRoundedTextView*)chatTextView
+- (BOOL)roundedTextView:(MVRoundedTextView*)chatTextView
              sendString:(NSString*)string
 {
   if([self.delegate respondsToSelector:@selector(chatSectionView:sendString:)])
-    [self.delegate chatSectionView:self sendString:string];
+    return [self.delegate chatSectionView:self sendString:string];
+  return NO;
 }
 
 - (void)roundedTextViewMoveUp:(MVRoundedTextView*)chatTextView

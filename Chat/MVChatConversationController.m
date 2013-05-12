@@ -319,12 +319,13 @@ animatedFromTextView:(BOOL)animatedFromTextView
 
 #pragma mark MVChatSectionViewDelegate Methods
 
-- (void)chatSectionView:(MVChatSectionView*)chatSectionView
+- (BOOL)chatSectionView:(MVChatSectionView*)chatSectionView
              sendString:(NSString*)string
 {
   if([string length] <= 0)
-    return;
+    return NO;
   [self sendMessage:string animatedFromTextView:YES];
+  return YES;
 }
 
 - (void)chatSectionViewTextViewTextDidChange:(MVChatSectionView*)chatSectionView

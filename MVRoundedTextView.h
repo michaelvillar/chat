@@ -11,7 +11,7 @@
 @optional
 - (void)roundedTextViewDidResize:(MVRoundedTextView*)roundedTextView
                         animated:(BOOL)animated;
-- (void)roundedTextView:(MVRoundedTextView*)roundedTextView
+- (BOOL)roundedTextView:(MVRoundedTextView*)roundedTextView
              sendString:(NSString*)string;
 - (void)roundedTextViewCancelOperation:(MVRoundedTextView*)roundedTextView;
 - (void)roundedTextViewMoveUp:(MVRoundedTextView*)roundedTextView;
@@ -22,6 +22,8 @@
       didDropPasteboard:(NSPasteboard*)pasteboard;
 - (void)roundedTextViewDidBecomeFirstResponder:(MVRoundedTextView*)roundedTextView;
 - (void)roundedTextViewDidResignFirstResponder:(MVRoundedTextView*)roundedTextView;
+- (BOOL)roundedTextView:(MVRoundedTextView*)roundedTextView
+    doCommandBySelector:(SEL)selector;
 @end
 
 @interface MVRoundedTextView : TUIView

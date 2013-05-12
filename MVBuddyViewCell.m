@@ -57,7 +57,7 @@
     drawView_.drawRect = ^(TUIView *view, CGRect rect)
     {
       [[NSGraphicsContext currentContext] saveGraphicsState];
-      if(weakSelf.isHighlighted)
+      if(weakSelf.isHighlighted || weakSelf.isSelected)
       {
         [[NSColor colorWithDeviceRed:0.7961 green:0.8196 blue:0.8706 alpha:1.0000] set];
       }
@@ -71,13 +71,13 @@
       }
       [NSBezierPath fillRect:view.bounds];
 
-      if(!weakSelf.isHighlighted)
+      if(!weakSelf.isHighlighted || weakSelf.isSelected)
         [[NSColor colorWithDeviceRed:0.5686 green:0.6353 blue:0.7804 alpha:0.37] set];
       else
         [[NSColor colorWithDeviceRed:0.5804 green:0.6118 blue:0.6706 alpha:1.0000] set];
       [NSBezierPath fillRect:CGRectMake(0, view.bounds.size.height - 1, view.bounds.size.width, 1)];
 
-      if(weakSelf.isHighlighted)
+      if(weakSelf.isHighlighted || weakSelf.isSelected)
       {
         [NSBezierPath fillRect:CGRectMake(0, 0, view.bounds.size.width, 1)];
         
@@ -92,7 +92,7 @@
         
       }
 
-      if(!weakSelf.isHighlighted)
+      if(!weakSelf.isHighlighted || weakSelf.isSelected)
       {
         [[NSColor colorWithCalibratedWhite:1 alpha:0.9] set];
         [NSBezierPath fillRect:CGRectMake(0, view.bounds.size.height - 2, view.bounds.size.width, 1)];

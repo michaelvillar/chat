@@ -91,6 +91,19 @@
     self.filteredUsers = self.users;
   
   [self.tableView reloadData];
+  
+  if(self.buddyListView.isSearchFieldVisible)
+  {
+    TUIFastIndexPath *indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
+    [self.tableView selectRowAtIndexPath:indexPath animated:YES
+                          scrollPosition:TUITableViewScrollPositionTop];
+  }
+  else
+  {
+    TUIFastIndexPath *selectedIndexPath = self.tableView.indexPathForSelectedRow;
+    if(selectedIndexPath)
+      [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:YES];
+  }
 }
 
 #pragma mark TUITableViewDelegate Methods
@@ -103,6 +116,12 @@ didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath
   [self.buddyListView setSearchFieldVisible:NO animated:YES];
   if([self.delegate respondsToSelector:@selector(buddyListViewController:didClickBuddy:)])
     [self.delegate buddyListViewController:self didClickBuddy:user];
+}
+
+- (BOOL)tableView:(TUITableView *)tableView shouldSelectRowAtIndexPath:(TUIFastIndexPath *)indexPath
+         forEvent:(NSEvent *)event
+{
+  return [self.buddyListView isSearchFieldVisible];
 }
 
 #pragma mark TUITableViewDataSource Methods
