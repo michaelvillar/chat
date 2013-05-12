@@ -98,8 +98,8 @@ static NSGradient *backgroundGradient;
     discussionView_.delegate = self;
     
     textView_ = [[MVRoundedTextView alloc] initWithFrame:
-                 CGRectMake(31, 0,
-                            self.bottomBarView.bounds.size.width - 63, 29)];
+                 CGRectMake(5, 0,
+                            self.bottomBarView.bounds.size.width - 10, 29)];
     textView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
     textView_.delegate = self;
     textView_.layer.zPosition = 2;
@@ -115,10 +115,6 @@ static NSGradient *backgroundGradient;
     [self.discussionView addObserver:self forKeyPath:@"allowsBlankslate" options:0 context:NULL];
     
     [self addSubview:self.textView];
-    
-    CGRect textViewFrame = self.textView.frame;
-    textViewFrame.size.width = self.bottomBarView.bounds.size.width - 63;
-    self.textView.frame = textViewFrame;
     
     blankslateView_ = [[MVChatBlankslateView alloc] initWithFrame:CGRectMake(0, 0, 226, 130)];
     blankslateView_.label = NSLocalizedString(@"Start discussing", @"Chat blankslate label");
@@ -484,6 +480,16 @@ shouldRetrySendingMessage:(MVDiscussionMessageItem*)discussionItem
     rect.size.height = self.textView.frame.size.height + 1;
   }
   [self.bottomBarView setFrame:rect];
+  [self updateDiscussionViewFrame];
+}
+
+
+- (void)updateDiscussionViewFrame
+{
+  self.discussionView.frame = CGRectMake(0, self.bottomBarView.frame.size.height,
+                                         self.frame.size.width,
+                                         self.frame.size.height -
+                                         self.bottomBarView.frame.size.height);
 }
 
 - (void)setDiscussionViewFront:(BOOL)front

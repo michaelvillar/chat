@@ -70,7 +70,14 @@
 - (void)reload
 {
   XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
-  self.users = [storage sortedUsersByName];
+  NSArray *users = [storage unsortedUsers];
+  self.users = [users sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+    NSObject<XMPPUser> *user1 = (NSObject<XMPPUser>*)obj1;
+    NSObject<XMPPUser> *user2 = (NSObject<XMPPUser>*)obj2;
+    NSString *user1Name = (user1.nickname ? user1.nickname : user1.jid.bare);
+    NSString *user2Name = (user2.nickname ? user2.nickname : user2.jid.bare);
+    return [user1Name.lowercaseString compare:user2Name.lowercaseString];
+  }];
   
   if(self.buddyListView.isSearchFieldVisible && self.buddyListView.searchFieldText.length > 0)
   {

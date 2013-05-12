@@ -12,6 +12,7 @@
                                     MVTabsViewDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
+@property (strong, readwrite) XMPPRoster *xmppRoster;
 
 @property (strong, readwrite) TUIView *view;
 @property (strong, readwrite) MVSwipeableView *swipeableView;
@@ -31,6 +32,7 @@
 @implementation MVChatViewController
 
 @synthesize xmppStream = xmppStream_,
+            xmppRoster = xmppRoster_,
             view = view_,
             swipeableView = swipeableView_,
             tabsView = tabsView_,
@@ -48,6 +50,7 @@
 
     xmppStream_ = xmppStream;
     [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    xmppRoster_ = (XMPPRoster*)[xmppStream moduleOfClass:[XMPPRoster class]];
     
     controllers_ = [NSMutableDictionary dictionary];
     currentController_ = nil;
@@ -67,6 +70,7 @@
     swipeableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                       TUIViewAutoresizingFlexibleHeight;
     swipeableView_.delegate = self;
+    swipeableView_.contentViewTopMargin = 23;
     [view_ addSubview:swipeableView_];
 
     buddyListViewController_ = [[MVBuddyListViewController alloc] initWithStream:self.xmppStream];
@@ -126,7 +130,17 @@
   if(controller != self.buddyListViewController)
   {
     MVChatConversationController *chatConversationController = (MVChatConversationController*)controller;
-    title = chatConversationController.jid.bare;
+    XMPPJID *jid = chatConversationController.jid;
+    XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
+    XMPPUserMemoryStorageObject *user = [storage userForJID:jid];
+    if(user && user.nickname)
+    {
+      title = user.nickname;
+    }
+    else
+    {
+      title = jid.bare;
+    }
   }
   return title;
 }
@@ -138,6 +152,9 @@
 
 - (void)displayController:(NSObject<MVController>*)controller
 {
+  if(controller == self.currentController)
+    return;
+  
   if(![self.tabsView hasTabForIdentifier:controller])
   {
     [self.tabsView addTab:[self titleForController:controller]
@@ -260,7 +277,6 @@
       frame.origin.y = self.view.frame.size.height;
     }
     self.tabsView.frame = frame;
-    self.swipeableView.contentViewTopMargin = ([self.tabsView countTabs] > 0 ? 23 : 0);
   }];
 }
 

@@ -20,6 +20,7 @@
 - (void)layoutSwipeableSubviews;
 - (CGRect)rectForSubview:(TUIView*)view;
 - (float)offsetForSubview:(TUIView*)view;
+- (void)updateContentViewFrame:(BOOL)updateX;
 
 @end
 
@@ -115,12 +116,13 @@
   [self slideToCurrent];
 }
 
-- (void)updateContentViewFrame
+- (void)updateContentViewFrame:(BOOL)updateX
 {
   CGRect frame = CGRectMake(self.contentView.frame.origin.x, 0,
                             (self.frame.size.width + 25) * [self.swipeableViews count],
                             self.frame.size.height - self.contentViewTopMargin);
-  frame.origin.x = [self offsetForSubview:self.currentView];
+  if(updateX)
+    frame.origin.x = [self offsetForSubview:self.currentView];
   self.contentView.frame = frame;
 }
 
@@ -128,7 +130,7 @@
 {
   if([self.nsView inLiveResize])
   {
-    [self updateContentViewFrame];
+    [self updateContentViewFrame:YES];
   }
   [self layoutSwipeableSubviews];
 }
@@ -136,7 +138,7 @@
 - (void)setContentViewTopMargin:(float)contentViewTopMargin
 {
   contentViewTopMargin_ = contentViewTopMargin;
-  [self updateContentViewFrame];
+  [self updateContentViewFrame:YES];
   [self layoutSwipeableSubviews];
 }
 
@@ -144,11 +146,17 @@
 
 - (void)slideToCurrent
 {
+  CGRect frame = self.contentView.frame;
+  float toX = [self offsetForSubview:self.currentView];
+  if(toX == frame.origin.x)
+    return;
+  frame.origin.x = toX;
+
   [TUIView animateWithDuration:0.4 animations:^{
     [TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];
-    CGRect frame = self.contentView.frame;
-    frame.origin.x = [self offsetForSubview:self.currentView];
     self.contentView.frame = frame;
+  } completion:^(BOOL finished) {
+    [self updateContentViewFrame:NO];
   }];
 }
 
