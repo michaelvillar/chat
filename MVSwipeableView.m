@@ -152,7 +152,7 @@
     return;
   frame.origin.x = toX;
 
-  [TUIView animateWithDuration:0.4 animations:^{
+  [TUIView animateWithDuration:0.3 animations:^{
     [TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];
     self.contentView.frame = frame;
   } completion:^(BOOL finished) {

@@ -3,6 +3,7 @@
 #import "NSObject+PerformBlockAfterDelay.h"
 
 #define kMVTabViewGlowingDuration 0.7
+#define kMVTabViewMaximumWidth 100
 
 @interface MVTabView ()
 
@@ -191,7 +192,7 @@ void MVTabDraw(MVTabView *view, CGRect rect, BOOL forceGlowing, int glowingPhase
     fontColor = [NSColor colorWithDeviceRed:0.3216 green:0.3255 blue:0.3490 alpha:1.0000];
   }
   MVDrawString(view.name,
-                CGRectMake(marginX, 4, bounds.size.width, 15),
+                CGRectMake(marginX, 4, bounds.size.width - marginX - 6, 15),
                 fontColor,
                 11,
                 YES,
@@ -282,7 +283,9 @@ void MVTabDraw(MVTabView *view, CGRect rect, BOOL forceGlowing, int glowingPhase
   CGSize size = MVSizeOfString(self.name, 11, YES);
   if(self.closable)
     size.width += 14;
-  return ceil(size.width) + 5 + 5 + 1 + 1 + 2;
+  float width = ceil(size.width) + 5 + 5 + 1 + 1 + 2;
+  width = MIN(kMVTabViewMaximumWidth, width);
+  return width;
 }
 
 #pragma mark -

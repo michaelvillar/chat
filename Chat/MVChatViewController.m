@@ -96,6 +96,11 @@
 {
   [xmppStream_ removeDelegate:self delegateQueue:dispatch_get_main_queue()];
   [self removeObserver:self forKeyPath:@"connectionState"];
+  for(NSObject<MVController> *controller in self.controllers.allValues)
+  {
+    if(controller != buddyListViewController_)
+      [controller removeObserver:self forKeyPath:@"unreadMessagesCount"];
+  }
 }
 
 - (void)newTab
@@ -116,17 +121,37 @@
   [self.currentController makeFirstResponder];
 }
 
+- (NSUInteger)unreadMessagesCount
+{
+  NSUInteger count = 0;
+  for(NSObject<MVController> *controller in self.controllers.allValues)
+  {
+    if(controller != self.buddyListViewController)
+    {
+      MVChatConversationController *chatConversationController =
+                                    (MVChatConversationController*)controller;
+      count += chatConversationController.unreadMessagesCount;
+    }
+  }
+  return count;
+}
+
 #pragma mark KVO
 
-//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-//{
-//  if(object == self && [keyPath isEqualToString:@"connectionState"]) {
-//    self.chatSectionView.state = self.connectionState;
-//  }
-//  else {
-//    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-//  }
-//}
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+  if([self.controllers.allValues containsObject:object] &&
+     [keyPath isEqualToString:@"unreadMessagesCount"]) {
+    MVChatConversationController *controller = (MVChatConversationController*)object;
+    [self.tabsView setGlowing:controller.unreadMessagesCount > 0
+                   identifier:controller];
+    [self willChangeValueForKey:@"unreadMessagesCount"];
+    [self didChangeValueForKey:@"unreadMessagesCount"];
+  }
+  else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
+}
 
 #pragma mark Private Methods
 
@@ -188,6 +213,7 @@
   if(!controller) {
     controller = [[MVChatConversationController alloc] initWithStream:self.xmppStream
                                                                   jid:jid];
+    [controller addObserver:self forKeyPath:@"unreadMessagesCount" options:0 context:NULL];
     [self.controllers setObject:controller forKey:jid.bare];
   }
   if(![self.tabsView hasTabForIdentifier:controller])
@@ -269,6 +295,7 @@
     NSObject<MVController> *controller = [self.controllers objectForKey:bareJid];
     if(![tabsView.tabsIdentifiers containsObject:controller])
     {
+      [controller removeObserver:self forKeyPath:@"unreadMessagesCount"];
       [self.controllers removeObjectForKey:bareJid];
       [self.swipeableView removeSwipeableSubview:controller.view];
     }

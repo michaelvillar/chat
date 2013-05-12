@@ -191,6 +191,7 @@
     messageItem.name = message.from.full;
     messageItem.own = ![message.from isEqualToJID:self.jid options:XMPPJIDCompareBare];
     messageItem.senderRepresentedObject = message.from;
+    messageItem.representedObject = message;
 
     if(module)
     {

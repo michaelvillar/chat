@@ -23,9 +23,11 @@
 @property (readwrite) BOOL composing;
 @property (strong, readwrite) NSTimer *composingTimer;
 @property (strong, readwrite) TUIView *view;
+@property (strong, readwrite) NSMutableOrderedSet *unreadMessages;
 
 - (void)sendComposingMessage:(BOOL)composing;
 - (void)removeWriteItemForJid:(XMPPJID*)jid;
+- (void)updateUnreadMessages;
 
 @end
 
@@ -41,6 +43,7 @@
             composing                 = composing_,
             composingTimer            = composingTimer_,
             view                      = view_,
+            unreadMessages            = unreadMessages_,
             identifier                = identifier_;
 
 - (id)init
@@ -53,6 +56,7 @@
     textView_ = nil;
     composing_ = NO;
     composingTimer_ = nil;
+    unreadMessages_ = [NSMutableOrderedSet orderedSet];
     identifier_ = nil;
   }
   return self;
@@ -83,6 +87,10 @@
                                  initWithDiscussionView:discussionView_
                                  xmppStream:xmppStream jid:jid];
     composingItems_ = [NSMutableDictionary dictionary];
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(applicationDidBecomeActive:)
+               name:NSApplicationDidBecomeActiveNotification object:NSApp];
   }
   return self;
 }
@@ -90,16 +98,27 @@
 - (void)dealloc
 {
   [xmppStream_ removeDelegate:self delegateQueue:dispatch_get_main_queue()];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)makeFirstResponder
 {
+  [self updateUnreadMessages];
   [self.textView makeFirstResponder];
+}
+
+- (NSUInteger)unreadMessagesCount
+{
+  return self.unreadMessages.count;
 }
 
 - (void)addMessage:(XMPPMessage*)message
 {
   [self.discussionViewController addMessage:message animated:YES];
+  
+  [self willChangeValueForKey:@"unreadMessagesCount"];
+  [self.unreadMessages addObject:message];
+  [self didChangeValueForKey:@"unreadMessagesCount"];
 }
 
 - (void)sendMessage:(NSString*)string
@@ -138,6 +157,20 @@ animatedFromTextView:(BOOL)animatedFromTextView
   
   [self.discussionViewController addMessage:message
                        animatedFromTextView:self.textView];
+  
+  if(self.unreadMessages.count > 0)
+  {
+    [self willChangeValueForKey:@"unreadMessagesCount"];
+    [self.unreadMessages removeAllObjects];
+    [self didChangeValueForKey:@"unreadMessagesCount"];
+  }
+}
+
+#pragma mark Window Notifications
+
+- (void)applicationDidBecomeActive:(NSNotification*)notification
+{
+  [self updateUnreadMessages];
 }
 
 #pragma mark Timer Actions
@@ -176,6 +209,36 @@ animatedFromTextView:(BOOL)animatedFromTextView
     [self.composingItems removeObjectForKey:jid.bare];
     [self.discussionView removeDiscussionItem:writingItem];
     [self.discussionView layoutSubviews:YES];
+  }
+}
+
+- (void)updateUnreadMessages
+{
+  if(![NSApp isActive] || !self.discussionView.nsView)
+    return;
+  // check if the view in within the window visible rect
+  CGSize windowVisibleSize = ((NSView*)(self.discussionView.nsWindow.contentView)).frame.size;
+  CGRect viewFrame = [self.discussionView convertRect:self.discussionView.bounds toView:nil];
+  viewFrame = [self.discussionView.nsView convertRect:viewFrame toView:nil];
+  CGRect intersection = CGRectIntersection(CGRectMake(0, 0,
+                                                      windowVisibleSize.width,
+                                                      windowVisibleSize.height),
+                                           viewFrame);
+  if(abs(intersection.size.width - viewFrame.size.width) > 10)
+    return;
+  MVDiscussionMessageItem *item = self.discussionView.lastVisibleItemHavingMessage;
+  if(item)
+  {
+    XMPPMessage *message = (XMPPMessage*)(item.representedObject);
+    if([self.unreadMessages containsObject:message])
+    {
+      NSUInteger index = [self.unreadMessages indexOfObject:message];
+      NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)];
+      
+      [self willChangeValueForKey:@"unreadMessagesCount"];
+      [self.unreadMessages removeObjectsAtIndexes:indexSet];
+      [self didChangeValueForKey:@"unreadMessagesCount"];
+    }
   }
 }
 
@@ -271,5 +334,10 @@ animatedFromTextView:(BOOL)animatedFromTextView
   }
 }
 
+- (void)chatSectionViewDiscussionViewDidScroll:(MVChatSectionView*)chatSectionView
+                                discussionView:(MVDiscussionView*)discussionView
+{
+  [self updateUnreadMessages];
+}
 
 @end

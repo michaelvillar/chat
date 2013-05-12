@@ -41,6 +41,8 @@
                                                   TUIViewAutoresizingFlexibleHeight;
   tUINSView.rootView = self.chatViewController.view;
   [self.chatViewController makeFirstResponder];
+  [self.chatViewController addObserver:self forKeyPath:@"unreadMessagesCount"
+                               options:0 context:NULL];
   
   if (connectionManager.hasEmptyConnectionInformation)
     [self openPreferences:self];
@@ -54,6 +56,22 @@
      !self.accountController.window.isMainWindow)
     [self.window makeKeyAndOrderFront:self];
   return YES;
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+  if([keyPath isEqualToString:@"unreadMessagesCount"] && object == self.chatViewController)
+  {
+    NSUInteger unreadMessagesCount = self.chatViewController.unreadMessagesCount;
+    NSDockTile *dockTile = [NSApp dockTile];
+    if(unreadMessagesCount > 0)
+      dockTile.badgeLabel = [NSString stringWithFormat:@"%li",(unsigned long)unreadMessagesCount];
+    else
+      dockTile.badgeLabel = @"";
+  }
 }
 
 #pragma mark Properties

@@ -7,6 +7,7 @@
 
 @property (strong, readonly) XMPPJID *jid;
 @property (strong, readwrite) NSObject *identifier;
+@property (readonly) NSUInteger unreadMessagesCount;
 
 - (id)initWithStream:(XMPPStream*)xmppStream
                  jid:(XMPPJID*)jid;
