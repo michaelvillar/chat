@@ -5,8 +5,6 @@
 #import "MVSwipeableView.h"
 #import "MVTabsView.h"
 
-#define kMVBuddyListIdentifier @"kMVBuddyListIdentifier"
-
 @interface MVChatViewController () <MVBuddyListViewControllerDelegate,
                                     MVSwipeableViewDelegate,
                                     MVTabsViewDelegate>
@@ -26,6 +24,7 @@
 
 - (void)displayController:(NSObject<MVController>*)controller;
 - (NSObject<MVController>*)controllerForView:(TUIView *)view;
+- (NSObject<MVController>*)controllerForJid:(XMPPJID*)jid;
 
 @end
 
@@ -75,6 +74,15 @@
 
     buddyListViewController_ = [[MVBuddyListViewController alloc] initWithStream:self.xmppStream];
     buddyListViewController_.delegate = self;
+    
+    [self.tabsView addTab:[self titleForController:buddyListViewController_]
+                 closable:NO
+                 sortable:NO
+                   online:NO
+               identifier:buddyListViewController_
+                  atIndex:1
+                 animated:YES];
+    [self.swipeableView insertSwipeableSubview:buddyListViewController_.view atIndex:1];
     [self displayController:buddyListViewController_];
     
     [self updateWindowTitle];
@@ -155,18 +163,6 @@
   if(controller == self.currentController)
     return;
   
-  if(![self.tabsView hasTabForIdentifier:controller])
-  {
-    [self.tabsView addTab:[self titleForController:controller]
-                 closable:(controller != self.buddyListViewController)
-                 sortable:(controller != self.buddyListViewController)
-                   online:YES
-               identifier:controller
-                  atIndex:1
-                 animated:YES];
-    [self.swipeableView insertSwipeableSubview:controller.view atIndex:1];
-  }
-  
   self.currentController = controller;
   [self.swipeableView swipeToView:controller.view];
   [controller makeFirstResponder];
@@ -186,13 +182,24 @@
   return nil;
 }
 
-- (MVChatConversationController*)controllerForJid:(XMPPJID*)jid
+- (NSObject<MVController>*)controllerForJid:(XMPPJID*)jid
 {
-  MVChatConversationController *controller = [self.controllers objectForKey:jid.bare];
+  NSObject<MVController> *controller = [self.controllers objectForKey:jid.bare];
   if(!controller) {
     controller = [[MVChatConversationController alloc] initWithStream:self.xmppStream
                                                                   jid:jid];
     [self.controllers setObject:controller forKey:jid.bare];
+  }
+  if(![self.tabsView hasTabForIdentifier:controller])
+  {
+    [self.tabsView addTab:[self titleForController:controller]
+                 closable:YES
+                 sortable:YES
+                   online:YES
+               identifier:controller
+                  atIndex:1
+                 animated:YES];
+    [self.swipeableView insertSwipeableSubview:controller.view atIndex:1];
   }
   return controller;
 }
@@ -204,7 +211,8 @@
 	if ([message isChatMessageWithBody])
 	{
     BOOL controllerExisted = [self.controllers objectForKey:message.from.bare] != nil;
-    MVChatConversationController *controller = [self controllerForJid:message.from];
+    MVChatConversationController *controller = (MVChatConversationController*)
+                                                [self controllerForJid:message.from];
     if (!controllerExisted)
       [controller addMessage:message];
 	}
