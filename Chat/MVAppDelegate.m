@@ -93,6 +93,21 @@
   [self.chatViewController newTab];
 }
 
+- (IBAction)previousTab:(id)sender
+{
+  [self.chatViewController previousTab];
+}
+
+- (IBAction)nextTab:(id)sender
+{
+  [self.chatViewController nextTab];
+}
+
+- (IBAction)closeTab:(id)sender
+{
+  [self.chatViewController closeTab];
+}
+
 - (IBAction)openPreferences:(id)sender
 {
   [self.accountController showWindow:self];

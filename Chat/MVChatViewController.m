@@ -116,6 +116,29 @@
   }
 }
 
+- (void)previousTab
+{
+  [self.tabsView selectPreviousTab];
+}
+
+- (void)nextTab
+{
+  [self.tabsView selectNextTab];
+}
+
+- (void)closeTab
+{
+  if(self.tabsView.selectedTab == self.buddyListViewController ||
+     self.tabsView.countTabs == 1)
+  {
+    [self.view.nsWindow performClose:self];
+  }
+  else
+  {
+    [self.tabsView removeTab:self.tabsView.selectedTab animated:YES];
+  }
+}
+
 - (void)makeFirstResponder
 {
   [self.currentController makeFirstResponder];

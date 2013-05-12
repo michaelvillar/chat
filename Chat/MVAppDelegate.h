@@ -6,6 +6,9 @@
 
 #pragma mark Menu Actions
 - (IBAction)newTab:(id)sender;
+- (IBAction)previousTab:(id)sender;
+- (IBAction)nextTab:(id)sender;
+- (IBAction)closeTab:(id)sender;
 - (IBAction)openPreferences:(id)sender;
 
 @end

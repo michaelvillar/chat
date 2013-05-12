@@ -6,5 +6,8 @@
 
 - (id)initWithStream:(XMPPStream*)xmppStream;
 - (void)newTab;
+- (void)previousTab;
+- (void)nextTab;
+- (void)closeTab;
 
 @end
