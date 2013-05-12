@@ -209,6 +209,7 @@
   MVTabView *tabView = [self tabForIdentifier:identifier];
   if(tabView)
   {
+    MVTabView *newSelectedTabView = self.selectedTabView;
     if(self.selectedTabView == tabView)
     {
       int index = (int)([self.tabs indexOfObject:tabView]);
@@ -218,12 +219,12 @@
         index = self.tabs.count - 1;
       if(self.tabs.count == 0)
       {
+        newSelectedTabView = nil;
         [self setSelectedTab:nil];
       }
       else
       {
-        MVTabView *newTabView = [self.tabs objectAtIndex:index];
-        [self setSelectedTab:newTabView.identifier];
+        newSelectedTabView = [self.tabs objectAtIndex:index];
       }
     }
     else
@@ -246,6 +247,14 @@
     [self layoutTabs:animated];
     if([self.delegate respondsToSelector:@selector(tabsViewDidChangeTabs:)])
       [self.delegate tabsViewDidChangeTabs:self];
+    
+    if(newSelectedTabView != self.selectedTabView)
+    {
+      if(newSelectedTabView)
+        [self setSelectedTab:newSelectedTabView.identifier];
+      else
+        [self setSelectedTab:nil];
+    }
   }
 }
 

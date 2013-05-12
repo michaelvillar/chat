@@ -100,7 +100,8 @@
   [TUIView animateWithDuration:0.4 animations:^{
     [self layoutSubviews];
   }];
-  if(self.currentView == view) {
+  if(self.currentView == view)
+  {
     if(index >= self.swipeableViews.count)
       index--;
     self.currentView = [self.swipeableViews objectAtIndex:index];
