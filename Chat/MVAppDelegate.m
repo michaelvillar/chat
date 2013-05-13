@@ -2,8 +2,12 @@
 #import "MVChatViewController.h"
 #import "MVvCardFileDiskModuleStorage.h"
 #import "MVAccountController.h"
+#import "MVCloudAppAccountController.h"
 #import "MVConnectionManager.h"
 #import "MVNSContentView.h"
+#import "MVUploadAuthorization.h"
+#import "MVURLKit.h"
+#import "EMKeychainItem.h"
 
 #import "DDLog.h"
 #import "DDTTYLogger.h"
@@ -13,6 +17,7 @@
 @property (strong, readwrite) XMPPStream *xmppStream;
 @property (strong, readwrite) MVChatViewController *chatViewController;
 @property (strong, readwrite, nonatomic) MVAccountController *accountController;
+@property (strong, readwrite, nonatomic) MVCloudAppAccountController *cloudAppAccountController;
 
 @end
 
@@ -20,14 +25,32 @@
 
 @synthesize xmppStream = xmppStream_,
             chatViewController = chatViewController_,
-            accountController = accountController_;
+            accountController = accountController_,
+            cloudAppAccountController = cloudAppAccountController_;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
   MVConnectionManager *connectionManager = [MVConnectionManager sharedInstance];
   self.xmppStream = connectionManager.xmppStream;
-  
+
 //  [DDLog addLogger:[DDTTYLogger sharedInstance]];
+  
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *cloudAppEmail = [defaults stringForKey:kMVPreferencesCloudAppEmailKey];
+  
+  if(cloudAppEmail)
+  {
+    EMGenericKeychainItem *item = [EMGenericKeychainItem genericKeychainItemForService:kMVKeychainCloudAppServiceName
+                                                                          withUsername:cloudAppEmail];
+    if(item)
+    {
+      NSString *cloudAppPassword = item.password;
+      MVUploadAuthorization *uploadAuth = [[MVUploadAuthorization alloc]
+                                           initWithCloudAppEmail:cloudAppEmail
+                                           password:cloudAppPassword];
+      [[MVURLKit sharedInstance] setUploadAuthorization:uploadAuth];
+    }
+  }
   
   NSView *contentView = self.window.contentView;
   
@@ -86,6 +109,16 @@
   return accountController_;
 }
 
+- (MVCloudAppAccountController*)cloudAppAccountController
+{
+  if(!cloudAppAccountController_)
+  {
+    cloudAppAccountController_ = [[MVCloudAppAccountController alloc]
+                                  initWithWindowNibName:@"CloudAppAccount"];
+  }
+  return cloudAppAccountController_;
+}
+
 #pragma mark Menu Actions
 
 - (IBAction)newTab:(id)sender
@@ -111,6 +144,7 @@
 - (IBAction)openPreferences:(id)sender
 {
   [self.accountController showWindow:self];
+  [self.cloudAppAccountController showWindow:self];
 }
 
 @end

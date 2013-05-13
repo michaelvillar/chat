@@ -24,6 +24,7 @@
 @property (readonly, getter = isFinished) BOOL finished;
 @property (readonly, getter = isError) BOOL error;
 @property (strong, readonly) NSURL *remoteURL;
+@property (strong, readonly) NSURL *remoteURLForAsset;
 @property (weak, readwrite) NSObject <MVFileUploadDelegate> *delegate;
 
 - (id)initWithKey:(NSString*)key

@@ -263,6 +263,11 @@
 		4C7DFF90173890F00048F8DA /* MVBuddyListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */; };
 		4C7DFF93173B316C0048F8DA /* MVSwipeableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF92173B316C0048F8DA /* MVSwipeableView.m */; };
 		4C7DFF96173B34020048F8DA /* MVNSContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7DFF95173B34020048F8DA /* MVNSContentView.m */; };
+		4CCFEBDD17404B930054ABC2 /* libCloud.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCFEBDC17404B930054ABC2 /* libCloud.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		4CCFEBE9174050AC0054ABC2 /* MVCloudAppFileUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBE8174050AC0054ABC2 /* MVCloudAppFileUpload.m */; };
+		4CCFEBFA17405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */; };
+		4CCFEBFD17406CF90054ABC2 /* MVCloudAppAccountController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */; };
+		4CCFEBFF17406E610054ABC2 /* CloudAppAccount.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -724,6 +729,22 @@
 		4C7DFF94173B34020048F8DA /* MVNSContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVNSContentView.h; sourceTree = "<group>"; };
 		4C7DFF95173B34020048F8DA /* MVNSContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVNSContentView.m; sourceTree = "<group>"; };
 		4CCB3C6F173C6EA3004F98D1 /* MVController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MVController.h; sourceTree = "<group>"; };
+		4CCFEBDC17404B930054ABC2 /* libCloud.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCloud.a; sourceTree = "<group>"; };
+		4CCFEBE017404BA90054ABC2 /* CLAPIEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAPIEngine.h; sourceTree = "<group>"; };
+		4CCFEBE117404BA90054ABC2 /* CLAPIEngineConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAPIEngineConstants.h; sourceTree = "<group>"; };
+		4CCFEBE217404BA90054ABC2 /* CLAPIEngineDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAPIEngineDelegate.h; sourceTree = "<group>"; };
+		4CCFEBE317404BA90054ABC2 /* CLAPITransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAPITransaction.h; sourceTree = "<group>"; };
+		4CCFEBE417404BA90054ABC2 /* CLAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLAccount.h; sourceTree = "<group>"; };
+		4CCFEBE517404BA90054ABC2 /* CLWebItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLWebItem.h; sourceTree = "<group>"; };
+		4CCFEBE617404BB30054ABC2 /* Cloud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cloud.h; sourceTree = "<group>"; };
+		4CCFEBE7174050AC0054ABC2 /* MVCloudAppFileUpload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCloudAppFileUpload.h; sourceTree = "<group>"; };
+		4CCFEBE8174050AC0054ABC2 /* MVCloudAppFileUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVCloudAppFileUpload.m; sourceTree = "<group>"; };
+		4CCFEBF7174058C40054ABC2 /* MVFileUpload_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVFileUpload_Private.h; sourceTree = "<group>"; };
+		4CCFEBF817405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPasteboard+EnumerateKeysAndDatas.h"; sourceTree = "<group>"; };
+		4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPasteboard+EnumerateKeysAndDatas.m"; sourceTree = "<group>"; };
+		4CCFEBFB17406CF90054ABC2 /* MVCloudAppAccountController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCloudAppAccountController.h; sourceTree = "<group>"; };
+		4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVCloudAppAccountController.m; sourceTree = "<group>"; };
+		4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CloudAppAccount.xib; path = Chat/CloudAppAccount.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -740,6 +761,7 @@
 				4C1EFF5B1730C65C005BDA73 /* Cocoa.framework in Frameworks */,
 				4C1EFF781730C693005BDA73 /* TwUI.framework in Frameworks */,
 				4C1E01981730D80F005BDA73 /* libidn.a in Frameworks */,
+				4CCFEBDD17404B930054ABC2 /* libCloud.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -771,6 +793,8 @@
 				4C1E01B51730F341005BDA73 /* NSString+QueryParsing.m */,
 				4C1E01B61730F341005BDA73 /* NSString+UUID.h */,
 				4C1E01B71730F342005BDA73 /* NSString+UUID.m */,
+				4CCFEBF817405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.h */,
+				4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1477,6 +1501,7 @@
 			children = (
 				4C1EFF6F1730C65C005BDA73 /* MainMenu.xib */,
 				4C1E01E31732445E005BDA73 /* Account.xib */,
+				4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */,
 			);
 			name = XIBs;
 			sourceTree = "<group>";
@@ -1484,8 +1509,8 @@
 		4C1E01EA17324960005BDA73 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				4C1E01EB1732496A005BDA73 /* EMKeychainItem.h */,
-				4C1E01EC1732496A005BDA73 /* EMKeychainItem.m */,
+				4CCFEBDF17404BA00054ABC2 /* CloudApp */,
+				4CCFEBDE17404B980054ABC2 /* KeychainItem */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -1544,7 +1569,7 @@
 				4C1E00091730CE31005BDA73 /* Helpers */,
 				4C1EFFC51730CDD7005BDA73 /* URLKit */,
 				4C1EFF7C1730C7F2005BDA73 /* UI */,
-				4C1EFF601730C65C005BDA73 /* Chat */,
+				4C1EFF601730C65C005BDA73 /* Controllers */,
 				4C1EFF611730C65C005BDA73 /* Supporting Files */,
 				4C1EFF591730C65C005BDA73 /* Frameworks */,
 				4C1EFF581730C65C005BDA73 /* Products */,
@@ -1562,6 +1587,7 @@
 		4C1EFF591730C65C005BDA73 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4CCFEBDC17404B930054ABC2 /* libCloud.a */,
 				4C1E01A91730D91D005BDA73 /* CoreLocation.framework */,
 				4C1E01A71730D90D005BDA73 /* Security.framework */,
 				4C1E01A51730D905005BDA73 /* SystemConfiguration.framework */,
@@ -1585,7 +1611,7 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		4C1EFF601730C65C005BDA73 /* Chat */ = {
+		4C1EFF601730C65C005BDA73 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				4C1E01E81732485B005BDA73 /* MVConstants.h */,
@@ -1604,9 +1630,12 @@
 				4C1E01DD17320809005BDA73 /* MVvCardFileDiskModuleStorage.m */,
 				4C1E01E517324589005BDA73 /* MVAccountController.h */,
 				4C1E01E617324589005BDA73 /* MVAccountController.m */,
+				4CCFEBFB17406CF90054ABC2 /* MVCloudAppAccountController.h */,
+				4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */,
 				4C1E01EE17324A7C005BDA73 /* MVConnectionManager.h */,
 				4C1E01EF17324A7D005BDA73 /* MVConnectionManager.m */,
 			);
+			name = Controllers;
 			path = Chat;
 			sourceTree = "<group>";
 		};
@@ -1688,6 +1717,9 @@
 				4C1EFFD31730CE10005BDA73 /* MVFileDownload.m */,
 				4C1EFFD41730CE10005BDA73 /* MVFileUpload.h */,
 				4C1EFFD51730CE10005BDA73 /* MVFileUpload.m */,
+				4CCFEBF7174058C40054ABC2 /* MVFileUpload_Private.h */,
+				4CCFEBE7174050AC0054ABC2 /* MVCloudAppFileUpload.h */,
+				4CCFEBE8174050AC0054ABC2 /* MVCloudAppFileUpload.m */,
 				4C1EFFD61730CE10005BDA73 /* MVFileUploadManager_Private.h */,
 				4C1EFFD71730CE10005BDA73 /* MVFileUploadManager.h */,
 				4C1EFFD81730CE10005BDA73 /* MVFileUploadManager.m */,
@@ -1716,6 +1748,29 @@
 				4C1EFFF31730CE10005BDA73 /* MVYoutubeVideoService.m */,
 			);
 			name = URLKit;
+			sourceTree = "<group>";
+		};
+		4CCFEBDE17404B980054ABC2 /* KeychainItem */ = {
+			isa = PBXGroup;
+			children = (
+				4C1E01EB1732496A005BDA73 /* EMKeychainItem.h */,
+				4C1E01EC1732496A005BDA73 /* EMKeychainItem.m */,
+			);
+			name = KeychainItem;
+			sourceTree = "<group>";
+		};
+		4CCFEBDF17404BA00054ABC2 /* CloudApp */ = {
+			isa = PBXGroup;
+			children = (
+				4CCFEBE617404BB30054ABC2 /* Cloud.h */,
+				4CCFEBE017404BA90054ABC2 /* CLAPIEngine.h */,
+				4CCFEBE117404BA90054ABC2 /* CLAPIEngineConstants.h */,
+				4CCFEBE217404BA90054ABC2 /* CLAPIEngineDelegate.h */,
+				4CCFEBE317404BA90054ABC2 /* CLAPITransaction.h */,
+				4CCFEBE417404BA90054ABC2 /* CLAccount.h */,
+				4CCFEBE517404BA90054ABC2 /* CLWebItem.h */,
+			);
+			name = CloudApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1851,6 +1906,7 @@
 				4C7DFF83173826E20048F8DA /* icon_activity_menubar@2x.png in Resources */,
 				4C7DFF8B173884210048F8DA /* icon_online@2x.png in Resources */,
 				4C7DFF8D1738842A0048F8DA /* icon_online.png in Resources */,
+				4CCFEBFF17406E610054ABC2 /* CloudAppAccount.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2026,6 +2082,9 @@
 				4C7DFF90173890F00048F8DA /* MVBuddyListView.m in Sources */,
 				4C7DFF93173B316C0048F8DA /* MVSwipeableView.m in Sources */,
 				4C7DFF96173B34020048F8DA /* MVNSContentView.m in Sources */,
+				4CCFEBE9174050AC0054ABC2 /* MVCloudAppFileUpload.m in Sources */,
+				4CCFEBFA17405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m in Sources */,
+				4CCFEBFD17406CF90054ABC2 /* MVCloudAppAccountController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2140,6 +2199,7 @@
 					"\"$(SRCROOT)\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2164,6 +2224,7 @@
 					"\"$(SRCROOT)\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

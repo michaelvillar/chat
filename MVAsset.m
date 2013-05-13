@@ -128,6 +128,13 @@
   return self;
 }
 
+- (NSURL*)fileUploadRemoteURL
+{
+  if(self.fileUpload)
+    return self.fileUpload.remoteURL;
+  return nil;
+}
+
 #pragma mark -
 #pragma mark KVO
 
@@ -155,7 +162,7 @@
         NSURL *currentLocalURL = myAsset.localURL;
 
         [myAsset willChangeValueForKey:@"localURL"];
-        myAsset.remoteURL = myAsset.fileUpload.remoteURL;
+        myAsset.remoteURL = myAsset.fileUpload.remoteURLForAsset;
         [myAsset didChangeValueForKey:@"localURL"];
 
         if(![currentLocalURL isEqual:self.localURL])

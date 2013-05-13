@@ -1,6 +1,7 @@
 #import "MVFileUploadManager.h"
 #import "MVUploadAuthorization.h"
 #import "MVFileUpload.h"
+#import "MVCloudAppFileUpload.h"
 #import "MVAsset.h"
 #import "MVAsset_Private.h"
 #import "MVAssetsManager.h"
@@ -50,11 +51,15 @@
 - (MVAsset*)uploadFileWithKey:(NSString*)key
                           data:(NSData*)data
 {
-  NSString *uniqueID = [NSString mv_generateUUID];
-  NSString *fullKey = [NSString stringWithFormat:@"%@%@/%@",
-                       self.uploadAuthorization.startsWith,
-                       uniqueID,
-                       key];
+  NSString *fullKey = key;
+  if([self.uploadAuthorization.service isEqualToString:kMVUploadAuthorizationServiceS3])
+  {
+    NSString *uniqueID = [NSString mv_generateUUID];
+    fullKey = [NSString stringWithFormat:@"%@%@/%@",
+               self.uploadAuthorization.startsWith,
+               uniqueID,
+               key];
+  }
   return [self uploadFileWithFullKey:fullKey data:data];
 }
 
@@ -119,11 +124,31 @@
 
 - (MVAsset*)uploadFileWithFullKey:(NSString *)fullKey data:(NSData *)data
 {
-  NSString *remoteURLString = [NSString stringWithFormat:@"%@%@",
-                               self.uploadAuthorization.uploadURL,
-                               fullKey];
-  remoteURLString =
-  [remoteURLString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+  NSString *remoteURLString;
+  MVFileUpload *fileUpload;
+  
+  if([self.uploadAuthorization.service isEqualToString:kMVUploadAuthorizationServiceS3])
+  {
+    remoteURLString = [NSString stringWithFormat:@"%@%@",
+                       self.uploadAuthorization.uploadURL,
+                       fullKey];
+    fileUpload = [[MVFileUpload alloc] initWithKey:fullKey
+                                              data:data
+                                    operationQueue:self.operationQueue
+                               uploadAuthorization:self.uploadAuthorization];
+  }
+  else
+  {
+    remoteURLString = [NSString stringWithFormat:@"cloudapp://example.com/%u/%@",
+                       arc4random(),
+                       fullKey];
+    fileUpload = [[MVCloudAppFileUpload alloc] initWithKey:fullKey
+                                                      data:data
+                                            operationQueue:self.operationQueue
+                                       uploadAuthorization:self.uploadAuthorization];
+  }
+  remoteURLString = [remoteURLString stringByAddingPercentEscapesUsingEncoding:
+                     NSUTF8StringEncoding];
   NSURL *remoteURL = [NSURL URLWithString:remoteURLString];
   MVAsset *asset = [[MVAsset alloc] initWithRemoteURL:remoteURL
                                           assetsManager:self.assetsManager];
@@ -137,10 +162,6 @@
                                error:nil];
   [data writeToURL:localURL atomically:YES];
 
-  MVFileUpload *fileUpload = [[MVFileUpload alloc] initWithKey:fullKey
-                                                            data:data
-                                                  operationQueue:self.operationQueue
-                                             uploadAuthorization:self.uploadAuthorization];
   asset.fileUpload = fileUpload;
   fileUpload.delegate = self;
   [self.fileUploads addObject:fileUpload];

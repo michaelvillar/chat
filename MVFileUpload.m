@@ -1,20 +1,10 @@
 #import "MVFileUpload.h"
 #import "MVUploadAuthorization.h"
+#import "MVFileUpload_Private.h"
 
 #define kMVFileUploadSuccessStatusCode 200
 
 @interface MVFileUpload ()
-
-@property (strong, readwrite) NSString *key;
-@property (strong, readwrite) NSData *data;
-@property (strong, readwrite) NSOperationQueue *operationQueue;
-@property (readwrite) float uploadPercentage;
-@property (readwrite, getter = isfinished) BOOL finished;
-@property (readwrite, getter = isError) BOOL error;
-@property (strong, readwrite) NSURL *remoteURL;
-@property (strong, readwrite) NSURLConnection *urlConnection;
-@property (strong, readwrite) NSMutableData *mutableData;
-@property (readwrite) NSInteger statusCode;
 
 - (void)addValue:(NSString*)value
           forKey:(NSString*)aKey
@@ -36,6 +26,7 @@
             finished                    = finished_,
             error                       = error_,
             remoteURL                   = remoteURL_,
+            remoteURLForAsset           = remoteURLForAsset_,
             delegate                    = delegate_;
 
 - (id)initWithKey:(NSString*)key
@@ -57,6 +48,7 @@ uploadAuthorization:(MVUploadAuthorization*)uploadAuthorization
     finished_ = NO;
     error_ = NO;
     remoteURL_ = nil;
+    remoteURLForAsset_ = nil;
     delegate_ = nil;
   }
   return self;
@@ -222,7 +214,7 @@ totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 	if(self.statusCode == kMVFileUploadSuccessStatusCode && !error)
   {
     NSString *hrefString = [json valueForKey:@"href"];
-    self.remoteURL = [NSURL URLWithString:hrefString];
+    self.remoteURLForAsset = self.remoteURL = [NSURL URLWithString:hrefString];
 
     if(self.uploadPercentage != 100)
     {

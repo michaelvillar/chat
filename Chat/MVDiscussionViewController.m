@@ -3,6 +3,7 @@
 #import "MVDiscussionMessageItem.h"
 #import "NSMutableAttributedString+LinksDetection.h"
 #import "MVURLKit.h"
+#import "MVCloudAppLinkService.h"
 
 #define kMVChatConversationDateDisplayInterval 900
 
@@ -117,6 +118,58 @@
   [self.discussionView layoutSubviews:YES];
 }
 
+- (void)addMessage:(XMPPMessage *)message
+             asset:(MVAsset *)asset
+              data:(NSData *)data
+{
+  MVDiscussionMessageItem *messageItem = [[MVDiscussionMessageItem alloc] init];
+  messageItem.name = message.from.full;
+  messageItem.own = ![message.from isEqualToJID:self.jid options:XMPPJIDCompareBare];
+  messageItem.senderRepresentedObject = message.from;
+  messageItem.representedObject = message;
+  
+  XMPPvCardAvatarModule *module = (XMPPvCardAvatarModule*)[self.xmppStream moduleOfClass:
+                                                           [XMPPvCardAvatarModule class]];
+  if(module)
+  {
+    NSData *photoData = [module photoDataForJID:message.from];
+    if(photoData)
+    {
+      messageItem.avatar = [TUIImage imageWithData:photoData];
+    }
+  }
+  CFStringRef fileExtension = (__bridge CFStringRef)(asset.localURL.pathExtension);
+  CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
+                                                              fileExtension,
+                                                              NULL);
+  if(UTTypeConformsTo(fileUTI, kUTTypeJPEG) ||
+     UTTypeConformsTo(fileUTI, kUTTypeJPEG2000) ||
+     UTTypeConformsTo(fileUTI, kUTTypeTIFF) ||
+     UTTypeConformsTo(fileUTI, kUTTypePICT) ||
+     UTTypeConformsTo(fileUTI, kUTTypeGIF) ||
+     UTTypeConformsTo(fileUTI, kUTTypePNG) ||
+     UTTypeConformsTo(fileUTI, kUTTypeAppleICNS) ||
+     UTTypeConformsTo(fileUTI, kUTTypeBMP) ||
+     UTTypeConformsTo(fileUTI, kUTTypeICO))
+    messageItem.type = kMVDiscussionMessageTypeRemoteImage;
+  else
+  {
+    messageItem.type = kMVDiscussionMessageTypeRemoteFile;
+    messageItem.attributedMessage = [[NSAttributedString alloc]
+                                     initWithString:asset.localURL.lastPathComponent];
+  }
+  messageItem.asset = asset;
+  messageItem.service = [[MVCloudAppLinkService alloc] init];
+  [messageItem bind:@"url" toObject:messageItem
+        withKeyPath:@"asset.fileUpload.remoteURL" options:0];
+  
+  [self.discussionView scrollToBottomAnimated:NO];
+  [self addDateMessageItemIfNeeded:[NSDate date]
+                          animated:YES
+                            before:NO];
+  [self.discussionView addDiscussionItem:messageItem];
+  [self.discussionView layoutSubviews:YES];
+}
 
 #pragma mark -
 #pragma mark Private Methods

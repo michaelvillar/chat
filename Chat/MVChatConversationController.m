@@ -7,6 +7,7 @@
 #import "MVDiscussionMessageItem.h"
 #import "MVDiscussionViewController.h"
 #import "MVChatSectionView.h"
+#import "NSPasteboard+EnumerateKeysAndDatas.h"
 
 #define kMVChatConversationDateDisplayInterval 900
 #define kMVComposingMaxDuration 30
@@ -24,6 +25,7 @@
 @property (strong, readwrite) NSTimer *composingTimer;
 @property (strong, readwrite) TUIView *view;
 @property (strong, readwrite) NSMutableOrderedSet *unreadMessages;
+@property (strong, readwrite) NSMutableSet *uploadingMessages;
 
 - (void)sendComposingMessage:(BOOL)composing;
 - (void)removeWriteItemForJid:(XMPPJID*)jid;
@@ -45,6 +47,7 @@
             composingTimer            = composingTimer_,
             view                      = view_,
             unreadMessages            = unreadMessages_,
+            uploadingMessages         = uploadingMessages_,
             identifier                = identifier_;
 
 - (id)init
@@ -58,6 +61,7 @@
     composing_ = NO;
     composingTimer_ = nil;
     unreadMessages_ = [NSMutableOrderedSet orderedSet];
+    uploadingMessages_ = [NSMutableSet set];
     identifier_ = nil;
   }
   return self;
@@ -140,13 +144,12 @@ animatedFromTextView:(BOOL)animatedFromTextView
   
   if(string.length > kMVMessageMaxChars)
   {
-//    [self sendFileWithKey:@"message.txt"
-//                     data:[string dataUsingEncoding:NSUTF8StringEncoding]];
+    [self sendFileWithKey:@"message.txt"
+                     data:[string dataUsingEncoding:NSUTF8StringEncoding]];
     return;
   }
   
-  XMPPMessage *message = [XMPPMessage elementWithName:@"message"];
-	[message addAttributeWithName:@"type" stringValue:@"chat"];
+  XMPPMessage *message = [XMPPMessage messageWithType:@"chat"];
 	[message addAttributeWithName:@"to" stringValue:self.jid.full];
   [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
   
@@ -169,6 +172,80 @@ animatedFromTextView:(BOOL)animatedFromTextView
     [self.unreadMessages removeAllObjects];
     [self didChangeValueForKey:@"unreadMessagesCount"];
   }
+}
+
+- (void)sendFileWithKey:(NSString*)key
+                   data:(NSData*)data
+{
+  // TODO : upload files sequentially to keep message order intact
+  MVURLKit *urlKit = [MVURLKit sharedInstance];
+  MVAsset *asset = [urlKit uploadFileWithKey:key data:data];
+  [asset addObserver:self
+          forKeyPath:@"uploadFinished"
+             options:0
+             context:NULL];
+  
+  XMPPMessage *message = [XMPPMessage messageWithType:@"chat"];
+	[message addAttributeWithName:@"to" stringValue:self.jid.full];
+  [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
+  
+  NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
+  [body setStringValue:@""];
+  [message addChild:body];
+	  
+  [self.uploadingMessages addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                     message, @"message",
+                                     body, @"body",
+                                     asset, @"asset", nil]];
+  
+  [self.discussionViewController addMessage:message
+                                      asset:asset
+                                       data:data];
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+  if([object isKindOfClass:[MVAsset class]])
+  {
+    MVAsset *asset = (MVAsset*)object;
+    if([keyPath isEqualToString:@"uploadFinished"])
+    {
+      if(asset.uploadFinished)
+      {
+        BOOL found = NO;
+        NSDictionary *dic;
+        for(dic in self.uploadingMessages)
+        {
+          if([dic objectForKey:@"asset"] == asset)
+          {
+            found = YES;
+            break;
+          }
+        }
+        
+        if(found)
+        {
+          [asset removeObserver:self forKeyPath:@"uploadFinished"];
+
+          XMPPMessage *message = [dic objectForKey:@"message"];
+          NSXMLElement *body = [dic objectForKey:@"body"];
+          
+          [body setStringValue:asset.fileUploadRemoteURL.absoluteString];
+          
+          [self.xmppStream sendElement:message];
+          
+          [self.uploadingMessages removeObject:dic];
+        }
+      }
+    }
+  }
+  else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 #pragma mark Window Notifications
@@ -351,6 +428,36 @@ animatedFromTextView:(BOOL)animatedFromTextView
                                 discussionView:(MVDiscussionView*)discussionView
 {
   [self updateUnreadMessages];
+}
+
+- (BOOL)chatSectionView:(MVChatSectionView*)chatSectionView
+        pastePasteboard:(NSPasteboard*)pasteboard
+{
+  if([pasteboard mv_hasDetectedFile])
+  {
+    if(chatSectionView.textView.text.length > 0)
+    {
+      [self sendMessage:chatSectionView.textView.text animatedFromTextView:NO];
+      chatSectionView.textView.text = @"";
+    }
+    
+    __block BOOL found = NO;
+    [pasteboard mv_enumerateKeysAndDatas:^(NSString *key, NSData *data)
+     {
+       found = YES;
+       dispatch_async(dispatch_get_main_queue(), ^{
+         [self sendFileWithKey:key data:data];
+       });
+     }];
+    return found;
+  }
+  return NO;
+}
+
+- (BOOL)chatSectionView:(MVChatSectionView*)chatSectionView
+         dropPasteboard:(NSPasteboard*)pasteboard
+{
+  return [self chatSectionView:chatSectionView pastePasteboard:pasteboard];
 }
 
 @end

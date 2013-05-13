@@ -16,5 +16,8 @@
 - (void)addMessage:(XMPPMessage*)message
           animated:(BOOL)animated;
 - (void)addMessage:(XMPPMessage*)message animatedFromTextView:(MVRoundedTextView*)textView;
+- (void)addMessage:(XMPPMessage *)message
+             asset:(MVAsset *)asset
+              data:(NSData *)data;
 
 @end

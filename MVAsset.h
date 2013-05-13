@@ -12,6 +12,7 @@
 @property (readonly) BOOL uploadFinished;
 @property (readonly, nonatomic) BOOL error;
 @property (strong, readwrite, nonatomic) MVAsset *originalAsset;
+@property (strong, readonly, nonatomic) NSURL *fileUploadRemoteURL;
 
 - (id)initWithRemoteURL:(NSURL*)remoteURL
           assetsManager:(MVAssetsManager*)assetsManager;
