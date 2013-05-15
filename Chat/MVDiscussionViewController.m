@@ -255,6 +255,9 @@
       }
     }
     
+    if(!messageItem.avatar)
+      messageItem.avatar = [TUIImage imageNamed:@"placeholder_avatar.png" cache:YES];
+    
     if(parsedMessage.service)
     {
       if([parsedMessage.service isKindOfClass:[MVImageService class]])

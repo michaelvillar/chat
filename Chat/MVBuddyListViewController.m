@@ -164,7 +164,7 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
   }
   else
   {
-    cell.avatar = nil;
+    cell.avatar = [TUIImage imageNamed:@"placeholder_avatar.png" cache:YES];
   }
   [cell setNeedsDisplay];
 	return cell;
