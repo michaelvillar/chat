@@ -57,11 +57,10 @@
     }
     else if(type == NSFilenamesPboardType)
     {
-      NSString* errorDescription;
-      NSArray *originalFiles = [NSPropertyListSerialization propertyListFromData:data
-                                                                mutabilityOption:kCFPropertyListImmutable
+      NSArray *originalFiles = [NSPropertyListSerialization propertyListWithData:data
+                                                                         options:NSPropertyListImmutable
                                                                           format:nil
-                                                                errorDescription:&errorDescription];
+                                                                           error:nil];
       
       NSString *file;
       for(file in originalFiles) 
