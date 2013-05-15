@@ -772,38 +772,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4C1E00091730CE31005BDA73 /* Helpers */ = {
+		4C1E00091730CE31005BDA73 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				4C1E000A1730CE55005BDA73 /* NSMutableAttributedString+Trimming.h */,
-				4C1E000B1730CE55005BDA73 /* NSMutableAttributedString+Trimming.m */,
-				4C1EFF891730C879005BDA73 /* NSObject+PerformBlockAfterDelay.h */,
-				4C1EFF8A1730C879005BDA73 /* NSObject+PerformBlockAfterDelay.m */,
-				4C1EFFAF1730CCE0005BDA73 /* NSMutableAttributedString+LinksDetection.h */,
-				4C1EFFB01730CCE0005BDA73 /* NSMutableAttributedString+LinksDetection.m */,
-				4C1EFFC01730CD3E005BDA73 /* NSEvent+CharacterDetection.h */,
-				4C1EFFC11730CD3E005BDA73 /* NSEvent+CharacterDetection.m */,
-				4C1EFFBE1730CD2B005BDA73 /* NSBezierPath+CGPath.h */,
-				4C1EFFBF1730CD2B005BDA73 /* NSBezierPath+CGPath.m */,
-				4C1EFFB51730CD04005BDA73 /* TUIImage+ProportionalResize.h */,
-				4C1EFFB61730CD04005BDA73 /* TUIImage+ProportionalResize.m */,
-				4C1EFFB71730CD05005BDA73 /* TUIImage+LocalURLCaching.h */,
-				4C1EFFB81730CD05005BDA73 /* TUIImage+LocalURLCaching.m */,
-				4C1E01AE1730F318005BDA73 /* NSString+HTMLEntities.h */,
-				4C1E01AF1730F318005BDA73 /* NSString+HTMLEntities.m */,
-				4C1E01B11730F330005BDA73 /* NSString+Digest.h */,
-				4C1E01B21730F330005BDA73 /* NSString+Digest.m */,
-				4C1E01B41730F341005BDA73 /* NSString+QueryParsing.h */,
-				4C1E01B51730F341005BDA73 /* NSString+QueryParsing.m */,
-				4C1E01B61730F341005BDA73 /* NSString+UUID.h */,
-				4C1E01B71730F342005BDA73 /* NSString+UUID.m */,
-				4CCFEBF817405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.h */,
-				4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */,
+				4C55DEFF1743421E0002DE67 /* TwUI */,
+				4C55DEFE1743420A0002DE67 /* Cocoa */,
 			);
-			name = Helpers;
+			name = Categories;
 			sourceTree = "<group>";
 		};
-		4C1E00111730D7FF005BDA73 /* XMPP */ = {
+		4C1E00111730D7FF005BDA73 /* XMPPFramework */ = {
 			isa = PBXGroup;
 			children = (
 				4C1E019A1730D81D005BDA73 /* XMPPFramework.h */,
@@ -814,7 +792,7 @@
 				4C1E00F61730D80F005BDA73 /* Utilities */,
 				4C1E01031730D80F005BDA73 /* Vendor */,
 			);
-			name = XMPP;
+			name = XMPPFramework;
 			sourceTree = "<group>";
 		};
 		4C1E00121730D80E005BDA73 /* Authentication */ = {
@@ -1514,6 +1492,7 @@
 		4C1E01EA17324960005BDA73 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				4C1E00111730D7FF005BDA73 /* XMPPFramework */,
 				4CCFEBDF17404BA00054ABC2 /* CloudApp */,
 				4CCFEBDE17404B980054ABC2 /* KeychainItem */,
 			);
@@ -1568,14 +1547,13 @@
 		4C1EFF4E1730C65C005BDA73 = {
 			isa = PBXGroup;
 			children = (
-				4C1E01EA17324960005BDA73 /* Vendor */,
+				4C1EFF601730C65C005BDA73 /* Controllers */,
+				4C1EFF7C1730C7F2005BDA73 /* Views */,
+				4C1EFFC51730CDD7005BDA73 /* URLKit */,
+				4C1E00091730CE31005BDA73 /* Categories */,
 				4C1E01E917324954005BDA73 /* XIBs */,
 				4C1E01BA1731FE5A005BDA73 /* Images */,
-				4C1E00111730D7FF005BDA73 /* XMPP */,
-				4C1E00091730CE31005BDA73 /* Helpers */,
-				4C1EFFC51730CDD7005BDA73 /* URLKit */,
-				4C1EFF7C1730C7F2005BDA73 /* UI */,
-				4C1EFF601730C65C005BDA73 /* Controllers */,
+				4C1E01EA17324960005BDA73 /* Vendor */,
 				4C1EFF611730C65C005BDA73 /* Supporting Files */,
 				4C1EFF591730C65C005BDA73 /* Frameworks */,
 				4C1EFF581730C65C005BDA73 /* Products */,
@@ -1621,25 +1599,13 @@
 			isa = PBXGroup;
 			children = (
 				4C1E01E81732485B005BDA73 /* MVConstants.h */,
+				4CCB3C6F173C6EA3004F98D1 /* MVController.h */,
 				4C1EFF6C1730C65C005BDA73 /* MVAppDelegate.h */,
 				4C1EFF6D1730C65C005BDA73 /* MVAppDelegate.m */,
-				4CCB3C6F173C6EA3004F98D1 /* MVController.h */,
-				4C1EFF941730C970005BDA73 /* MVChatViewController.h */,
-				4C1EFF951730C970005BDA73 /* MVChatViewController.m */,
-				4C1E000D1730CF0B005BDA73 /* MVChatConversationController.h */,
-				4C1E000E1730CF0B005BDA73 /* MVChatConversationController.m */,
-				4C7DFF84173828FD0048F8DA /* MVBuddyListViewController.h */,
-				4C7DFF85173828FD0048F8DA /* MVBuddyListViewController.m */,
-				4C1E01AB1730EFEF005BDA73 /* MVDiscussionViewController.h */,
-				4C1E01AC1730EFEF005BDA73 /* MVDiscussionViewController.m */,
-				4C1E01DC17320809005BDA73 /* MVvCardFileDiskModuleStorage.h */,
-				4C1E01DD17320809005BDA73 /* MVvCardFileDiskModuleStorage.m */,
-				4C1E01E517324589005BDA73 /* MVAccountController.h */,
-				4C1E01E617324589005BDA73 /* MVAccountController.m */,
-				4CCFEBFB17406CF90054ABC2 /* MVCloudAppAccountController.h */,
-				4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */,
-				4C1E01EE17324A7C005BDA73 /* MVConnectionManager.h */,
-				4C1E01EF17324A7D005BDA73 /* MVConnectionManager.m */,
+				4C55DEEE174340BF0002DE67 /* Chat */,
+				4C55DEF0174340ED0002DE67 /* Buddy List */,
+				4C55DEEF174340D30002DE67 /* Preferences */,
+				4C55DEF1174340F90002DE67 /* Others */,
 			);
 			name = Controllers;
 			path = Chat;
@@ -1659,66 +1625,169 @@
 			path = Chat;
 			sourceTree = "<group>";
 		};
-		4C1EFF7C1730C7F2005BDA73 /* UI */ = {
+		4C1EFF7C1730C7F2005BDA73 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4C55DEF6174341460002DE67 /* Chat */,
+				4C55DEF8174341780002DE67 /* BuddyList */,
+				4C55DEF3174341290002DE67 /* Tabs */,
+				4C55DEF51743413B0002DE67 /* Controls & Views */,
+				4C55DEF4174341340002DE67 /* Bars */,
+				4C55DEF2174341220002DE67 /* Tools */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		4C1EFFC51730CDD7005BDA73 /* URLKit */ = {
+			isa = PBXGroup;
+			children = (
+				4C1EFFEE1730CE10005BDA73 /* MVURLKit.h */,
+				4C1EFFEF1730CE10005BDA73 /* MVURLKit.m */,
+				4C1EFFEC1730CE10005BDA73 /* MVUploadAuthorization.h */,
+				4C1EFFED1730CE10005BDA73 /* MVUploadAuthorization.m */,
+				4C55DEFC174341C70002DE67 /* Assets */,
+				4C55DEFA174341BE0002DE67 /* Messages */,
+				4C55DEF9174341B10002DE67 /* Files */,
+				4C55DEFD174341D40002DE67 /* Tools */,
+			);
+			name = URLKit;
+			sourceTree = "<group>";
+		};
+		4C55DEEE174340BF0002DE67 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				4C1EFF941730C970005BDA73 /* MVChatViewController.h */,
+				4C1EFF951730C970005BDA73 /* MVChatViewController.m */,
+				4C1E000D1730CF0B005BDA73 /* MVChatConversationController.h */,
+				4C1E000E1730CF0B005BDA73 /* MVChatConversationController.m */,
+				4C1E01AB1730EFEF005BDA73 /* MVDiscussionViewController.h */,
+				4C1E01AC1730EFEF005BDA73 /* MVDiscussionViewController.m */,
+			);
+			name = Chat;
+			sourceTree = "<group>";
+		};
+		4C55DEEF174340D30002DE67 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				4C1E01E517324589005BDA73 /* MVAccountController.h */,
+				4C1E01E617324589005BDA73 /* MVAccountController.m */,
+				4CCFEBFB17406CF90054ABC2 /* MVCloudAppAccountController.h */,
+				4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */,
+			);
+			name = Preferences;
+			sourceTree = "<group>";
+		};
+		4C55DEF0174340ED0002DE67 /* Buddy List */ = {
+			isa = PBXGroup;
+			children = (
+				4C7DFF84173828FD0048F8DA /* MVBuddyListViewController.h */,
+				4C7DFF85173828FD0048F8DA /* MVBuddyListViewController.m */,
+			);
+			name = "Buddy List";
+			sourceTree = "<group>";
+		};
+		4C55DEF1174340F90002DE67 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				4C1E01DC17320809005BDA73 /* MVvCardFileDiskModuleStorage.h */,
+				4C1E01DD17320809005BDA73 /* MVvCardFileDiskModuleStorage.m */,
+				4C1E01EE17324A7C005BDA73 /* MVConnectionManager.h */,
+				4C1E01EF17324A7D005BDA73 /* MVConnectionManager.m */,
+			);
+			name = Others;
+			sourceTree = "<group>";
+		};
+		4C55DEF2174341220002DE67 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
 				4C1EFF861730C868005BDA73 /* MVShadow.h */,
 				4C1EFF871730C868005BDA73 /* MVShadow.m */,
 				4C1EFF831730C855005BDA73 /* MVGraphicsFunctions.h */,
 				4C1EFF841730C855005BDA73 /* MVGraphicsFunctions.m */,
+			);
+			name = Tools;
+			sourceTree = "<group>";
+		};
+		4C55DEF3174341290002DE67 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
 				4C1EFF7D1730C7F9005BDA73 /* MVTabsView.h */,
 				4C1EFF7E1730C7F9005BDA73 /* MVTabsView.m */,
 				4C1EFF7F1730C7F9005BDA73 /* MVTabView.h */,
 				4C1EFF801730C7F9005BDA73 /* MVTabView.m */,
+			);
+			name = Tabs;
+			sourceTree = "<group>";
+		};
+		4C55DEF4174341340002DE67 /* Bars */ = {
+			isa = PBXGroup;
+			children = (
 				4C1EFF8C1730C889005BDA73 /* MVTopBarView.h */,
 				4C1EFF8D1730C889005BDA73 /* MVTopBarView.m */,
 				4C1EFF911730C910005BDA73 /* MVBottomBarView.h */,
 				4C1EFF921730C910005BDA73 /* MVBottomBarView.m */,
+			);
+			name = Bars;
+			sourceTree = "<group>";
+		};
+		4C55DEF51743413B0002DE67 /* Controls & Views */ = {
+			isa = PBXGroup;
+			children = (
 				4C1EFF9A1730CADC005BDA73 /* MVRoundedTextView.h */,
 				4C1EFF9B1730CADC005BDA73 /* MVRoundedTextView.m */,
-				4C1EFF9D1730CC5F005BDA73 /* MVChatSectionView.h */,
-				4C1EFF9E1730CC5F005BDA73 /* MVChatSectionView.m */,
-				4C1EFF9F1730CC5F005BDA73 /* MVChatBlankslateView.h */,
-				4C1EFFA01730CC5F005BDA73 /* MVChatBlankslateView.m */,
-				4C1EFFA31730CCC5005BDA73 /* MVDiscussionView.h */,
-				4C1EFFA41730CCC5005BDA73 /* MVDiscussionView.m */,
-				4C1EFFA51730CCC5005BDA73 /* MVDiscussionMessageItem.h */,
-				4C1EFFA61730CCC5005BDA73 /* MVDiscussionMessageItem.m */,
-				4C1EFFA71730CCC5005BDA73 /* MVDiscussionMessageView.h */,
-				4C1EFFA81730CCC5005BDA73 /* MVDiscussionMessageView.m */,
 				4C1EFFA91730CCC5005BDA73 /* MVCircleLoaderView.h */,
 				4C1EFFAA1730CCC5005BDA73 /* MVCircleLoaderView.m */,
 				4C1EFFB21730CCEC005BDA73 /* MVActivityIndicatorView.h */,
 				4C1EFFB31730CCEC005BDA73 /* MVActivityIndicatorView.m */,
 				4C1EFFBB1730CD1C005BDA73 /* MVAnimatedGIFView.h */,
 				4C1EFFBC1730CD1C005BDA73 /* MVAnimatedGIFView.m */,
-				4C7DFF87173834CF0048F8DA /* MVBuddyViewCell.h */,
-				4C7DFF88173834CF0048F8DA /* MVBuddyViewCell.m */,
-				4C7DFF8E173890F00048F8DA /* MVBuddyListView.h */,
-				4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */,
 				4C7DFF91173B316C0048F8DA /* MVSwipeableView.h */,
 				4C7DFF92173B316C0048F8DA /* MVSwipeableView.m */,
 				4C7DFF94173B34020048F8DA /* MVNSContentView.h */,
 				4C7DFF95173B34020048F8DA /* MVNSContentView.m */,
 			);
-			name = UI;
+			name = "Controls & Views";
 			sourceTree = "<group>";
 		};
-		4C1EFFC51730CDD7005BDA73 /* URLKit */ = {
+		4C55DEF6174341460002DE67 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
-				4C1EFFC61730CE10005BDA73 /* MVAsset_Private.h */,
-				4C1EFFC71730CE10005BDA73 /* MVAsset.h */,
-				4C1EFFC81730CE10005BDA73 /* MVAsset.m */,
-				4C1EFFC91730CE10005BDA73 /* MVAssetsManager_Private.h */,
-				4C1EFFCA1730CE10005BDA73 /* MVAssetsManager.h */,
-				4C1EFFCB1730CE10005BDA73 /* MVAssetsManager.m */,
-				4C1EFFCC1730CE10005BDA73 /* MVCloudAppLinkService.h */,
-				4C1EFFCD1730CE10005BDA73 /* MVCloudAppLinkService.m */,
-				4C1EFFCE1730CE10005BDA73 /* MVDribbbleShotService.h */,
-				4C1EFFCF1730CE10005BDA73 /* MVDribbbleShotService.m */,
-				4C1EFFD01730CE10005BDA73 /* MVDroplrLinkService.h */,
-				4C1EFFD11730CE10005BDA73 /* MVDroplrLinkService.m */,
+				4C1EFF9D1730CC5F005BDA73 /* MVChatSectionView.h */,
+				4C1EFF9E1730CC5F005BDA73 /* MVChatSectionView.m */,
+				4C1EFF9F1730CC5F005BDA73 /* MVChatBlankslateView.h */,
+				4C1EFFA01730CC5F005BDA73 /* MVChatBlankslateView.m */,
+				4C55DEF71743415F0002DE67 /* DiscussionView */,
+			);
+			name = Chat;
+			sourceTree = "<group>";
+		};
+		4C55DEF71743415F0002DE67 /* DiscussionView */ = {
+			isa = PBXGroup;
+			children = (
+				4C1EFFA31730CCC5005BDA73 /* MVDiscussionView.h */,
+				4C1EFFA41730CCC5005BDA73 /* MVDiscussionView.m */,
+				4C1EFFA51730CCC5005BDA73 /* MVDiscussionMessageItem.h */,
+				4C1EFFA61730CCC5005BDA73 /* MVDiscussionMessageItem.m */,
+				4C1EFFA71730CCC5005BDA73 /* MVDiscussionMessageView.h */,
+				4C1EFFA81730CCC5005BDA73 /* MVDiscussionMessageView.m */,
+			);
+			name = DiscussionView;
+			sourceTree = "<group>";
+		};
+		4C55DEF8174341780002DE67 /* BuddyList */ = {
+			isa = PBXGroup;
+			children = (
+				4C7DFF8E173890F00048F8DA /* MVBuddyListView.h */,
+				4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */,
+				4C7DFF87173834CF0048F8DA /* MVBuddyViewCell.h */,
+				4C7DFF88173834CF0048F8DA /* MVBuddyViewCell.m */,
+			);
+			name = BuddyList;
+			sourceTree = "<group>";
+		};
+		4C55DEF9174341B10002DE67 /* Files */ = {
+			isa = PBXGroup;
+			children = (
 				4C1EFFD21730CE10005BDA73 /* MVFileDownload.h */,
 				4C1EFFD31730CE10005BDA73 /* MVFileDownload.m */,
 				4C1EFFD41730CE10005BDA73 /* MVFileUpload.h */,
@@ -1729,31 +1798,106 @@
 				4C1EFFD61730CE10005BDA73 /* MVFileUploadManager_Private.h */,
 				4C1EFFD71730CE10005BDA73 /* MVFileUploadManager.h */,
 				4C1EFFD81730CE10005BDA73 /* MVFileUploadManager.m */,
-				4C1EFFD91730CE10005BDA73 /* MVFlickrPhotoService.h */,
-				4C1EFFDA1730CE10005BDA73 /* MVFlickrPhotoService.m */,
-				4C1EFFDB1730CE10005BDA73 /* MVGetRedirectedURL.h */,
-				4C1EFFDC1730CE10005BDA73 /* MVGetRedirectedURL.m */,
-				4C1EFFDD1730CE10005BDA73 /* MVImageService.h */,
-				4C1EFFDE1730CE10005BDA73 /* MVImageService.m */,
-				4C1EFFDF1730CE10005BDA73 /* MVJSONGetRequest.h */,
-				4C1EFFE01730CE10005BDA73 /* MVJSONGetRequest.m */,
+			);
+			name = Files;
+			sourceTree = "<group>";
+		};
+		4C55DEFA174341BE0002DE67 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
 				4C1EFFE51730CE10005BDA73 /* MVMessage.h */,
 				4C1EFFE61730CE10005BDA73 /* MVMessage.m */,
 				4C1EFFE71730CE10005BDA73 /* MVMessageParser.h */,
 				4C1EFFE81730CE10005BDA73 /* MVMessageParser.m */,
 				4C1EFFE91730CE10005BDA73 /* MVService.h */,
+				4C55DEFB174341C20002DE67 /* Services */,
+			);
+			name = Messages;
+			sourceTree = "<group>";
+		};
+		4C55DEFB174341C20002DE67 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				4C1EFFCC1730CE10005BDA73 /* MVCloudAppLinkService.h */,
+				4C1EFFCD1730CE10005BDA73 /* MVCloudAppLinkService.m */,
+				4C1EFFCE1730CE10005BDA73 /* MVDribbbleShotService.h */,
+				4C1EFFCF1730CE10005BDA73 /* MVDribbbleShotService.m */,
+				4C1EFFD01730CE10005BDA73 /* MVDroplrLinkService.h */,
+				4C1EFFD11730CE10005BDA73 /* MVDroplrLinkService.m */,
+				4C1EFFD91730CE10005BDA73 /* MVFlickrPhotoService.h */,
+				4C1EFFDA1730CE10005BDA73 /* MVFlickrPhotoService.m */,
+				4C1EFFDD1730CE10005BDA73 /* MVImageService.h */,
+				4C1EFFDE1730CE10005BDA73 /* MVImageService.m */,
 				4C1EFFEA1730CE10005BDA73 /* MVTwitterTweetService.h */,
 				4C1EFFEB1730CE10005BDA73 /* MVTwitterTweetService.m */,
-				4C1EFFEC1730CE10005BDA73 /* MVUploadAuthorization.h */,
-				4C1EFFED1730CE10005BDA73 /* MVUploadAuthorization.m */,
-				4C1EFFEE1730CE10005BDA73 /* MVURLKit.h */,
-				4C1EFFEF1730CE10005BDA73 /* MVURLKit.m */,
 				4C1EFFF01730CE10005BDA73 /* MVVimeoVideoService.h */,
 				4C1EFFF11730CE10005BDA73 /* MVVimeoVideoService.m */,
 				4C1EFFF21730CE10005BDA73 /* MVYoutubeVideoService.h */,
 				4C1EFFF31730CE10005BDA73 /* MVYoutubeVideoService.m */,
 			);
-			name = URLKit;
+			name = Services;
+			sourceTree = "<group>";
+		};
+		4C55DEFC174341C70002DE67 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				4C1EFFC61730CE10005BDA73 /* MVAsset_Private.h */,
+				4C1EFFC71730CE10005BDA73 /* MVAsset.h */,
+				4C1EFFC81730CE10005BDA73 /* MVAsset.m */,
+				4C1EFFC91730CE10005BDA73 /* MVAssetsManager_Private.h */,
+				4C1EFFCA1730CE10005BDA73 /* MVAssetsManager.h */,
+				4C1EFFCB1730CE10005BDA73 /* MVAssetsManager.m */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		4C55DEFD174341D40002DE67 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				4C1EFFDB1730CE10005BDA73 /* MVGetRedirectedURL.h */,
+				4C1EFFDC1730CE10005BDA73 /* MVGetRedirectedURL.m */,
+				4C1EFFDF1730CE10005BDA73 /* MVJSONGetRequest.h */,
+				4C1EFFE01730CE10005BDA73 /* MVJSONGetRequest.m */,
+			);
+			name = Tools;
+			sourceTree = "<group>";
+		};
+		4C55DEFE1743420A0002DE67 /* Cocoa */ = {
+			isa = PBXGroup;
+			children = (
+				4C1E000A1730CE55005BDA73 /* NSMutableAttributedString+Trimming.h */,
+				4C1E000B1730CE55005BDA73 /* NSMutableAttributedString+Trimming.m */,
+				4C1EFF891730C879005BDA73 /* NSObject+PerformBlockAfterDelay.h */,
+				4C1EFF8A1730C879005BDA73 /* NSObject+PerformBlockAfterDelay.m */,
+				4C1EFFAF1730CCE0005BDA73 /* NSMutableAttributedString+LinksDetection.h */,
+				4C1EFFB01730CCE0005BDA73 /* NSMutableAttributedString+LinksDetection.m */,
+				4C1EFFC01730CD3E005BDA73 /* NSEvent+CharacterDetection.h */,
+				4C1EFFC11730CD3E005BDA73 /* NSEvent+CharacterDetection.m */,
+				4C1EFFBE1730CD2B005BDA73 /* NSBezierPath+CGPath.h */,
+				4C1EFFBF1730CD2B005BDA73 /* NSBezierPath+CGPath.m */,
+				4C1E01AE1730F318005BDA73 /* NSString+HTMLEntities.h */,
+				4C1E01AF1730F318005BDA73 /* NSString+HTMLEntities.m */,
+				4C1E01B11730F330005BDA73 /* NSString+Digest.h */,
+				4C1E01B21730F330005BDA73 /* NSString+Digest.m */,
+				4C1E01B41730F341005BDA73 /* NSString+QueryParsing.h */,
+				4C1E01B51730F341005BDA73 /* NSString+QueryParsing.m */,
+				4C1E01B61730F341005BDA73 /* NSString+UUID.h */,
+				4C1E01B71730F342005BDA73 /* NSString+UUID.m */,
+				4CCFEBF817405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.h */,
+				4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */,
+			);
+			name = Cocoa;
+			sourceTree = "<group>";
+		};
+		4C55DEFF1743421E0002DE67 /* TwUI */ = {
+			isa = PBXGroup;
+			children = (
+				4C1EFFB51730CD04005BDA73 /* TUIImage+ProportionalResize.h */,
+				4C1EFFB61730CD04005BDA73 /* TUIImage+ProportionalResize.m */,
+				4C1EFFB71730CD05005BDA73 /* TUIImage+LocalURLCaching.h */,
+				4C1EFFB81730CD05005BDA73 /* TUIImage+LocalURLCaching.m */,
+			);
+			name = TwUI;
 			sourceTree = "<group>";
 		};
 		4CCFEBDE17404B980054ABC2 /* KeychainItem */ = {
