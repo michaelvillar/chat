@@ -33,6 +33,9 @@ static MVConnectionManager *instance;
     self.xmppStream = [[XMPPStream alloc] init];
     XMPPRosterMemoryStorage *xmppRosterStorage = [[XMPPRosterMemoryStorage alloc] init];
     XMPPRoster *xmppRoster = [[XMPPRoster alloc] initWithRosterStorage:xmppRosterStorage];
+    [xmppRoster setAutoFetchRoster:YES];
+    
+    XMPPReconnect *xmppReconnect = [[XMPPReconnect alloc] init];
     
     MVvCardFileDiskModuleStorage *xmppvCardStorage = [[MVvCardFileDiskModuleStorage alloc] init];
     XMPPvCardTempModule *xmppvCardTempModule = [[XMPPvCardTempModule alloc]
@@ -43,8 +46,7 @@ static MVConnectionManager *instance;
     [xmppvCardTempModule activate:self.xmppStream];
     [xmppvCardAvatarModule activate:self.xmppStream];
     [xmppRoster activate:self.xmppStream];
-    
-    [xmppRoster setAutoFetchRoster:YES];
+    [xmppReconnect activate:self.xmppStream];
     
     self.xmppStream.hostName = @"talk.google.com";
     self.xmppStream.hostPort = 5222;
@@ -113,6 +115,11 @@ static MVConnectionManager *instance;
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
 {
   [self fireErrorNotification:error];
+}
+
+- (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
+{
+  NSLog(@"did disconnect!");
 }
 
 #pragma mark Public Properties

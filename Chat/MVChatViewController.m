@@ -4,13 +4,15 @@
 #import "MVBuddyListViewController.h"
 #import "MVSwipeableView.h"
 #import "MVTabsView.h"
+#import "MVBuddiesManager.h"
 
 @interface MVChatViewController () <MVBuddyListViewControllerDelegate,
                                     MVSwipeableViewDelegate,
-                                    MVTabsViewDelegate>
+                                    MVTabsViewDelegate,
+                                    MVBuddiesManagerDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
-@property (strong, readwrite) XMPPRoster *xmppRoster;
+@property (strong, readwrite) MVBuddiesManager *buddiesManager;
 
 @property (strong, readwrite) TUIView *view;
 @property (strong, readwrite) MVSwipeableView *swipeableView;
@@ -31,7 +33,7 @@
 @implementation MVChatViewController
 
 @synthesize xmppStream = xmppStream_,
-            xmppRoster = xmppRoster_,
+            buddiesManager = buddiesManager_,
             view = view_,
             swipeableView = swipeableView_,
             tabsView = tabsView_,
@@ -49,7 +51,8 @@
 
     xmppStream_ = xmppStream;
     [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
-    xmppRoster_ = (XMPPRoster*)[xmppStream moduleOfClass:[XMPPRoster class]];
+    
+    buddiesManager_ = [MVBuddiesManager sharedInstance];
     
     controllers_ = [NSMutableDictionary dictionary];
     currentController_ = nil;
@@ -106,7 +109,8 @@
     [self displayController:buddyListViewController_];
     
     [self updateWindowTitle];
-      
+    
+    [buddiesManager_ addDelegate:self];
     [self addObserver:self forKeyPath:@"connectionState" options:0 context:NULL];
   }
   return self;
@@ -200,16 +204,7 @@
   {
     MVChatConversationController *chatConversationController = (MVChatConversationController*)controller;
     XMPPJID *jid = chatConversationController.jid;
-    XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
-    XMPPUserMemoryStorageObject *user = [storage userForJID:jid];
-    if(user && user.nickname)
-    {
-      title = user.nickname;
-    }
-    else
-    {
-      title = jid.bare;
-    }
+    title = [self.buddiesManager nameForJid:jid];
   }
   return title;
 }
@@ -257,7 +252,7 @@
     [self.tabsView addTab:[self titleForController:controller]
                  closable:YES
                  sortable:YES
-                   online:YES
+                   online:[self.buddiesManager isJidOnline:jid]
                identifier:controller
                   atIndex:1
                  animated:YES];
@@ -366,6 +361,18 @@
     [viewsOrder addObject:controller.view];
   }
   [self.swipeableView setSwipeableSubviewsOrder:viewsOrder];
+}
+
+#pragma mark MVBuddiesManagerDelegate
+
+- (void)buddiesManager:(MVBuddiesManager *)buddiesManager jidDidChangeOnlineStatus:(XMPPJID *)jid
+{
+  NSObject<MVController> *controller = [self.controllers objectForKey:jid.bare];
+  if(controller)
+  {
+    [self.tabsView setOnline:[self.buddiesManager isJidOnline:jid]
+                  identifier:controller];
+  }
 }
 
 @end

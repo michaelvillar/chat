@@ -13,7 +13,7 @@
  * 
  * The XMPPMUC class provides general (but important) tasks relating to MUC:
  *  - It integrates with XMPPCapabilities (if available) to properly advertise support for MUC.
- *  - It monitors active XMPPRoom instances on the xmppStream,
+ *  - It monitors active XMPPRoom instmulticastDelegateances on the xmppStream,
  *    and provides an efficient query to see if a presence or message element is targeted at a room.
  *  - It listens for MUC room invitations sent from other users.
 **/

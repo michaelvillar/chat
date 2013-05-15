@@ -1,9 +1,11 @@
 #import "MVDiscussionViewController.h"
 #import "MVDiscussionView.h"
 #import "MVDiscussionMessageItem.h"
-#import "NSMutableAttributedString+LinksDetection.h"
 #import "MVURLKit.h"
 #import "MVCloudAppLinkService.h"
+#import "MVBuddiesManager.h"
+#import "NSMutableAttributedString+LinksDetection.h"
+#import "NSURL+ImageDetection.h"
 
 #define kMVChatConversationDateDisplayInterval 900
 
@@ -127,30 +129,13 @@
   messageItem.own = ![message.from isEqualToJID:self.jid options:XMPPJIDCompareBare];
   messageItem.senderRepresentedObject = message.from;
   messageItem.representedObject = message;
+  TUIImage *avatar = [[MVBuddiesManager sharedInstance] avatarForJid:message.from];
+  if(avatar)
+    messageItem.avatar = avatar;
+  else
+    messageItem.avatar = [TUIImage imageNamed:@"placeholder_avatar.png" cache:YES];
   
-  XMPPvCardAvatarModule *module = (XMPPvCardAvatarModule*)[self.xmppStream moduleOfClass:
-                                                           [XMPPvCardAvatarModule class]];
-  if(module)
-  {
-    NSData *photoData = [module photoDataForJID:message.from];
-    if(photoData)
-    {
-      messageItem.avatar = [TUIImage imageWithData:photoData];
-    }
-  }
-  CFStringRef fileExtension = (__bridge CFStringRef)(asset.localURL.pathExtension);
-  CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
-                                                              fileExtension,
-                                                              NULL);
-  if(UTTypeConformsTo(fileUTI, kUTTypeJPEG) ||
-     UTTypeConformsTo(fileUTI, kUTTypeJPEG2000) ||
-     UTTypeConformsTo(fileUTI, kUTTypeTIFF) ||
-     UTTypeConformsTo(fileUTI, kUTTypePICT) ||
-     UTTypeConformsTo(fileUTI, kUTTypeGIF) ||
-     UTTypeConformsTo(fileUTI, kUTTypePNG) ||
-     UTTypeConformsTo(fileUTI, kUTTypeAppleICNS) ||
-     UTTypeConformsTo(fileUTI, kUTTypeBMP) ||
-     UTTypeConformsTo(fileUTI, kUTTypeICO))
+  if([asset.localURL mv_isImage])
     messageItem.type = kMVDiscussionMessageTypeRemoteImage;
   else
   {
@@ -228,10 +213,6 @@
 
 - (NSArray*)messageItemsFromMessage:(XMPPMessage*)message
 {
-  XMPPvCardAvatarModule *module = (XMPPvCardAvatarModule*)[self.xmppStream moduleOfClass:
-                                                         [XMPPvCardAvatarModule class]];
-  
-  
   NSMutableArray *items = [NSMutableArray array];
   MVDiscussionMessageItem* messageItem;
   NSString *messageStr = [[message elementForName:@"body"] stringValue];
@@ -245,17 +226,10 @@
     messageItem.own = ![message.from isEqualToJID:self.jid options:XMPPJIDCompareBare];
     messageItem.senderRepresentedObject = message.from;
     messageItem.representedObject = message;
-
-    if(module)
-    {
-      NSData *photoData = [module photoDataForJID:message.from];
-      if(photoData)
-      {
-        messageItem.avatar = [TUIImage imageWithData:photoData];
-      }
-    }
-    
-    if(!messageItem.avatar)
+    TUIImage *avatar = [[MVBuddiesManager sharedInstance] avatarForJid:message.from];
+    if(avatar)
+      messageItem.avatar = avatar;
+    else
       messageItem.avatar = [TUIImage imageNamed:@"placeholder_avatar.png" cache:YES];
     
     if(parsedMessage.service)
@@ -266,19 +240,7 @@
         MVAsset *asset = [[MVURLKit sharedInstance] assetForRemoteURL:service.url
                                                            withMaxSize:kMVDiscussionMessageMaxSize
                                                            ignoresGIFs:YES];
-        CFStringRef fileExtension = (__bridge CFStringRef)(asset.localURL.pathExtension);
-        CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
-                                                                    fileExtension,
-                                                                    NULL);
-        if(UTTypeConformsTo(fileUTI, kUTTypeJPEG) ||
-           UTTypeConformsTo(fileUTI, kUTTypeJPEG2000) ||
-           UTTypeConformsTo(fileUTI, kUTTypeTIFF) ||
-           UTTypeConformsTo(fileUTI, kUTTypePICT) ||
-           UTTypeConformsTo(fileUTI, kUTTypeGIF) ||
-           UTTypeConformsTo(fileUTI, kUTTypePNG) ||
-           UTTypeConformsTo(fileUTI, kUTTypeAppleICNS) ||
-           UTTypeConformsTo(fileUTI, kUTTypeBMP) ||
-           UTTypeConformsTo(fileUTI, kUTTypeICO))
+        if([asset.localURL mv_isImage])
           messageItem.type = kMVDiscussionMessageTypeRemoteImage;
         else
         {

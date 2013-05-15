@@ -7,6 +7,7 @@
 #import "MVNSContentView.h"
 #import "MVUploadAuthorization.h"
 #import "MVURLKit.h"
+#import "MVBuddiesManager.h"
 #import "EMKeychainItem.h"
 
 #import "DDLog.h"
@@ -33,7 +34,9 @@
   MVConnectionManager *connectionManager = [MVConnectionManager sharedInstance];
   self.xmppStream = connectionManager.xmppStream;
 
-//  [DDLog addLogger:[DDTTYLogger sharedInstance]];
+  [MVBuddiesManager sharedInstance].xmppStream = connectionManager.xmppStream;
+  
+  [DDLog addLogger:[DDTTYLogger sharedInstance]];
   
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString *cloudAppEmail = [defaults stringForKey:kMVPreferencesCloudAppEmailKey];

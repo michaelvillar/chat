@@ -1,27 +1,29 @@
 #import "MVBuddyListViewController.h"
 #import "MVBuddyViewCell.h"
 #import "MVBuddyListView.h"
+#import "MVBuddiesManager.h"
 
 @interface MVBuddyListViewController () <TUITableViewDataSource,
                                          TUITableViewDelegate,
-                                         MVBuddyListViewDelegate>
+                                         MVBuddyListViewDelegate,
+                                         MVBuddiesManagerDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
-@property (strong, readwrite) XMPPRoster *xmppRoster;
-@property (strong, readwrite) XMPPvCardAvatarModule *xmppAvatarModule;
+@property (strong, readwrite) MVBuddiesManager *buddiesManager;
 @property (strong, readwrite) TUIView *view;
 @property (strong, readwrite) MVBuddyListView *buddyListView;
 @property (strong, readwrite) TUITableView *tableView;
 @property (strong, readwrite) NSArray *users;
 @property (strong, readwrite) NSArray *filteredUsers;
 
+- (MVBuddyViewCell*)visibleCellForJid:(XMPPJID*)jid;
+
 @end
 
 @implementation MVBuddyListViewController
 
 @synthesize xmppStream = xmppStream_,
-            xmppRoster = xmppRoster_,
-            xmppAvatarModule = xmppAvatarModule_,
+            buddiesManager = buddiesManager_,
             view = view_,
             buddyListView = buddyListView_,
             tableView = tableView_,
@@ -36,9 +38,7 @@
   {
     delegate_ = nil;
     xmppStream_ = xmppStream;
-    xmppRoster_ = (XMPPRoster*)[xmppStream moduleOfClass:[XMPPRoster class]];
-    xmppAvatarModule_ = (XMPPvCardAvatarModule*)[xmppStream moduleOfClass:
-                                                 [XMPPvCardAvatarModule class]];
+    buddiesManager_ = [MVBuddiesManager sharedInstance];
     
     [xmppStream_ autoAddDelegate:self
                   delegateQueue:dispatch_get_main_queue()
@@ -57,7 +57,7 @@
     
     [self reload];
     
-    [xmppRoster_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [buddiesManager_ addDelegate:self];
   }
   return self;
 }
@@ -69,15 +69,7 @@
 
 - (void)reload
 {
-  XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
-  NSArray *users = [storage unsortedUsers];
-  self.users = [users sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-    NSObject<XMPPUser> *user1 = (NSObject<XMPPUser>*)obj1;
-    NSObject<XMPPUser> *user2 = (NSObject<XMPPUser>*)obj2;
-    NSString *user1Name = (user1.nickname ? user1.nickname : user1.jid.bare);
-    NSString *user2Name = (user2.nickname ? user2.nickname : user2.jid.bare);
-    return [user1Name.lowercaseString compare:user2Name.lowercaseString];
-  }];
+  self.users = [self.buddiesManager buddies];
   
   if(self.buddyListView.isSearchFieldVisible && self.buddyListView.searchFieldText.length > 0)
   {
@@ -110,6 +102,20 @@
 {
   [self.buddyListView setSearchFieldVisible:visible animated:YES];
   [self.buddyListView makeFirstResponder];
+}
+
+#pragma mark Private Methods
+
+- (MVBuddyViewCell*)visibleCellForJid:(XMPPJID*)jid
+{
+  NSArray *visibleCells = self.tableView.visibleCells;
+  for(MVBuddyViewCell *cell in visibleCells)
+  {
+    XMPPJID *cellJid = (XMPPJID*)cell.representedObject;
+    if(cellJid && [cellJid isEqualToJID:jid options:XMPPJIDCompareBare])
+      return cell;
+  }
+  return nil;
 }
 
 #pragma mark TUITableViewDelegate Methods
@@ -157,39 +163,45 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
   cell.lastRow = (indexPath.row == [self tableView:tableView
                              numberOfRowsInSection:indexPath.section] - 1);
   cell.representedObject = user.jid;
-  NSData *photoData = [self.xmppAvatarModule photoDataForJID:user.jid];
-  if(photoData)
-  {
-    cell.avatar = [TUIImage imageWithData:photoData];
-  }
+  TUIImage *avatar = [self.buddiesManager avatarForJid:user.jid];
+  if(avatar)
+    cell.avatar = avatar;
   else
-  {
     cell.avatar = [TUIImage imageNamed:@"placeholder_avatar.png" cache:YES];
-  }
   [cell setNeedsDisplay];
 	return cell;
 }
 
-#pragma mark XMPPRosterMemoryStorageDelegate Methods
+#pragma mark MVBuddiesManagerDelegate
 
-- (void)xmppRosterDidChange:(XMPPRosterMemoryStorage *)sender
+- (void)buddiesManagerBuddiesDidChange:(MVBuddiesManager *)buddiesManager
 {
   [self reload];
 }
 
-#pragma mark XMPPvCardAvatarModuleDelegate Methods
-
-- (void)xmppvCardAvatarModule:(XMPPvCardAvatarModule *)vCardTempModule
-              didReceivePhoto:(NSImage *)photo
-                       forJID:(XMPPJID *)jid
+- (void)buddiesManager:(MVBuddiesManager *)buddiesManager jidDidChangeOnlineStatus:(XMPPJID *)jid
 {
-  NSArray *visibleCells = self.tableView.visibleCells;
-  for(MVBuddyViewCell *cell in visibleCells)
+  MVBuddyViewCell *cell = [self visibleCellForJid:jid];
+  if(cell)
   {
-    XMPPJID *cellJid = (XMPPJID*)cell.representedObject;
-    if(cellJid && [cellJid isEqualToJID:jid options:XMPPJIDCompareBare])
+    BOOL online = [self.buddiesManager isJidOnline:jid];
+    if(cell.isOnline != online)
     {
-      cell.avatar = [TUIImage imageWithNSImage:photo];
+      cell.online = online;
+      [cell setNeedsDisplay];
+    }
+  }
+}
+
+- (void)buddiesManager:(MVBuddiesManager *)buddiesManager jidDidChangeAvatar:(XMPPJID *)jid
+{
+  MVBuddyViewCell *cell = [self visibleCellForJid:jid];
+  if(cell)
+  {
+    TUIImage *avatar = [self.buddiesManager avatarForJid:jid];
+    if(avatar)
+    {
+      cell.avatar = avatar;
       [cell setNeedsDisplay];
     }
   }
