@@ -8,6 +8,7 @@
 #import "MVDiscussionViewController.h"
 #import "MVChatSectionView.h"
 #import "NSPasteboard+EnumerateKeysAndDatas.h"
+#import "MVHistoryManager.h"
 
 #define kMVChatConversationDateDisplayInterval 900
 #define kMVComposingMaxDuration 30
@@ -120,6 +121,7 @@
 - (void)addMessage:(XMPPMessage*)message
 {
   [self.discussionViewController addMessage:message animated:YES];
+  [[MVHistoryManager sharedInstance] saveMessage:message forJid:self.jid];
   
   BOOL scrollAtBottom = (self.discussionView.contentOffset.y > -10);
   if(!(scrollAtBottom && self.isViewVisibleAndApplicationActive))
@@ -162,6 +164,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
   [message addChild:stateElement];
 	
 	[self.xmppStream sendElement:message];
+  [[MVHistoryManager sharedInstance] saveMessage:message forJid:self.jid];
   
   [self.discussionViewController addMessage:message
                        animatedFromTextView:self.textView];
@@ -238,6 +241,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
           [body setStringValue:asset.fileUploadRemoteURL.absoluteString];
           
           [self.xmppStream sendElement:message];
+          [[MVHistoryManager sharedInstance] saveMessage:message forJid:self.jid];
           
           [self.uploadingMessages removeObject:dic];
         }
