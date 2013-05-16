@@ -79,6 +79,21 @@ static MVConnectionManager *instance;
 
 #pragma mark XMPPStreamDelegate
 
+- (void)xmppStream:(XMPPStream *)sender willSecureWithSettings:(NSMutableDictionary *)settings
+{
+  // Allow expired certificates
+  [settings setObject:[NSNumber numberWithBool:YES]
+               forKey:(NSString *)kCFStreamSSLAllowsExpiredCertificates];
+  
+  // Allow self-signed certificates
+  [settings setObject:[NSNumber numberWithBool:YES]
+               forKey:(NSString *)kCFStreamSSLAllowsAnyRoot];
+  
+  // In fact, don't even validate the certificate chain
+  [settings setObject:[NSNumber numberWithBool:NO]
+               forKey:(NSString *)kCFStreamSSLValidatesCertificateChain];
+}
+
 - (void)xmppStreamDidSecure:(XMPPStream *)sender
 {
   NSLog(@"did secure");
@@ -119,7 +134,7 @@ static MVConnectionManager *instance;
 
 - (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
 {
-  NSLog(@"did disconnect!");
+  NSLog(@"did disconnect! %@",error);
 }
 
 #pragma mark Public Properties
