@@ -141,7 +141,10 @@
 
 - (IBAction)closeTab:(id)sender
 {
-  [self.chatViewController closeTab];
+  if(self.window.isKeyWindow)
+    [self.chatViewController closeTab];
+  else
+    [[NSApplication sharedApplication] sendAction:@selector(performClose:) to:nil from:nil];
 }
 
 - (IBAction)openPreferences:(id)sender
