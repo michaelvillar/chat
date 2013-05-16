@@ -3,7 +3,6 @@
 #import "NSObject+PerformBlockAfterDelay.h"
 
 #define kMVTabViewGlowingDuration 0.7
-#define kMVTabViewMaximumWidth 100
 
 @interface MVTabView ()
 
@@ -25,6 +24,7 @@
 void MVTabDraw(MVTabView *view, CGRect rect, BOOL forceGlowing, int glowingPhase);
 void MVTabDraw(MVTabView *view, CGRect rect, BOOL forceGlowing, int glowingPhase)
 {
+  CGContextRef ctx = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
   [[NSGraphicsContext currentContext] saveGraphicsState];
 
   CGRect bounds = view.bounds;
@@ -191,14 +191,57 @@ void MVTabDraw(MVTabView *view, CGRect rect, BOOL forceGlowing, int glowingPhase
   {
     fontColor = [NSColor colorWithDeviceRed:0.3216 green:0.3255 blue:0.3490 alpha:1.0000];
   }
-  MVDrawString(view.name,
-                CGRectMake(marginX, 4, bounds.size.width - marginX - 6, 15),
-                fontColor,
-                11,
-                YES,
-                shadowColor,
-                shadowOffset,
-                1);
+  
+  CGSize size = MVSizeOfString(view.name, 11, YES);
+  CGRect stringRect = CGRectMake(marginX, 4, bounds.size.width - marginX - 2, 15);
+
+  if(stringRect.size.width - 3 < size.width)
+  {
+    // mask
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
+    CGContextRef maskContext =
+    CGBitmapContextCreate(NULL,
+                          bounds.size.width,
+                          bounds.size.height,
+                          8,
+                          bounds.size.width,
+                          colorspace,
+                          0);
+    CGColorSpaceRelease(colorspace);
+    
+    NSGraphicsContext *maskGraphicsContext =
+    [NSGraphicsContext graphicsContextWithGraphicsPort:maskContext flipped:NO];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:maskGraphicsContext];
+    
+    [[NSColor whiteColor] set];
+    CGContextFillRect(maskContext, rect);
+    
+    startColor = [NSColor colorWithDeviceWhite:0 alpha:1];
+    endColor = [NSColor colorWithDeviceWhite:0 alpha:0];
+    gradient = [[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor];
+    [gradient drawInRect:CGRectMake(bounds.size.width - 8, 0,
+                                    4, bounds.size.height) angle:180];
+    [[NSColor blackColor] set];
+    CGContextFillRect(maskContext, CGRectMake(bounds.size.width - 4, 0, 4, bounds.size.height));
+    
+    [NSGraphicsContext restoreGraphicsState];
+    CGImageRef alphaMask = CGBitmapContextCreateImage(maskContext);
+    
+    
+    // use mask
+    CGContextSaveGState(ctx);
+    CGContextClipToMask(ctx, bounds, alphaMask);
+  }
+  
+  // draw text
+  MVDrawStringAlignLineBreakMode(view.name, stringRect, fontColor, 11, YES,
+                                 shadowColor, shadowOffset, 1,
+                                 0,
+                                 NSLineBreakByClipping);
+  
+  if(stringRect.size.width < size.width)
+    CGContextRestoreGState(ctx);
 
   [[NSGraphicsContext currentContext] restoreGraphicsState];
 };
@@ -284,7 +327,6 @@ void MVTabDraw(MVTabView *view, CGRect rect, BOOL forceGlowing, int glowingPhase
   if(self.closable)
     size.width += 14;
   float width = ceil(size.width) + 5 + 5 + 1 + 1 + 2;
-  width = MIN(kMVTabViewMaximumWidth, width);
   return width;
 }
 

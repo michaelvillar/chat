@@ -137,6 +137,7 @@
 - (void)layoutSubviews
 {
   [super layoutSubviews];
+  [self layoutTabs:NO];
   [self updateOverflowButtonVisibility];
 }
 
@@ -509,7 +510,7 @@
 - (void)updateOverflowButtonVisibility
 {
   BOOL newHiddenValue = YES;
-  if(self.totalWidth >= self.bounds.size.width)
+  if(self.totalWidth > self.bounds.size.width)
     newHiddenValue = NO;
 
   if(newHiddenValue != self.overflowButton.hidden)
@@ -613,9 +614,41 @@
   MVTabView *tabView;
   float x = -1;
   int i = 0;
+
+  float totalWidth = 2;
+  float widerTab = 0;
   for(tabView in self.tabs)
   {
     float w = [tabView expectedWidth];
+    if(w > widerTab)
+      widerTab = w;
+    totalWidth += w - 2;
+  }
+
+  while(totalWidth >= self.bounds.size.width)
+  {
+    widerTab--;
+    totalWidth = 2;
+    for(tabView in self.tabs)
+    {
+      float w = MIN(widerTab + 2, [tabView expectedWidth]);
+      totalWidth += w - 2;
+    }
+  }
+  
+  float maximumWidthByTab = widerTab + 2;
+  for(tabView in self.tabs)
+  {
+    float w = [tabView expectedWidth];
+    if(w > maximumWidthByTab)
+    {
+      w = maximumWidthByTab;
+      if(self.tabs.lastObject == tabView && self.bounds.size.width > x)
+      {
+        w = self.bounds.size.width - x + 2;
+      }
+    }
+    w = MAX(w, 40);
 
     if(self.sortingTabView != tabView) {
       [TUIView animateWithDuration:kMVTabsViewAnimationDuration animations:^{
@@ -633,7 +666,8 @@
     x += w - 2;
     i++;
   }
-  self.totalWidth = x;
+
+  self.totalWidth = x - 1.0;
   [self updateOverflowButtonVisibility];
   [self updateTabszPositions];
 }
