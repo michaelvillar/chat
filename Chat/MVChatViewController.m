@@ -9,7 +9,8 @@
 @interface MVChatViewController () <MVBuddyListViewControllerDelegate,
                                     MVSwipeableViewDelegate,
                                     MVTabsViewDelegate,
-                                    MVBuddiesManagerDelegate>
+                                    MVBuddiesManagerDelegate,
+                                    NSUserNotificationCenterDelegate>
 
 @property (strong, readwrite) XMPPStream *xmppStream;
 @property (strong, readwrite) MVBuddiesManager *buddiesManager;
@@ -112,6 +113,7 @@
     
     [buddiesManager_ addDelegate:self];
     [self addObserver:self forKeyPath:@"connectionState" options:0 context:NULL];
+    [NSUserNotificationCenter defaultUserNotificationCenter].delegate = self;
   }
   return self;
 }
@@ -272,6 +274,15 @@
                                                 [self controllerForJid:message.from];
     if (!controllerExisted)
       [controller addMessage:message];
+    
+    NSUserNotification *notification = [[NSUserNotification alloc] init];
+    notification.title = [self.buddiesManager nameForJid:message.from];
+    notification.informativeText = [[message elementForName:@"body"] stringValue];
+    notification.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                             kMVNotificationMessage, @"type",
+                             message.from.bare, @"jid",
+                             nil];
+    [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
 	}
 }
 
@@ -372,6 +383,22 @@
   {
     [self.tabsView setOnline:[self.buddiesManager isJidOnline:jid]
                   identifier:controller];
+  }
+}
+
+#pragma mark NSUserNotificationCenterDelegate Methods
+
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center
+       didActivateNotification:(NSUserNotification *)notification
+{
+  NSDictionary *userInfo = notification.userInfo;
+  NSString *type = [userInfo objectForKey:@"type"];
+  if(!type)
+    return;
+  if([type isEqualToString:kMVNotificationMessage])
+  {
+    NSString *bareJid = [userInfo objectForKey:@"jid"];
+    [self displayController:[self controllerForJid:[XMPPJID jidWithString:bareJid]]];
   }
 }
 
