@@ -163,6 +163,7 @@ heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
   cell.lastRow = (indexPath.row == [self tableView:tableView
                              numberOfRowsInSection:indexPath.section] - 1);
   cell.representedObject = user.jid;
+  cell.toolTip = cell.email;
   TUIImage *avatar = [self.buddiesManager avatarForJid:user.jid];
   if(avatar)
     cell.avatar = avatar;
