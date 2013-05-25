@@ -399,6 +399,7 @@
   {
     NSString *bareJid = [userInfo objectForKey:@"jid"];
     [self displayController:[self controllerForJid:[XMPPJID jidWithString:bareJid]]];
+    [center removeDeliveredNotification:notification];
   }
 }
 
