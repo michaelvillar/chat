@@ -76,6 +76,10 @@
   [self layoutSubviews];
   if(view.superview != self.contentView)
     [self.contentView addSubview:view];
+  if([self.swipeableViews indexOfObject:self.currentView] > index)
+  {
+    [self updateContentViewFrame:YES];
+  }
 }
 
 - (void)addSwipeableSubview:(TUIView *)view
