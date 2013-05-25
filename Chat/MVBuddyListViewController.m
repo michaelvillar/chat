@@ -57,9 +57,20 @@
     
     [self reload];
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults addObserver:self forKeyPath:kMVPreferencesShowOfflineBuddiesKey
+                  options:0 context:NULL];
+    
     [buddiesManager_ addDelegate:self];
   }
   return self;
+}
+
+- (void)dealloc
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  [defaults removeObserver:self forKeyPath:kMVPreferencesShowOfflineBuddiesKey];
+  [buddiesManager_ removeDelegate:self];
 }
 
 - (void)makeFirstResponder
@@ -69,7 +80,11 @@
 
 - (void)reload
 {
-  self.users = [self.buddiesManager buddies];
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  if([defaults boolForKey:kMVPreferencesShowOfflineBuddiesKey])
+    self.users = [self.buddiesManager buddies];
+  else
+    self.users = [self.buddiesManager onlineBuddies];
   
   if(self.buddyListView.isSearchFieldVisible && self.buddyListView.searchFieldText.length > 0)
   {
@@ -122,6 +137,19 @@
       return cell;
   }
   return nil;
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+  if([keyPath isEqualToString:kMVPreferencesShowOfflineBuddiesKey])
+  {
+    [self reload];
+  }
+  else
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 #pragma mark TUITableViewDelegate Methods

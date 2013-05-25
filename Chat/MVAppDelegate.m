@@ -40,6 +40,9 @@
   [DDLog addLogger:[DDTTYLogger sharedInstance]];
   
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  [defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSNumber numberWithBool:YES], kMVPreferencesShowOfflineBuddiesKey,
+                              nil]];
   NSString *cloudAppEmail = [defaults stringForKey:kMVPreferencesCloudAppEmailKey];
   
   if(cloudAppEmail)

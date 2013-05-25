@@ -7,6 +7,7 @@
 + (MVBuddiesManager*)sharedInstance;
 
 - (NSArray*)buddies;
+- (NSArray*)onlineBuddies;
 - (NSString*)nameForJid:(XMPPJID*)jid;
 - (TUIImage*)avatarForJid:(XMPPJID*)jid;
 - (BOOL)isJidOnline:(XMPPJID*)jid;

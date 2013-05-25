@@ -74,6 +74,12 @@ static MVBuddiesManager *instance;
   }];
 }
 
+- (NSArray*)onlineBuddies
+{
+  NSPredicate *onlinePredicate = [NSPredicate predicateWithFormat:@"isOnline = YES"];
+  return [self.buddies filteredArrayUsingPredicate:onlinePredicate];
+}
+
 - (NSString*)nameForJid:(XMPPJID*)jid
 {
   NSObject<XMPPUser> *user = [self userForJid:jid];
