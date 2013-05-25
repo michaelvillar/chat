@@ -13,6 +13,7 @@
                          jid:(XMPPJID*)jid;
 
 - (void)reset;
+- (void)prependMessages:(NSArray*)messages;
 - (void)addMessage:(XMPPMessage*)message
           animated:(BOOL)animated;
 - (void)addMessage:(XMPPMessage*)message animatedFromTextView:(MVRoundedTextView*)textView;

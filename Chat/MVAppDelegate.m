@@ -8,6 +8,7 @@
 #import "MVUploadAuthorization.h"
 #import "MVURLKit.h"
 #import "MVBuddiesManager.h"
+#import "MVHistoryManager.h"
 #import "EMKeychainItem.h"
 
 #import "DDLog.h"

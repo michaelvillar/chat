@@ -78,6 +78,31 @@
   [self.discussionView removeAllDiscussionItems];
 }
 
+- (void)prependMessages:(NSArray*)messages
+{
+  for(XMPPMessage *message in messages.reverseObjectEnumerator)
+  {
+    NSArray *messageItems = [self messageItemsFromMessage:message];
+    if(messageItems.count > 0)
+    {
+      MVDiscussionMessageItem *messageItem;
+      for(messageItem in messageItems)
+      {
+        [self.discussionView insertDiscussionItemAtTop:messageItem];
+      }
+      NSXMLElement *timestampElement = [message elementForName:@"timestamp"];
+      if(timestampElement)
+      {
+        float timestamp = [timestampElement stringValueAsFloat];
+        [self addDateMessageItemIfNeeded:[NSDate dateWithTimeIntervalSince1970:timestamp]
+                                animated:NO
+                                  before:YES];
+      }
+    }
+  }
+  [self.discussionView layoutSubviews:NO];
+}
+
 - (void)addMessage:(XMPPMessage*)message
           animated:(BOOL)animated;
 {

@@ -97,6 +97,10 @@
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(applicationDidBecomeActive:)
                name:NSApplicationDidBecomeActiveNotification object:NSApp];
+    
+    NSOrderedSet *messages = [[MVHistoryManager sharedInstance] messagesForJid:self.jid
+                                                                         limit:25];
+    [discussionViewController_ prependMessages:messages.array];
   }
   return self;
 }

@@ -38,6 +38,12 @@ static MVHistoryManager *sharedInstance;
   [conversation saveMessage:message];
 }
 
+- (NSOrderedSet*)messagesForJid:(XMPPJID*)jid
+                          limit:(NSUInteger)limit
+{
+  return [[self conversationForJid:jid] messagesWithLimit:limit];
+}
+
 #pragma mark Private Methods
 
 - (MVHistoryConversation*)conversationForJid:(XMPPJID*)jid
