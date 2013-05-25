@@ -110,7 +110,7 @@ static MVBuddiesManager *instance;
 - (BOOL)isJidOnline:(XMPPJID*)jid
 {
   NSObject<XMPPUser> *user = [self userForJid:jid];
-  return (user && user.isOnline);
+  return (user && user.isOnline && self.xmppStream.isAuthenticated);
 }
 
 #pragma mark Delegate
@@ -131,6 +131,19 @@ static MVBuddiesManager *instance;
 {
   XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
   return [storage userForJID:jid];
+}
+
+#pragma mark XMPPStreamDelegate Methods
+
+- (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
+{
+  NSObject <XMPPUser> *user;
+  NSArray *onlineUsers = self.onlineBuddies;
+  for(user in onlineUsers)
+  {
+    [self.multicastDelegate buddiesManager:self
+                  jidDidChangeOnlineStatus:user.jid];
+  }
 }
 
 #pragma mark XMPPRosterMemoryStorageDelegate Methods
