@@ -73,10 +73,16 @@
   
   if(self.buddyListView.isSearchFieldVisible && self.buddyListView.searchFieldText.length > 0)
   {
+    NSMutableString *regex = [NSMutableString stringWithString:@".*"];
+    NSString *searchFieldText = self.buddyListView.searchFieldText;
+    for (int i=0; i<searchFieldText.length; i++) {
+      NSString *searchFieldLetter = [searchFieldText substringWithRange:NSMakeRange(i, 1)];
+      [regex appendFormat:@"%@.*",searchFieldLetter];
+    }
     NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                              @"nickname CONTAINS[cd] %@ OR jid.bare CONTAINS[cd] %@",
-                              self.buddyListView.searchFieldText,
-                              self.buddyListView.searchFieldText];
+                              @"nickname MATCHES[cd] %@ OR jid.bare MATCHES[cd] %@",
+                              regex,
+                              regex];
     self.filteredUsers = [self.users filteredArrayUsingPredicate:predicate];
   }
   else
