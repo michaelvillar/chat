@@ -1,3 +1,0 @@
-@interface MVCloudAppAccountController : NSWindowController
-
-@end

@@ -122,6 +122,10 @@ static MVConnectionManager *instance;
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)xmppStream
 {
   NSXMLElement *presence = [NSXMLElement elementWithName:@"presence"];
+  NSXMLElement *priority = [NSXMLElement elementWithName:@"priority"];
+  [priority setStringValue:@"100"];
+  [presence addChild:priority];
+  NSLog(@"presence   %@", presence);
 	[xmppStream sendElement:presence];
   [[NSNotificationCenter defaultCenter] postNotificationName:kMVConnectionSuccessNotification
                                                       object:self];

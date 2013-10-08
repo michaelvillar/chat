@@ -4,7 +4,6 @@
 
 @property (readonly) NSUInteger unreadMessagesCount;
 
-- (id)initWithStream:(XMPPStream*)xmppStream;
 - (void)newTab;
 - (void)previousTab;
 - (void)nextTab;

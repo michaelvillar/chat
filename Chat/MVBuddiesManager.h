@@ -2,8 +2,6 @@
 
 @interface MVBuddiesManager : NSObject
 
-@property (strong, readwrite, nonatomic) XMPPStream *xmppStream;
-
 + (MVBuddiesManager*)sharedInstance;
 
 - (NSArray*)buddies;

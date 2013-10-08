@@ -1,0 +1,3 @@
+@interface MVPreferencesController : NSWindowController
+
+@end

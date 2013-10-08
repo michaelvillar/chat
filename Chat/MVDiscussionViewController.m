@@ -18,7 +18,6 @@
 @property (strong, readwrite) NSDate *firstMessageDate;
 @property (strong, readwrite) NSDateFormatter *dayDateFormatter;
 @property (strong, readwrite) MVDiscussionView *discussionView;
-@property (strong, readwrite) XMPPStream *xmppStream;
 @property (strong, readwrite) XMPPJID *jid;
 
 - (void)addDateMessageItemIfNeeded:(NSDate*)date
@@ -37,18 +36,15 @@
             firstMessageDate      = firstMessageDate_,
             dayDateFormatter      = dayDateFormatter_,
             discussionView        = discussionView_,
-            xmppStream            = xmppStream_,
             jid                   = jid_;
 
 - (id)initWithDiscussionView:(MVDiscussionView*)discussionView
-                  xmppStream:(XMPPStream*)xmppStream
                          jid:(XMPPJID*)jid
 {
   self = [super init];
   if(self)
   {
     discussionView_ = discussionView;
-    xmppStream_ = xmppStream;
     jid_ = jid;
     
     addedObjectsSet_ = [NSMutableSet set];

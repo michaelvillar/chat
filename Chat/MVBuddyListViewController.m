@@ -2,13 +2,14 @@
 #import "MVBuddyViewCell.h"
 #import "MVBuddyListView.h"
 #import "MVBuddiesManager.h"
+#import "MVXMPP.h"
 
 @interface MVBuddyListViewController () <TUITableViewDataSource,
                                          TUITableViewDelegate,
                                          MVBuddyListViewDelegate,
                                          MVBuddiesManagerDelegate>
 
-@property (strong, readwrite) XMPPStream *xmppStream;
+@property (strong, readwrite) MVXMPP *xmpp;
 @property (strong, readwrite) MVBuddiesManager *buddiesManager;
 @property (strong, readwrite) TUIView *view;
 @property (strong, readwrite) MVBuddyListView *buddyListView;
@@ -22,7 +23,7 @@
 
 @implementation MVBuddyListViewController
 
-@synthesize xmppStream = xmppStream_,
+@synthesize xmpp = xmpp_,
             buddiesManager = buddiesManager_,
             view = view_,
             buddyListView = buddyListView_,
@@ -31,18 +32,14 @@
             filteredUsers = filteredUsers_,
             delegate = delegate_;
 
-- (id)initWithStream:(XMPPStream*)xmppStream
+- (id)init
 {
   self = [super init];
   if(self)
   {
     delegate_ = nil;
-    xmppStream_ = xmppStream;
+    xmpp_ = [MVXMPP xmpp];
     buddiesManager_ = [MVBuddiesManager sharedInstance];
-    
-    [xmppStream_ autoAddDelegate:self
-                  delegateQueue:dispatch_get_main_queue()
-               toModulesOfClass:[XMPPvCardAvatarModule class]];
     
     self.view = self.buddyListView = [[MVBuddyListView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
     self.tableView = self.buddyListView.tableView;

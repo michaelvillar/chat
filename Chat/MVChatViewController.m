@@ -5,14 +5,16 @@
 #import "MVSwipeableView.h"
 #import "MVTabsView.h"
 #import "MVBuddiesManager.h"
+#import "MVXMPP.h"
 
 @interface MVChatViewController () <MVBuddyListViewControllerDelegate,
                                     MVSwipeableViewDelegate,
                                     MVTabsViewDelegate,
                                     MVBuddiesManagerDelegate,
-                                    NSUserNotificationCenterDelegate>
+                                    NSUserNotificationCenterDelegate,
+                                    MVXMPPDelegate>
 
-@property (strong, readwrite) XMPPStream *xmppStream;
+@property (strong, readwrite) MVXMPP *xmpp;
 @property (strong, readwrite) MVBuddiesManager *buddiesManager;
 
 @property (strong, readwrite) TUIView *view;
@@ -33,7 +35,7 @@
 
 @implementation MVChatViewController
 
-@synthesize xmppStream = xmppStream_,
+@synthesize xmpp = xmpp_,
             buddiesManager = buddiesManager_,
             view = view_,
             swipeableView = swipeableView_,
@@ -43,15 +45,13 @@
             buddyListViewController = buddyListViewController_,
             connectionState = connectionState_;
 
-- (id)initWithStream:(XMPPStream*)xmppStream
+- (id)init
 {
   self = [super init];
   if(self)
   {
-//    connectionState_ = kMVChatSectionViewStateOffline;
-
-    xmppStream_ = xmppStream;
-    [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    xmpp_ = [MVXMPP xmpp];
+    [xmpp_ addDelegate:self];
     
     buddiesManager_ = [MVBuddiesManager sharedInstance];
     
@@ -96,7 +96,7 @@
     swipeableView_.contentViewTopMargin = 23;
     [view_ addSubview:swipeableView_];
 
-    buddyListViewController_ = [[MVBuddyListViewController alloc] initWithStream:self.xmppStream];
+    buddyListViewController_ = [[MVBuddyListViewController alloc] init];
     buddyListViewController_.delegate = self;
     
     [self.tabsView addTab:[self titleForController:buddyListViewController_]
@@ -120,7 +120,7 @@
 
 - (void)dealloc
 {
-  [xmppStream_ removeDelegate:self delegateQueue:dispatch_get_main_queue()];
+  [xmpp_ removeDelegate:self];
   [self removeObserver:self forKeyPath:@"connectionState"];
   for(NSObject<MVController> *controller in self.controllers.allValues)
   {
@@ -244,8 +244,7 @@
 {
   NSObject<MVController> *controller = [self.controllers objectForKey:jid.bare];
   if(!controller) {
-    controller = [[MVChatConversationController alloc] initWithStream:self.xmppStream
-                                                                  jid:jid];
+    controller = [[MVChatConversationController alloc] initWithJid:jid];
     [controller addObserver:self forKeyPath:@"unreadMessagesCount" options:0 context:NULL];
     [self.controllers setObject:controller forKey:jid.bare];
   }
@@ -263,7 +262,7 @@
   return controller;
 }
 
-#pragma mark XMPPStream Delegate
+#pragma mark MVXMPPDelegate
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
@@ -284,26 +283,6 @@
                              nil];
     [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
 	}
-}
-
-- (void)xmppStreamWillConnect:(XMPPStream *)sender
-{
-//  self.connectionState = kMVChatSectionViewStateConnecting;
-}
-
-- (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
-{
-//  self.connectionState = kMVChatSectionViewStateOnline;
-}
-
-- (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
-{
-//  self.connectionState = kMVChatSectionViewStateOffline;
-}
-
-- (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
-{
-//  self.connectionState = kMVChatSectionViewStateOffline;
 }
 
 #pragma mark MVBuddyListViewControllerDelegate Methods

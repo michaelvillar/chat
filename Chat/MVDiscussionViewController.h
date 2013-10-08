@@ -9,7 +9,6 @@
 @property (strong, readonly) MVDiscussionView *discussionView;
 
 - (id)initWithDiscussionView:(MVDiscussionView*)discussionView
-                  xmppStream:(XMPPStream*)xmppStream
                          jid:(XMPPJID*)jid;
 
 - (void)reset;

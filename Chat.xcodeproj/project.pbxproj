@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C04E3A718021B6600F34C81 /* MVPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C04E3A618021B6600F34C81 /* MVPreferencesController.m */; };
+		4C04E3AA1802384900F34C81 /* MVXMPPAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C04E3A91802384900F34C81 /* MVXMPPAccount.m */; };
+		4C070167175978A80019C00C /* MVXMPPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C070166175978A80019C00C /* MVXMPPClient.m */; };
+		4C07016A175978CF0019C00C /* MVXMPP.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C070169175978CF0019C00C /* MVXMPP.m */; };
 		4C1E00021730CE10005BDA73 /* MVMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE61730CE10005BDA73 /* MVMessage.m */; };
 		4C1E00031730CE10005BDA73 /* MVMessageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE81730CE10005BDA73 /* MVMessageParser.m */; };
 		4C1E00041730CE10005BDA73 /* MVTwitterTweetService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFEB1730CE10005BDA73 /* MVTwitterTweetService.m */; };
@@ -155,7 +159,6 @@
 		4C1E01E117320CCA005BDA73 /* avatar_over.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01DF17320CCA005BDA73 /* avatar_over.png */; };
 		4C1E01E217320CCA005BDA73 /* avatar_over_alternate.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01E017320CCA005BDA73 /* avatar_over_alternate.png */; };
 		4C1E01E41732445E005BDA73 /* Account.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01E31732445E005BDA73 /* Account.xib */; };
-		4C1E01E71732458A005BDA73 /* MVAccountController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E01E617324589005BDA73 /* MVAccountController.m */; };
 		4C1E01ED1732496A005BDA73 /* EMKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E01EC1732496A005BDA73 /* EMKeychainItem.m */; };
 		4C1E01F017324A7E005BDA73 /* MVConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E01EF17324A7D005BDA73 /* MVConnectionManager.m */; };
 		4C1E01F317333116005BDA73 /* icon_writing.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01F217333116005BDA73 /* icon_writing.png */; };
@@ -242,6 +245,7 @@
 		4C1EFFFD1730CE10005BDA73 /* MVGetRedirectedURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFDC1730CE10005BDA73 /* MVGetRedirectedURL.m */; };
 		4C1EFFFE1730CE10005BDA73 /* MVImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFDE1730CE10005BDA73 /* MVImageService.m */; };
 		4C1EFFFF1730CE10005BDA73 /* MVJSONGetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE01730CE10005BDA73 /* MVJSONGetRequest.m */; };
+		4C2C69CB17FE79E20038C604 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C2C69CA17FE79E20038C604 /* Preferences.xib */; };
 		4C2FBC50174493DE001A8EA9 /* MVHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FBC4F174493DE001A8EA9 /* MVHistoryManager.m */; };
 		4C2FBC53174494C2001A8EA9 /* MVHistoryConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FBC52174494C2001A8EA9 /* MVHistoryConversation.m */; };
 		4C2FBC5617449F5A001A8EA9 /* NSDate+isSameDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FBC5517449F5A001A8EA9 /* NSDate+isSameDay.m */; };
@@ -275,7 +279,6 @@
 		4CCFEBDD17404B930054ABC2 /* libCloud.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCFEBDC17404B930054ABC2 /* libCloud.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		4CCFEBE9174050AC0054ABC2 /* MVCloudAppFileUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBE8174050AC0054ABC2 /* MVCloudAppFileUpload.m */; };
 		4CCFEBFA17405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */; };
-		4CCFEBFD17406CF90054ABC2 /* MVCloudAppAccountController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */; };
 		4CCFEBFF17406E610054ABC2 /* CloudAppAccount.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */; };
 /* End PBXBuildFile section */
 
@@ -293,6 +296,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4C04E3A518021B6600F34C81 /* MVPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVPreferencesController.h; sourceTree = "<group>"; };
+		4C04E3A618021B6600F34C81 /* MVPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVPreferencesController.m; sourceTree = "<group>"; };
+		4C04E3A81802384900F34C81 /* MVXMPPAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVXMPPAccount.h; sourceTree = "<group>"; };
+		4C04E3A91802384900F34C81 /* MVXMPPAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVXMPPAccount.m; sourceTree = "<group>"; };
+		4C070165175978A80019C00C /* MVXMPPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVXMPPClient.h; sourceTree = "<group>"; };
+		4C070166175978A80019C00C /* MVXMPPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVXMPPClient.m; sourceTree = "<group>"; };
+		4C070168175978CF0019C00C /* MVXMPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVXMPP.h; sourceTree = "<group>"; };
+		4C070169175978CF0019C00C /* MVXMPP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVXMPP.m; sourceTree = "<group>"; };
 		4C1E000A1730CE55005BDA73 /* NSMutableAttributedString+Trimming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableAttributedString+Trimming.h"; sourceTree = "<group>"; };
 		4C1E000B1730CE55005BDA73 /* NSMutableAttributedString+Trimming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableAttributedString+Trimming.m"; sourceTree = "<group>"; };
 		4C1E000D1730CF0B005BDA73 /* MVChatConversationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVChatConversationController.h; sourceTree = "<group>"; };
@@ -561,8 +572,6 @@
 		4C1E01DF17320CCA005BDA73 /* avatar_over.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar_over.png; sourceTree = "<group>"; };
 		4C1E01E017320CCA005BDA73 /* avatar_over_alternate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar_over_alternate.png; sourceTree = "<group>"; };
 		4C1E01E31732445E005BDA73 /* Account.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Account.xib; path = Chat/Account.xib; sourceTree = "<group>"; };
-		4C1E01E517324589005BDA73 /* MVAccountController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVAccountController.h; sourceTree = "<group>"; };
-		4C1E01E617324589005BDA73 /* MVAccountController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVAccountController.m; sourceTree = "<group>"; };
 		4C1E01E81732485B005BDA73 /* MVConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVConstants.h; sourceTree = "<group>"; };
 		4C1E01EB1732496A005BDA73 /* EMKeychainItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMKeychainItem.h; sourceTree = "<group>"; };
 		4C1E01EC1732496A005BDA73 /* EMKeychainItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMKeychainItem.m; sourceTree = "<group>"; };
@@ -711,6 +720,7 @@
 		4C1EFFF11730CE10005BDA73 /* MVVimeoVideoService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVVimeoVideoService.m; sourceTree = "<group>"; };
 		4C1EFFF21730CE10005BDA73 /* MVYoutubeVideoService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVYoutubeVideoService.h; sourceTree = "<group>"; };
 		4C1EFFF31730CE10005BDA73 /* MVYoutubeVideoService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVYoutubeVideoService.m; sourceTree = "<group>"; };
+		4C2C69CA17FE79E20038C604 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
 		4C2FBC4E174493DE001A8EA9 /* MVHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVHistoryManager.h; sourceTree = "<group>"; };
 		4C2FBC4F174493DE001A8EA9 /* MVHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVHistoryManager.m; sourceTree = "<group>"; };
 		4C2FBC51174494C2001A8EA9 /* MVHistoryConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVHistoryConversation.h; sourceTree = "<group>"; };
@@ -766,8 +776,6 @@
 		4CCFEBF7174058C40054ABC2 /* MVFileUpload_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVFileUpload_Private.h; sourceTree = "<group>"; };
 		4CCFEBF817405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPasteboard+EnumerateKeysAndDatas.h"; sourceTree = "<group>"; };
 		4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPasteboard+EnumerateKeysAndDatas.m"; sourceTree = "<group>"; };
-		4CCFEBFB17406CF90054ABC2 /* MVCloudAppAccountController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVCloudAppAccountController.h; sourceTree = "<group>"; };
-		4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVCloudAppAccountController.m; sourceTree = "<group>"; };
 		4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CloudAppAccount.xib; path = Chat/CloudAppAccount.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -792,6 +800,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C070164175978870019C00C /* XMPP */ = {
+			isa = PBXGroup;
+			children = (
+				4C070168175978CF0019C00C /* MVXMPP.h */,
+				4C070169175978CF0019C00C /* MVXMPP.m */,
+				4C070165175978A80019C00C /* MVXMPPClient.h */,
+				4C070166175978A80019C00C /* MVXMPPClient.m */,
+				4C04E3A81802384900F34C81 /* MVXMPPAccount.h */,
+				4C04E3A91802384900F34C81 /* MVXMPPAccount.m */,
+			);
+			name = XMPP;
+			sourceTree = "<group>";
+		};
 		4C1E00091730CE31005BDA73 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -1506,6 +1527,7 @@
 				4C1EFF6F1730C65C005BDA73 /* MainMenu.xib */,
 				4C1E01E31732445E005BDA73 /* Account.xib */,
 				4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */,
+				4C2C69CA17FE79E20038C604 /* Preferences.xib */,
 			);
 			name = XIBs;
 			sourceTree = "<group>";
@@ -1623,6 +1645,7 @@
 				4CCB3C6F173C6EA3004F98D1 /* MVController.h */,
 				4C1EFF6C1730C65C005BDA73 /* MVAppDelegate.h */,
 				4C1EFF6D1730C65C005BDA73 /* MVAppDelegate.m */,
+				4C070164175978870019C00C /* XMPP */,
 				4C55DEEE174340BF0002DE67 /* Chat */,
 				4C55DEF0174340ED0002DE67 /* Buddies */,
 				4C2FBC4D174493B8001A8EA9 /* History */,
@@ -1702,10 +1725,8 @@
 		4C55DEEF174340D30002DE67 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
-				4C1E01E517324589005BDA73 /* MVAccountController.h */,
-				4C1E01E617324589005BDA73 /* MVAccountController.m */,
-				4CCFEBFB17406CF90054ABC2 /* MVCloudAppAccountController.h */,
-				4CCFEBFC17406CF90054ABC2 /* MVCloudAppAccountController.m */,
+				4C04E3A518021B6600F34C81 /* MVPreferencesController.h */,
+				4C04E3A618021B6600F34C81 /* MVPreferencesController.m */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -2020,6 +2041,7 @@
 				4C1EFF6B1730C65C005BDA73 /* Credits.rtf in Resources */,
 				4C1EFF711730C65C005BDA73 /* MainMenu.xib in Resources */,
 				4C1E01921730D80F005BDA73 /* README.txt in Resources */,
+				4C2C69CB17FE79E20038C604 /* Preferences.xib in Resources */,
 				4C1E01971730D80F005BDA73 /* build-libidn.sh in Resources */,
 				4C1E01BE1731FE65005BDA73 /* icon_users.png in Resources */,
 				4C1E01BF1731FE65005BDA73 /* icon_users_active.png in Resources */,
@@ -2209,10 +2231,12 @@
 				4C1E015E1730D80F005BDA73 /* XMPPvCardCoreDataStorage.m in Sources */,
 				4C1E015F1730D80F005BDA73 /* XMPPvCardCoreDataStorageObject.m in Sources */,
 				4C1E01601730D80F005BDA73 /* XMPPvCardTempCoreDataStorageObject.m in Sources */,
+				4C04E3A718021B6600F34C81 /* MVPreferencesController.m in Sources */,
 				4C1E01611730D80F005BDA73 /* XMPPvCardTemp.m in Sources */,
 				4C1E01621730D80F005BDA73 /* XMPPvCardTempAdr.m in Sources */,
 				4C1E01631730D80F005BDA73 /* XMPPvCardTempAdrTypes.m in Sources */,
 				4C1E01641730D80F005BDA73 /* XMPPvCardTempBase.m in Sources */,
+				4C04E3AA1802384900F34C81 /* MVXMPPAccount.m in Sources */,
 				4C1E01651730D80F005BDA73 /* XMPPvCardTempEmail.m in Sources */,
 				4C1E01661730D80F005BDA73 /* XMPPvCardTempLabel.m in Sources */,
 				4C1E01671730D80F005BDA73 /* XMPPvCardTempModule.m in Sources */,
@@ -2268,7 +2292,6 @@
 				4C1E01B81730F342005BDA73 /* NSString+QueryParsing.m in Sources */,
 				4C1E01B91730F342005BDA73 /* NSString+UUID.m in Sources */,
 				4C1E01DE17320809005BDA73 /* MVvCardFileDiskModuleStorage.m in Sources */,
-				4C1E01E71732458A005BDA73 /* MVAccountController.m in Sources */,
 				4C1E01ED1732496A005BDA73 /* EMKeychainItem.m in Sources */,
 				4C1E01F017324A7E005BDA73 /* MVConnectionManager.m in Sources */,
 				4C7DFF86173828FD0048F8DA /* MVBuddyListViewController.m in Sources */,
@@ -2278,13 +2301,14 @@
 				4C7DFF96173B34020048F8DA /* MVNSContentView.m in Sources */,
 				4CCFEBE9174050AC0054ABC2 /* MVCloudAppFileUpload.m in Sources */,
 				4CCFEBFA17405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m in Sources */,
-				4CCFEBFD17406CF90054ABC2 /* MVCloudAppAccountController.m in Sources */,
 				4C55DF03174345C50002DE67 /* MVBuddiesManager.m in Sources */,
 				4C55DF06174349270002DE67 /* MVMulticastDelegate.m in Sources */,
 				4C55DF091743529B0002DE67 /* NSURL+ImageDetection.m in Sources */,
 				4C2FBC50174493DE001A8EA9 /* MVHistoryManager.m in Sources */,
 				4C2FBC53174494C2001A8EA9 /* MVHistoryConversation.m in Sources */,
 				4C2FBC5617449F5A001A8EA9 /* NSDate+isSameDay.m in Sources */,
+				4C070167175978A80019C00C /* MVXMPPClient.m in Sources */,
+				4C07016A175978CF0019C00C /* MVXMPP.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

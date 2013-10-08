@@ -9,13 +9,15 @@
 #import "MVChatSectionView.h"
 #import "NSPasteboard+EnumerateKeysAndDatas.h"
 #import "MVHistoryManager.h"
+#import "MVXMPP.h"
+#import "MVBuddiesManager.h"
 
 #define kMVChatConversationDateDisplayInterval 900
 #define kMVComposingMaxDuration 30
 
-@interface MVChatConversationController () <MVChatSectionViewDelegate>
+@interface MVChatConversationController () <MVChatSectionViewDelegate, MVXMPPDelegate>
 
-@property (strong, readwrite) XMPPStream *xmppStream;
+@property (strong, readwrite) MVXMPP *xmpp;
 @property (strong, readwrite) XMPPJID *jid;
 @property (strong, readwrite) MVChatSectionView *chatSectionView;
 @property (strong, readwrite) MVDiscussionView *discussionView;
@@ -28,6 +30,7 @@
 @property (strong, readwrite) NSMutableOrderedSet *unreadMessages;
 @property (strong, readwrite) NSMutableSet *uploadingMessages;
 
+- (XMPPJID*)fromJID;
 - (void)sendComposingMessage:(BOOL)composing;
 - (void)removeWriteItemForJid:(XMPPJID*)jid;
 - (BOOL)isViewVisibleAndApplicationActive;
@@ -37,7 +40,7 @@
 
 @implementation MVChatConversationController
 
-@synthesize xmppStream                = xmppStream_,
+@synthesize xmpp                      = xmpp_,
             jid                       = jid_,
             chatSectionView           = chatSectionView_,
             discussionView            = discussionView_,
@@ -56,6 +59,8 @@
   self = [super init];
   if(self)
   {
+    xmpp_ = [MVXMPP xmpp];
+    [xmpp_ addDelegate:self];
     chatSectionView_ = nil;
     discussionView_ = nil;
     textView_ = nil;
@@ -68,14 +73,11 @@
   return self;
 }
 
-- (id)initWithStream:(XMPPStream*)xmppStream
-                 jid:(XMPPJID*)jid
+- (id)initWithJid:(XMPPJID*)jid
 {
   self = [self init];
   if(self)
   {
-    xmppStream_ = xmppStream;
-    [xmppStream_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
     jid_ = jid;
     
     chatSectionView_ = [[MVChatSectionView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
@@ -91,7 +93,7 @@
     
     discussionViewController_ = [[MVDiscussionViewController alloc]
                                  initWithDiscussionView:discussionView_
-                                 xmppStream:xmppStream jid:jid];
+                                 jid:jid];
     composingItems_ = [NSMutableDictionary dictionary];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -107,7 +109,7 @@
 
 - (void)dealloc
 {
-  [xmppStream_ removeDelegate:self delegateQueue:dispatch_get_main_queue()];
+  [xmpp_ removeDelegate:self];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -157,7 +159,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
   
   XMPPMessage *message = [XMPPMessage messageWithType:@"chat"];
 	[message addAttributeWithName:@"to" stringValue:self.jid.full];
-  [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
+  [message addAttributeWithName:@"from" stringValue:self.fromJID.full];
   
   NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
   [body setStringValue:string];
@@ -167,7 +169,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
   [stateElement addAttributeWithName:@"xmlns" stringValue:@"http://jabber.org/protocol/chatstates"];
   [message addChild:stateElement];
 	
-	[self.xmppStream sendElement:message];
+	[self.xmpp sendElement:message fromEmail:self.fromJID.bare];
   [[MVHistoryManager sharedInstance] saveMessage:message forJid:self.jid];
   
   [self.discussionViewController addMessage:message
@@ -194,7 +196,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
   
   XMPPMessage *message = [XMPPMessage messageWithType:@"chat"];
 	[message addAttributeWithName:@"to" stringValue:self.jid.full];
-  [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
+  [message addAttributeWithName:@"from" stringValue:self.fromJID.full];
   
   NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
   [body setStringValue:@""];
@@ -244,7 +246,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
           
           [body setStringValue:asset.fileUploadRemoteURL.absoluteString];
           
-          [self.xmppStream sendElement:message];
+//          [self.xmppStream sendElement:message];
           [[MVHistoryManager sharedInstance] saveMessage:message forJid:self.jid];
           
           [self.uploadingMessages removeObject:dic];
@@ -277,18 +279,26 @@ animatedFromTextView:(BOOL)animatedFromTextView
 
 #pragma mark Private Methods
 
+- (XMPPJID*)fromJID
+{
+  NSSet *jids = [self.xmpp JIDsWithUserJID:self.jid];
+  if(jids.count > 0)
+    return jids.anyObject;
+  return nil;
+}
+
 - (void)sendComposingMessage:(BOOL)composing
 {
   XMPPMessage *message = [XMPPMessage elementWithName:@"message"];
 	[message addAttributeWithName:@"type" stringValue:@"chat"];
 	[message addAttributeWithName:@"to" stringValue:self.jid.full];
-  [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
+//  [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
 	
   NSXMLElement *stateElement = [NSXMLElement elementWithName:(composing ? @"composing" : @"active")];
   [stateElement addAttributeWithName:@"xmlns" stringValue:@"http://jabber.org/protocol/chatstates"];
   [message addChild:stateElement];
 	
-	[self.xmppStream sendElement:message];
+//	[self.xmppStream sendElement:message];
 }
 
 - (void)removeWriteItemForJid:(XMPPJID*)jid
@@ -339,7 +349,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
   }
 }
 
-#pragma mark XMPPStream Delegate
+#pragma mark MVXMPPDelegate
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
@@ -368,19 +378,12 @@ animatedFromTextView:(BOOL)animatedFromTextView
       {
         if(!writingItem)
         {
-          XMPPvCardAvatarModule *module = (XMPPvCardAvatarModule*)[self.xmppStream moduleOfClass:
-                                                                   [XMPPvCardAvatarModule class]];
-          
           writingItem = [[MVDiscussionMessageItem alloc] init];
           writingItem.type = kMVDiscussionMessageTypeWriting;
-          if(module)
-          {
-            NSData *photoData = [module photoDataForJID:message.from];
-            if(photoData)
-            {
-              writingItem.avatar = [TUIImage imageWithData:photoData];
-            }
-          }
+
+          TUIImage *avatar = [[MVBuddiesManager sharedInstance] avatarForJid:message.from];
+          if(avatar)
+            writingItem.avatar = avatar;
           
           writingItem.name = message.from.bare;
           writingItem.senderRepresentedObject = message.from;

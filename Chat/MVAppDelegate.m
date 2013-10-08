@@ -1,48 +1,44 @@
 #import "MVAppDelegate.h"
 #import "MVChatViewController.h"
 #import "MVvCardFileDiskModuleStorage.h"
-#import "MVAccountController.h"
-#import "MVCloudAppAccountController.h"
-#import "MVConnectionManager.h"
+#import "MVPreferencesController.h"
 #import "MVNSContentView.h"
 #import "MVUploadAuthorization.h"
 #import "MVURLKit.h"
 #import "MVBuddiesManager.h"
 #import "MVHistoryManager.h"
 #import "EMKeychainItem.h"
+#import "MVXMPP.h"
 
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
 @interface MVAppDelegate ()
 
-@property (strong, readwrite) XMPPStream *xmppStream;
+@property (strong, readwrite) MVXMPP *xmpp;
 @property (strong, readwrite) MVChatViewController *chatViewController;
-@property (strong, readwrite, nonatomic) MVAccountController *accountController;
-@property (strong, readwrite, nonatomic) MVCloudAppAccountController *cloudAppAccountController;
+@property (strong, readwrite, nonatomic) MVPreferencesController *preferencesController;
 
 @end
 
 @implementation MVAppDelegate
 
-@synthesize xmppStream = xmppStream_,
+@synthesize xmpp = xmpp_,
             chatViewController = chatViewController_,
-            accountController = accountController_,
-            cloudAppAccountController = cloudAppAccountController_;
+            preferencesController = preferencesController_;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-  MVConnectionManager *connectionManager = [MVConnectionManager sharedInstance];
-  self.xmppStream = connectionManager.xmppStream;
-
-  [MVBuddiesManager sharedInstance].xmppStream = connectionManager.xmppStream;
+  self.xmpp = [MVXMPP xmpp];
+  [self.xmpp refreshFromPreferences];
+  
   
   [DDLog addLogger:[DDTTYLogger sharedInstance]];
-  
+
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   [defaults registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
                               [NSNumber numberWithBool:YES], kMVPreferencesShowOfflineBuddiesKey,
-                              nil]];
+                               nil]];
   NSString *cloudAppEmail = [defaults stringForKey:kMVPreferencesCloudAppEmailKey];
   
   if(cloudAppEmail)
@@ -65,7 +61,7 @@
   tUINSView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
   [contentView addSubview:tUINSView];
   
-  self.chatViewController = [[MVChatViewController alloc] initWithStream:self.xmppStream];
+  self.chatViewController = [[MVChatViewController alloc] init];
   self.chatViewController.view.frame = tUINSView.bounds;
   self.chatViewController.view.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                                   TUIViewAutoresizingFlexibleHeight;
@@ -74,16 +70,14 @@
   [self.chatViewController addObserver:self forKeyPath:@"unreadMessagesCount"
                                options:0 context:NULL];
   
-  if (connectionManager.hasEmptyConnectionInformation)
+  if (self.xmpp.hasEmptyConnectionInformation)
     [self openPreferences:self];
-  else
-    [connectionManager signIn];
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
 {
-  if(self.xmppStream.isAuthenticated && !self.window.isMainWindow &&
-     !self.accountController.window.isMainWindow)
+  if(!self.xmpp.hasEmptyConnectionInformation && !self.window.isMainWindow &&
+     !self.preferencesController.window.isMainWindow)
     [self.window makeKeyAndOrderFront:self];
   return YES;
 }
@@ -106,24 +100,13 @@
 
 #pragma mark Properties
 
-- (MVAccountController*)accountController
+- (MVPreferencesController*)preferencesController
 {
-  if(!accountController_)
+  if(!preferencesController_)
   {
-    accountController_ = [[MVAccountController alloc] initWithWindowNibName:@"Account"];
-    accountController_.xmppStream = self.xmppStream;
+    preferencesController_ = [[MVPreferencesController alloc] initWithWindowNibName:@"Preferences"];
   }
-  return accountController_;
-}
-
-- (MVCloudAppAccountController*)cloudAppAccountController
-{
-  if(!cloudAppAccountController_)
-  {
-    cloudAppAccountController_ = [[MVCloudAppAccountController alloc]
-                                  initWithWindowNibName:@"CloudAppAccount"];
-  }
-  return cloudAppAccountController_;
+  return preferencesController_;
 }
 
 #pragma mark Menu Actions
@@ -153,8 +136,7 @@
 
 - (IBAction)openPreferences:(id)sender
 {
-  [self.accountController showWindow:self];
-  [self.cloudAppAccountController showWindow:self];
+  [self.preferencesController showWindow:self];
 }
 
 @end

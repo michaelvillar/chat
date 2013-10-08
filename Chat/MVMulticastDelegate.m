@@ -56,8 +56,9 @@
 
 - (void)forwardInvocation:(NSInvocation *)origInvocation
 {
-	SEL selector = [origInvocation selector];	
-	for (MVMulticastDelegateItem *item in self.delegates)
+	SEL selector = [origInvocation selector];
+  NSSet *delegates = self.delegates.copy;
+	for (MVMulticastDelegateItem *item in delegates)
 	{
     id delegate = item.delegate;
     

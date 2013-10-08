@@ -9,8 +9,7 @@
 @property (strong, readwrite) NSObject *identifier;
 @property (readonly) NSUInteger unreadMessagesCount;
 
-- (id)initWithStream:(XMPPStream*)xmppStream
-                 jid:(XMPPJID*)jid;
+- (id)initWithJid:(XMPPJID*)jid;
 - (void)addMessage:(XMPPMessage*)message;
 - (void)sendMessage:(NSString*)string
 animatedFromTextView:(BOOL)animatedFromTextView;

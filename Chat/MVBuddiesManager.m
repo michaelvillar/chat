@@ -1,12 +1,12 @@
 #import "MVBuddiesManager.h"
 #import "MVMulticastDelegate.h"
+#import "MVXMPP.h"
 
 static MVBuddiesManager *instance;
 
-@interface MVBuddiesManager ()
+@interface MVBuddiesManager () <MVXMPPDelegate>
 
-@property (strong, readwrite) XMPPRoster *xmppRoster;
-@property (strong, readwrite) XMPPvCardAvatarModule *xmppAvatarModule;
+@property (strong, readwrite) MVXMPP *xmpp;
 @property (strong, readwrite) MVMulticastDelegate<MVBuddiesManagerDelegate> *multicastDelegate;
 
 @property (strong, readwrite) NSCache *avatarsCache;
@@ -18,9 +18,7 @@ static MVBuddiesManager *instance;
 
 @implementation MVBuddiesManager
 
-@synthesize xmppStream = xmppStream_,
-            xmppRoster = xmppRoster_,
-            xmppAvatarModule = xmppAvatarModule_,
+@synthesize xmpp = xmpp_,
             multicastDelegate = multicastDelegate_,
             avatarsCache = avatarsCache_,
             jidsWithoutAvatar = jidsWithoutAvatar_;
@@ -37,9 +35,8 @@ static MVBuddiesManager *instance;
   self = [super init];
   if(self)
   {
-    xmppStream_ = nil;
-    xmppRoster_ = nil;
-    xmppAvatarModule_ = nil;
+    xmpp_ = [MVXMPP xmpp];
+    [xmpp_ addDelegate:self];
     multicastDelegate_ = (MVMulticastDelegate<MVBuddiesManagerDelegate>*)
                          [[MVMulticastDelegate alloc] init];
     avatarsCache_ = [[NSCache alloc] init];
@@ -48,24 +45,20 @@ static MVBuddiesManager *instance;
   return self;
 }
 
-- (void)setXmppStream:(XMPPStream *)xmppStream
+- (void)dealloc
 {
-  xmppStream_ = xmppStream;
-  xmppRoster_ = (XMPPRoster*)[xmppStream moduleOfClass:[XMPPRoster class]];
-  xmppAvatarModule_ = (XMPPvCardAvatarModule*)[xmppStream moduleOfClass:
-                                               [XMPPvCardAvatarModule class]];
-  
-  [xmppStream_ autoAddDelegate:self
-                 delegateQueue:dispatch_get_main_queue()
-              toModulesOfClass:[XMPPvCardAvatarModule class]];
-  [xmppRoster_ addDelegate:self delegateQueue:dispatch_get_main_queue()];
+  [xmpp_ removeDelegate:self];
 }
 
 - (NSArray*)buddies
 {
-  XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
-  NSArray *users = [storage unsortedUsers];
-  return [users sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+  NSMutableSet *users = [NSMutableSet set];
+  for(XMPPRoster *roster in self.xmpp.rosters)
+  {
+    XMPPRosterMemoryStorage *storage = roster.xmppRosterStorage;
+    [users addObjectsFromArray:[storage unsortedUsers]];
+  }
+  return [users.allObjects sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
     NSObject<XMPPUser> *user1 = (NSObject<XMPPUser>*)obj1;
     NSObject<XMPPUser> *user2 = (NSObject<XMPPUser>*)obj2;
     NSString *user1Name = (user1.nickname ? user1.nickname : user1.jid.bare);
@@ -90,12 +83,14 @@ static MVBuddiesManager *instance;
 
 - (TUIImage*)avatarForJid:(XMPPJID*)jid
 {
+  if(!jid || !jid.bare)
+    return nil;
   TUIImage *avatar = [self.avatarsCache objectForKey:jid.bare];
   if(!avatar)
   {
     if([self.jidsWithoutAvatar containsObject:jid.bare])
       return nil;
-    NSData *photoData = [self.xmppAvatarModule photoDataForJID:jid];
+    NSData *photoData = [self.xmpp photoDataForJID:jid];
     if(photoData)
     {
       avatar = [TUIImage imageWithData:photoData];
@@ -110,7 +105,7 @@ static MVBuddiesManager *instance;
 - (BOOL)isJidOnline:(XMPPJID*)jid
 {
   NSObject<XMPPUser> *user = [self userForJid:jid];
-  return (user && user.isOnline && self.xmppStream.isAuthenticated);
+  return (user && user.isOnline);
 }
 
 #pragma mark Delegate
@@ -129,8 +124,7 @@ static MVBuddiesManager *instance;
 
 - (NSObject<XMPPUser>*)userForJid:(XMPPJID*)jid
 {
-  XMPPRosterMemoryStorage *storage = self.xmppRoster.xmppRosterStorage;
-  return [storage userForJID:jid];
+  return [self.xmpp userForJID:jid];
 }
 
 #pragma mark XMPPStreamDelegate Methods
