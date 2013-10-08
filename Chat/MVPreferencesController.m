@@ -5,7 +5,7 @@
 #import "EMKeychainItem.h"
 #import "CLAPIEngine.h"
 
-@interface MVPreferencesController () <CLAPIEngineDelegate>
+@interface MVPreferencesController () <CLAPIEngineDelegate, MVXMPPDelegate>
 
 @property (strong, readwrite) NSMutableArray *gmailAccounts;
 @property (strong, readwrite) NSString *gmailEmail;
@@ -69,6 +69,7 @@
 
 - (void)awakeFromNib
 {
+  [[MVXMPP xmpp] addDelegate:self];
   self.cachedItemArray = [NSArray arrayWithArray:self.gmailMenu.itemArray];
   [self refreshMenu];
 }
@@ -145,6 +146,8 @@
     item.target = self;
     item.representedObject = account;
     [item setEnabled:YES];
+    if([[MVXMPP xmpp] isEmailConnected:account.email])
+      item.image = [NSImage imageNamed:@"icon_online"];
     [self.gmailMenu addItem:item];
   }
   
@@ -217,6 +220,23 @@
   MVUploadAuthorization *uploadAuth = [[MVUploadAuthorization alloc] initWithCloudAppEmail:self.cloudappEmail
                                                                                   password:self.cloudappPassword];
   [[MVURLKit sharedInstance] setUploadAuthorization:uploadAuth];
+}
+
+#pragma MVXMPPDelegate Methods
+
+- (void)xmppDidConnect:(XMPPJID *)jid
+{
+  [self refreshMenu];
+}
+
+- (void)xmppDidFailToConnect:(XMPPJID *)jid
+{
+  [self refreshMenu];
+}
+
+- (void)xmppDidDisconnect:(XMPPJID *)jid
+{
+  [self refreshMenu];
 }
 
 @end

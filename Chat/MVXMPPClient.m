@@ -85,6 +85,11 @@
   [self.xmppStream disconnect];
 }
 
+- (BOOL)isConnected
+{
+  return self.xmppStream.isConnected;
+}
+
 - (XMPPJID*)jid
 {
   return self.xmppStream.myJID;

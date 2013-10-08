@@ -22,5 +22,6 @@
 - (void)connectWithEmail:(NSString*)email password:(NSString*)password;
 - (void)connectIfDifferentWithEmail:(NSString*)email password:(NSString*)password;
 - (void)disconnect;
+- (BOOL)isConnected;
 
 @end

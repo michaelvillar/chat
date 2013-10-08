@@ -104,6 +104,12 @@ static MVXMPP *xmpp;
   }
 }
 
+- (BOOL)isEmailConnected:(NSString*)email
+{
+  MVXMPPClient *client = [self.accounts objectForKey:email];
+  return (client && client.isConnected);
+}
+
 - (NSArray*)rosters
 {
   NSMutableArray *rosters = [NSMutableArray array];
@@ -185,17 +191,17 @@ static MVXMPP *xmpp;
 
 - (void)mvXMPPClientDidConnect:(MVXMPPClient *)client
 {
-  
+  [self.multicastDelegate xmppDidConnect:client.jid];
 }
 
 - (void)mvXMPPClientDidFailToConnect:(MVXMPPClient *)client withError:(NSError *)error
 {
-  
+  [self.multicastDelegate xmppDidFailToConnect:client.jid];
 }
 
 - (void)mvXMPPClientDidDisconnect:(MVXMPPClient *)client withError:(NSError *)error
 {
-  
+  [self.multicastDelegate xmppDidDisconnect:client.jid];
 }
 
 #pragma mark XMPPStreamDelegate

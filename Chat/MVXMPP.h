@@ -9,6 +9,7 @@
 - (void)addAccountWithEmail:(NSString*)email
                    password:(NSString*)password;
 - (void)deleteAccountWithEmail:(NSString*)email;
+- (BOOL)isEmailConnected:(NSString*)email;
 - (NSArray*)rosters;
 - (NSObject<XMPPUser>*)userForJID:(XMPPJID*)jid;
 - (NSSet*)JIDsWithUserJID:(XMPPJID*)jid;
@@ -27,5 +28,8 @@
 - (void)xmppvCardAvatarModule:(XMPPvCardAvatarModule *)vCardTempModule
               didReceivePhoto:(NSImage *)photo
                        forJID:(XMPPJID *)jid;
+- (void)xmppDidConnect:(XMPPJID *)jid;
+- (void)xmppDidFailToConnect:(XMPPJID *)jid;
+- (void)xmppDidDisconnect:(XMPPJID *)jid;
 
 @end
