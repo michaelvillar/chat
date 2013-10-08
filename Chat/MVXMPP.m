@@ -132,7 +132,7 @@ static MVXMPP *xmpp;
   {
     XMPPRoster *roster = client.xmppRoster;
     XMPPRosterMemoryStorage *storage = roster.xmppRosterStorage;
-    if([storage userForJID:jid] && client.jid)
+    if([storage userForJID:jid] && client.jid && ![client.jid isEqualToJID:jid options:XMPPJIDCompareBare])
     {
       [jids addObject:client.jid];
     }

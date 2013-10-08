@@ -19,6 +19,7 @@
 
 @property (strong, readwrite) MVXMPP *xmpp;
 @property (strong, readwrite) XMPPJID *jid;
+@property (strong, readwrite, nonatomic) XMPPJID *fromJID;
 @property (strong, readwrite) MVChatSectionView *chatSectionView;
 @property (strong, readwrite) MVDiscussionView *discussionView;
 @property (strong, readwrite) MVRoundedTextView *textView;
@@ -42,6 +43,7 @@
 
 @synthesize xmpp                      = xmpp_,
             jid                       = jid_,
+            fromJID                   = fromJID_,
             chatSectionView           = chatSectionView_,
             discussionView            = discussionView_,
             textView                  = textView_,
@@ -69,6 +71,7 @@
     unreadMessages_ = [NSMutableOrderedSet orderedSet];
     uploadingMessages_ = [NSMutableSet set];
     identifier_ = nil;
+    fromJID_ = nil;
   }
   return self;
 }
@@ -103,6 +106,16 @@
     NSOrderedSet *messages = [[MVHistoryManager sharedInstance] messagesForJid:self.jid
                                                                          limit:25];
     [discussionViewController_ prependMessages:messages.array];
+  }
+  return self;
+}
+
+- (id)initWithJid:(XMPPJID*)jid fromJid:(XMPPJID*)fromJid
+{
+  self = [self initWithJid:jid];
+  if(self)
+  {
+    fromJID_ = fromJid;
   }
   return self;
 }
@@ -246,7 +259,7 @@ animatedFromTextView:(BOOL)animatedFromTextView
           
           [body setStringValue:asset.fileUploadRemoteURL.absoluteString];
           
-//          [self.xmppStream sendElement:message];
+          [self.xmpp sendElement:message fromEmail:self.fromJID.bare];
           [[MVHistoryManager sharedInstance] saveMessage:message forJid:self.jid];
           
           [self.uploadingMessages removeObject:dic];
@@ -281,6 +294,8 @@ animatedFromTextView:(BOOL)animatedFromTextView
 
 - (XMPPJID*)fromJID
 {
+  if (fromJID_)
+    return fromJID_;
   NSSet *jids = [self.xmpp JIDsWithUserJID:self.jid];
   if(jids.count > 0)
     return jids.anyObject;
@@ -292,13 +307,13 @@ animatedFromTextView:(BOOL)animatedFromTextView
   XMPPMessage *message = [XMPPMessage elementWithName:@"message"];
 	[message addAttributeWithName:@"type" stringValue:@"chat"];
 	[message addAttributeWithName:@"to" stringValue:self.jid.full];
-//  [message addAttributeWithName:@"from" stringValue:self.xmppStream.myJID.full];
+  [message addAttributeWithName:@"from" stringValue:self.fromJID.full];
 	
   NSXMLElement *stateElement = [NSXMLElement elementWithName:(composing ? @"composing" : @"active")];
   [stateElement addAttributeWithName:@"xmlns" stringValue:@"http://jabber.org/protocol/chatstates"];
   [message addChild:stateElement];
 	
-//	[self.xmppStream sendElement:message];
+	[self.xmpp sendElement:message fromEmail:self.fromJID.bare];
 }
 
 - (void)removeWriteItemForJid:(XMPPJID*)jid

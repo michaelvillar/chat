@@ -10,6 +10,7 @@
 @property (readonly) NSUInteger unreadMessagesCount;
 
 - (id)initWithJid:(XMPPJID*)jid;
+- (id)initWithJid:(XMPPJID*)jid fromJid:(XMPPJID*)fromJid;
 - (void)addMessage:(XMPPMessage*)message;
 - (void)sendMessage:(NSString*)string
 animatedFromTextView:(BOOL)animatedFromTextView;
