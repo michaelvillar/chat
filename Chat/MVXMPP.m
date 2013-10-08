@@ -61,7 +61,6 @@ static MVXMPP *xmpp;
       [client.xmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
       [client.xmppRoster addDelegate:self delegateQueue:dispatch_get_main_queue()];
       client.delegate = self;
-      NSLog(@"connect with %@ %@", account.email, account.password);
       [client connectWithEmail:account.email password:account.password];
     }
     else {
