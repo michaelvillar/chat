@@ -158,7 +158,6 @@
 		4C1E01DE17320809005BDA73 /* MVvCardFileDiskModuleStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E01DD17320809005BDA73 /* MVvCardFileDiskModuleStorage.m */; };
 		4C1E01E117320CCA005BDA73 /* avatar_over.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01DF17320CCA005BDA73 /* avatar_over.png */; };
 		4C1E01E217320CCA005BDA73 /* avatar_over_alternate.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01E017320CCA005BDA73 /* avatar_over_alternate.png */; };
-		4C1E01E41732445E005BDA73 /* Account.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01E31732445E005BDA73 /* Account.xib */; };
 		4C1E01ED1732496A005BDA73 /* EMKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E01EC1732496A005BDA73 /* EMKeychainItem.m */; };
 		4C1E01F017324A7E005BDA73 /* MVConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1E01EF17324A7D005BDA73 /* MVConnectionManager.m */; };
 		4C1E01F317333116005BDA73 /* icon_writing.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C1E01F217333116005BDA73 /* icon_writing.png */; };
@@ -279,7 +278,6 @@
 		4CCFEBDD17404B930054ABC2 /* libCloud.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCFEBDC17404B930054ABC2 /* libCloud.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		4CCFEBE9174050AC0054ABC2 /* MVCloudAppFileUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBE8174050AC0054ABC2 /* MVCloudAppFileUpload.m */; };
 		4CCFEBFA17405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */; };
-		4CCFEBFF17406E610054ABC2 /* CloudAppAccount.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -571,7 +569,6 @@
 		4C1E01DD17320809005BDA73 /* MVvCardFileDiskModuleStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVvCardFileDiskModuleStorage.m; sourceTree = "<group>"; };
 		4C1E01DF17320CCA005BDA73 /* avatar_over.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar_over.png; sourceTree = "<group>"; };
 		4C1E01E017320CCA005BDA73 /* avatar_over_alternate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar_over_alternate.png; sourceTree = "<group>"; };
-		4C1E01E31732445E005BDA73 /* Account.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Account.xib; path = Chat/Account.xib; sourceTree = "<group>"; };
 		4C1E01E81732485B005BDA73 /* MVConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVConstants.h; sourceTree = "<group>"; };
 		4C1E01EB1732496A005BDA73 /* EMKeychainItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMKeychainItem.h; sourceTree = "<group>"; };
 		4C1E01EC1732496A005BDA73 /* EMKeychainItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMKeychainItem.m; sourceTree = "<group>"; };
@@ -776,7 +773,6 @@
 		4CCFEBF7174058C40054ABC2 /* MVFileUpload_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVFileUpload_Private.h; sourceTree = "<group>"; };
 		4CCFEBF817405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPasteboard+EnumerateKeysAndDatas.h"; sourceTree = "<group>"; };
 		4CCFEBF917405A8A0054ABC2 /* NSPasteboard+EnumerateKeysAndDatas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPasteboard+EnumerateKeysAndDatas.m"; sourceTree = "<group>"; };
-		4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CloudAppAccount.xib; path = Chat/CloudAppAccount.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1525,8 +1521,6 @@
 			isa = PBXGroup;
 			children = (
 				4C1EFF6F1730C65C005BDA73 /* MainMenu.xib */,
-				4C1E01E31732445E005BDA73 /* Account.xib */,
-				4CCFEBFE17406E610054ABC2 /* CloudAppAccount.xib */,
 				4C2C69CA17FE79E20038C604 /* Preferences.xib */,
 			);
 			name = XIBs;
@@ -2061,7 +2055,6 @@
 				4C1E01DB173203D8005BDA73 /* icon_overflow_menu.png in Resources */,
 				4C1E01E117320CCA005BDA73 /* avatar_over.png in Resources */,
 				4C1E01E217320CCA005BDA73 /* avatar_over_alternate.png in Resources */,
-				4C1E01E41732445E005BDA73 /* Account.xib in Resources */,
 				4C1E01F317333116005BDA73 /* icon_writing.png in Resources */,
 				4C1E01FE1733313B005BDA73 /* icon_video_play.png in Resources */,
 				4C1E01FF1733313B005BDA73 /* icon_video_play_active.png in Resources */,
@@ -2119,7 +2112,6 @@
 				4C7DFF83173826E20048F8DA /* icon_activity_menubar@2x.png in Resources */,
 				4C7DFF8B173884210048F8DA /* icon_online@2x.png in Resources */,
 				4C7DFF8D1738842A0048F8DA /* icon_online.png in Resources */,
-				4CCFEBFF17406E610054ABC2 /* CloudAppAccount.xib in Resources */,
 				4C55DEEB174340060002DE67 /* placeholder_avatar.png in Resources */,
 				4C55DEED1743400C0002DE67 /* placeholder_avatar@2x.png in Resources */,
 				4C94F9531750467C00DAB463 /* icon.icns in Resources */,
