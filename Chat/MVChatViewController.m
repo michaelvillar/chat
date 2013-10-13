@@ -77,7 +77,7 @@
       [path lineToPoint:CGPointMake(rect.size.width, rect.size.height)];
       [path closePath];
       
-      [[TUIColor colorWithRed:0.8314 green:0.8510 blue:0.8745 alpha:1] set];
+      [[TUIColor whiteColor] set];
       [path fill];
     };
     

@@ -1,13 +1,6 @@
-//
-//  MVSwipeableView.m
-//  Chat
-//
-//  Created by Michaël Villar on 5/8/13.
-//
-//
-
 #import "MVSwipeableView.h"
 #import "MVNSContentView.h"
+#import "TUIView+Easing.h"
 
 @interface MVSwipeableView ()
 
@@ -165,8 +158,8 @@
     return [self updateContentViewFrame:NO];
   frame.origin.x = toX;
 
-  [TUIView animateWithDuration:0.3 animations:^{
-    [TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];
+  [TUIView animateWithDuration:0.45 animations:^{
+    [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.28 :1.2 :0.46 :1]];
     self.contentView.frame = frame;
   } completion:^(BOOL finished) {
     [self updateContentViewFrame:NO];
