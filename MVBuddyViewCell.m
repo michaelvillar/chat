@@ -158,15 +158,26 @@
 {
   [super setSelected:s animated:animated];
   
-  [TUIView animateWithDuration:0.45 animations:^{
-    [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.28 :1.63 :0.46 :1]];
+  float duration = (s ? 0.45 : 0.2);
+  [TUIView animateWithDuration:duration animations:^{
     if(s) {
-      self.arrowView.layer.transform = CATransform3DMakeScale(1, 1, 1);
+      [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.2 :2.5 :0.6 :1]];
       self.avatarView.layer.transform = CATransform3DMakeScale(1.1818, 1.1818, 1.1818);
     }
     else {
-      self.arrowView.layer.transform = CATransform3DMakeScale(0.01, 1, 1);
+      [TUIView setAnimationCurve:TUIViewAnimationCurveEaseOut];
       self.avatarView.layer.transform = CATransform3DIdentity;
+    }
+  }];
+
+  [TUIView animateWithDuration:duration animations:^{
+    if(s) {
+      [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.28 :1.63 :0.46 :1]];
+      self.arrowView.layer.transform = CATransform3DMakeScale(1, 1, 1);
+    }
+    else {
+      [TUIView setAnimationCurve:TUIViewAnimationCurveEaseOut];
+      self.arrowView.layer.transform = CATransform3DMakeScale(0.01, 1, 1);
     }
     [self layoutSubviews];
   }];
