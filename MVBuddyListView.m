@@ -274,8 +274,10 @@ static NSGradient *backgroundGradient = nil;
 - (void)selectNext
 {
   TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
-  if(!indexPath || indexPath.row + 1 >= [self.tableView numberOfRowsInSection:0])
+  if(!indexPath)
     indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
+  else if(indexPath.row + 1 >= [self.tableView numberOfRowsInSection:0])
+    return;
   else
     indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
   [self.tableView selectRowAtIndexPath:indexPath animated:NO
@@ -285,9 +287,10 @@ static NSGradient *backgroundGradient = nil;
 - (void)selectPrevious
 {
   TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
-  if(!indexPath || indexPath.row == 0)
-    indexPath = [TUIFastIndexPath indexPathForRow:[self.tableView numberOfRowsInSection:0] - 1
-                                        inSection:0];
+  if(!indexPath)
+    indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
+  else if(indexPath.row == 0)
+    return;
   else
     indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row - 1 inSection:0];
   [self.tableView selectRowAtIndexPath:indexPath animated:NO
