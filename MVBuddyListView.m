@@ -1,11 +1,3 @@
-//
-//  MVBuddyListView.m
-//  Chat
-//
-//  Created by Michaël Villar on 5/6/13.
-//
-//
-
 #import "MVBuddyListView.h"
 #import "MVRoundedTextView.h"
 #import "NSEvent+CharacterDetection.h"
@@ -58,7 +50,7 @@ static NSGradient *backgroundGradient = nil;
   {
     tableView_ = [[TUITableView alloc] initWithFrame:self.bounds
                                                style:TUITableViewStylePlain];
-    tableView_.backgroundColor = [TUIColor clearColor];
+    tableView_.backgroundColor = [TUIColor whiteColor];
     tableView_.opaque = NO;
     tableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                   TUIViewAutoresizingFlexibleHeight;
@@ -264,6 +256,42 @@ static NSGradient *backgroundGradient = nil;
     [self.nsWindow postEvent:keyEvent atStart:YES];
     [self setSearchFieldVisible:YES animated:YES];
   }
+  else if(event.keyCode == 125)
+    [self selectNext];
+  else if(event.keyCode == 126)
+    [self selectPrevious];
+  else if(event.keyCode == 36)
+  {
+    if ([self.tableView.delegate respondsToSelector:@selector(tableView:didClickRowAtIndexPath:withEvent:)]) {
+      TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+      [self.tableView.delegate tableView:self.tableView didClickRowAtIndexPath:indexPath withEvent:nil];
+    }
+  }
+}
+
+#pragma mark Private Methods
+
+- (void)selectNext
+{
+  TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+  if(!indexPath || indexPath.row + 1 >= [self.tableView numberOfRowsInSection:0])
+    indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
+  else
+    indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
+  [self.tableView selectRowAtIndexPath:indexPath animated:NO
+                        scrollPosition:TUITableViewScrollPositionToVisible];
+}
+
+- (void)selectPrevious
+{
+  TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
+  if(!indexPath || indexPath.row == 0)
+    indexPath = [TUIFastIndexPath indexPathForRow:[self.tableView numberOfRowsInSection:0] - 1
+                                        inSection:0];
+  else
+    indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row - 1 inSection:0];
+  [self.tableView selectRowAtIndexPath:indexPath animated:NO
+                        scrollPosition:TUITableViewScrollPositionToVisible];
 }
 
 #pragma mark MVRoundedTextViewDelegate Methods
@@ -301,25 +329,12 @@ static NSGradient *backgroundGradient = nil;
     return NO;
   if(selector == @selector(moveDown:))
   {
-    TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
-    if(!indexPath || indexPath.row + 1 >= [self.tableView numberOfRowsInSection:0])
-      indexPath = [TUIFastIndexPath indexPathForRow:0 inSection:0];
-    else
-      indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row + 1 inSection:0];
-    [self.tableView selectRowAtIndexPath:indexPath animated:NO
-                          scrollPosition:TUITableViewScrollPositionToVisible];
+    [self selectNext];
     return YES;
   }
   else if(selector == @selector(moveUp:))
   {
-    TUIFastIndexPath *indexPath = self.tableView.indexPathForSelectedRow;
-    if(!indexPath || indexPath.row == 0)
-      indexPath = [TUIFastIndexPath indexPathForRow:[self.tableView numberOfRowsInSection:0] - 1
-                                          inSection:0];
-    else
-      indexPath = [TUIFastIndexPath indexPathForRow:indexPath.row - 1 inSection:0];
-    [self.tableView selectRowAtIndexPath:indexPath animated:NO
-                          scrollPosition:TUITableViewScrollPositionToVisible];
+    [self selectPrevious];
     return YES;
   }
   return NO;

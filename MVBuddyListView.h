@@ -1,11 +1,3 @@
-//
-//  MVBuddyListView.h
-//  Chat
-//
-//  Created by Michaël Villar on 5/6/13.
-//
-//
-
 #import <TwUI/TUIKit.h>
 
 @protocol MVBuddyListViewDelegate;

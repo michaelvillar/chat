@@ -1,16 +1,13 @@
-//
-//  MVBuddyViewCell.m
-//  Chat
-//
-//  Created by Michaël Villar on 5/6/13.
-//
-//
-
 #import "MVBuddyViewCell.h"
 #import "MVGraphicsFunctions.h"
+#import "PocketSVG.h"
+#import "TUIView+Easing.h"
 
 @interface MVBuddyViewCell ()
 
+@property (strong, readwrite) TUIView *avatarView;
+@property (strong, readwrite) TUIView *labelView;
+@property (strong, readwrite) TUIView *arrowView;
 @property (strong, readwrite) TUIView *drawView;
 
 @end
@@ -26,7 +23,10 @@
             lastRow = lastRow_,
             representedObject = representedObject_;
 
-@synthesize drawView = drawView_;
+@synthesize avatarView = avatarView_,
+            labelView = labelView_,
+            arrowView = arrowView_,
+            drawView = drawView_;
 
 - (id)initWithStyle:(TUITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -43,12 +43,68 @@
     representedObject_ = nil;
     
     self.opaque = NO;
-    self.backgroundColor = [TUIColor clearColor];
+    self.backgroundColor = [TUIColor whiteColor];
     self.clipsToBounds = NO;
     
     __weak __block MVBuddyViewCell *weakSelf = self;
+    avatarView_ = [[TUIView alloc] initWithFrame:CGRectMake(7.5, 4, 22, 22)];
+    avatarView_.backgroundColor = [TUIColor clearColor];
+    avatarView_.userInteractionEnabled = NO;
+    avatarView_.drawRect = ^(TUIView *view, CGRect rect)
+    {
+      [[NSGraphicsContext currentContext] saveGraphicsState];
+      NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:view.bounds];
+      [path addClip];
+      if(weakSelf.avatar)
+        [weakSelf.avatar drawInRect:view.bounds];
+      [[NSGraphicsContext currentContext] restoreGraphicsState];
+    };
+    
+    labelView_ = [[TUIView alloc] initWithFrame:CGRectZero];
+    labelView_.backgroundColor = [TUIColor whiteColor];
+    labelView_.userInteractionEnabled = NO;
+    labelView_.drawRect =^(TUIView *view, CGRect rect)
+    {
+      [[NSGraphicsContext currentContext] saveGraphicsState];
+      
+      [[TUIColor whiteColor] set];
+      [NSBezierPath fillRect:view.bounds];
+      
+      NSColor *fontColor;
+      if(weakSelf.isOnline)
+        fontColor = [NSColor colorWithDeviceWhite:0.2 alpha:1];
+      else
+        fontColor = [NSColor colorWithDeviceRed:0.6078 green:0.6510 blue:0.7059 alpha:1];
+      MVHelDrawString(weakSelf.fullname ? weakSelf.fullname : weakSelf.email,
+                      view.bounds,
+                      fontColor,
+                      13, NO,
+                      nil, CGSizeMake(0, 0), 0);
+      [[NSGraphicsContext currentContext] restoreGraphicsState];
+    };
+    
+    arrowView_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0, 24, 30.5)];
+    arrowView_.userInteractionEnabled = NO;
+    arrowView_.layout = ^(TUIView *view)
+    {
+      CGRect arrowViewFrame = view.frame;
+      arrowViewFrame.origin.x = weakSelf.bounds.size.width - arrowViewFrame.size.width + 1;
+      return arrowViewFrame;
+    };
+    arrowView_.backgroundColor = [TUIColor colorWithRed:0.1255 green:0.5137 blue:0.9686 alpha:1];
+    arrowView_.layer.anchorPoint = CGPointMake(1, 0.5);
+    arrowView_.layer.transform = CATransform3DMakeScale(0.01, 1, 1);
+    
+    PocketSVG *arrowSvg = [[PocketSVG alloc] initFromSVGFileNamed:@"arrow"];
+    CAShapeLayer *arrowLayer = [CAShapeLayer layer];
+    arrowLayer.frame = CGRectMake(8, 58, 6, 10);
+    arrowLayer.path = [PocketSVG getCGPathFromNSBezierPath:arrowSvg.bezier];
+    arrowLayer.fillColor = CGColorCreateGenericRGB(1, 1, 1, 1);
+    arrowLayer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5);
+    [arrowView_.layer addSublayer:arrowLayer];
+    
     CGRect rect = self.bounds;
-    rect.size.height = 37;
+    rect.size.height = 30;
     drawView_ = [[TUIView alloc] initWithFrame:rect];
     drawView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
     drawView_.opaque = NO;
@@ -57,86 +113,25 @@
     drawView_.drawRect = ^(TUIView *view, CGRect rect)
     {
       [[NSGraphicsContext currentContext] saveGraphicsState];
-      if(weakSelf.isHighlighted || weakSelf.isSelected)
-      {
-        [[NSColor colorWithDeviceRed:0.7961 green:0.8196 blue:0.8706 alpha:1.0000] set];
-      }
-      else if(weakSelf.isAlternate)
-      {
-        [[NSColor colorWithDeviceRed:0.9451 green:0.9569 blue:0.9765 alpha:1.0000] set];
-      }
-      else
-      {
-        [[NSColor colorWithDeviceRed:0.9059 green:0.9216 blue:0.9608 alpha:1.0000] set];
-      }
-      [NSBezierPath fillRect:view.bounds];
 
-      if(!weakSelf.isHighlighted && !weakSelf.isSelected)
-        [[NSColor colorWithDeviceRed:0.5686 green:0.6353 blue:0.7804 alpha:0.37] set];
-      else
-        [[NSColor colorWithDeviceRed:0.5804 green:0.6118 blue:0.6706 alpha:1.0000] set];
-      [NSBezierPath fillRect:CGRectMake(0, view.bounds.size.height - 1, view.bounds.size.width, 1)];
-
-      if(weakSelf.isHighlighted || weakSelf.isSelected)
-      {
-        [NSBezierPath fillRect:CGRectMake(0, 0, view.bounds.size.width, 1)];
-        
-        NSColor *startColor = [NSColor colorWithDeviceRed:0.6784 green:0.7098
-                                                     blue:0.7647 alpha:0.3];
-        NSColor *endColor = [NSColor colorWithDeviceRed:0.6784 green:0.7098
-                                                   blue:0.7647 alpha:0];
-        NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:startColor
-                                                             endingColor:endColor];
-        [gradient drawInRect:CGRectMake(0, view.bounds.size.height - 4,
-                                        view.bounds.size.width, 4) angle:-90];
-        
-      }
-
-      if(!weakSelf.isHighlighted && !weakSelf.isSelected)
-      {
-        [[NSColor colorWithCalibratedWhite:1 alpha:0.9] set];
-        [NSBezierPath fillRect:CGRectMake(0, view.bounds.size.height - 2, view.bounds.size.width, 1)];
-      }
-
+      [[NSColor colorWithDeviceRed:0.8314 green:0.8510 blue:0.8745 alpha:1.0000] set];
+      [NSBezierPath fillRect:CGRectMake(35, 0, view.bounds.size.width - 35, 0.5)];
+      
       [[NSGraphicsContext currentContext] restoreGraphicsState];
-      
-      
-      CGRect avatarRrect = CGRectMake(6, 7, 23, 23);
-      [[NSGraphicsContext currentContext] saveGraphicsState];
-      NSBezierPath *path = MVRoundedRectBezierPath(avatarRrect, 4.0);
-      [path addClip];
-      if(weakSelf.avatar)
-        [weakSelf.avatar drawInRect:avatarRrect];
-      [[NSGraphicsContext currentContext] restoreGraphicsState];
-      
-      [[TUIImage imageNamed:@"avatar_over.png" cache:YES] drawInRect:
-       CGRectMake(avatarRrect.origin.x, avatarRrect.origin.y - 1,
-                  avatarRrect.size.width, avatarRrect.size.height + 1)];
-      
-      NSColor *shadowColor = [NSColor whiteColor];
-      if(weakSelf.isHighlighted || weakSelf.isSelected)
-        shadowColor = [NSColor colorWithCalibratedWhite:1 alpha:0.6];
-      
-      CGRect labelRect = CGRectMake(35, 7, view.bounds.size.width - 30 - 30, 20);
-      MVDrawString(weakSelf.fullname ? weakSelf.fullname : weakSelf.email,
-                   labelRect,
-                   [NSColor blackColor],
-                   12, NO,
-                   shadowColor, CGSizeMake(0, -1), 0);
-      
-      if(weakSelf.isOnline)
-      {
-        CGRect iconOnlineRect = CGRectMake(view.bounds.size.width - 12 - 9, 11, 12, 12);
-        [[TUIImage imageNamed:@"icon_online.png" cache:YES] drawInRect:iconOnlineRect];
-      }
     };
+    
     [self addSubview:drawView_];
+    [self addSubview:labelView_];
+    [self addSubview:arrowView_];
+    [self addSubview:avatarView_];
   }
   return self;
 }
 
 - (void)setNeedsDisplay
 {
+  [self.avatarView setNeedsDisplay];
+  [self.labelView setNeedsDisplay];
   [self.drawView setNeedsDisplay];
 }
 
@@ -147,6 +142,34 @@
 
 - (void)drawRect:(CGRect)rect
 {
+}
+
+- (void)layoutSubviews
+{
+  float x = 36;
+  if (self.isSelected)
+    x = 38.5;
+  self.labelView.frame = CGRectMake(x, 6.5, self.bounds.size.width - x - 10, 20);
+  
+  [super layoutSubviews];
+}
+
+- (void)setSelected:(BOOL)s animated:(BOOL)animated
+{
+  [super setSelected:s animated:animated];
+  
+  [TUIView animateWithDuration:0.45 animations:^{
+    [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.28 :1.63 :0.46 :1]];
+    if(s) {
+      self.arrowView.layer.transform = CATransform3DMakeScale(1, 1, 1);
+      self.avatarView.layer.transform = CATransform3DMakeScale(1.1818, 1.1818, 1.1818);
+    }
+    else {
+      self.arrowView.layer.transform = CATransform3DMakeScale(0.01, 1, 1);
+      self.avatarView.layer.transform = CATransform3DIdentity;
+    }
+    [self layoutSubviews];
+  }];
 }
 
 @end

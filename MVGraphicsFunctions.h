@@ -8,6 +8,8 @@ NSBezierPath* MVRoundedRectBezierPath(CGRect rrect, CGFloat radius);
 #pragma mark String Drawing Methods
 NSSize MVSizeOfString (NSString *string, float fontSize, BOOL bold);
 NSDictionary* MVDictionaryForStringDrawing (float fontSize, BOOL bold);
+void MVHelDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
+                      BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur);
 void MVDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
                    BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur);
 void MVDrawStringAlignLineBreakMode (NSString *string, NSRect aRect, NSColor* fontColor,

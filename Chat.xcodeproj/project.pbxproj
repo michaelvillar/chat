@@ -244,6 +244,9 @@
 		4C1EFFFD1730CE10005BDA73 /* MVGetRedirectedURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFDC1730CE10005BDA73 /* MVGetRedirectedURL.m */; };
 		4C1EFFFE1730CE10005BDA73 /* MVImageService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFDE1730CE10005BDA73 /* MVImageService.m */; };
 		4C1EFFFF1730CE10005BDA73 /* MVJSONGetRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1EFFE01730CE10005BDA73 /* MVJSONGetRequest.m */; };
+		4C1FEA0E180A526600219EA5 /* PocketSVG.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1FEA0D180A526600219EA5 /* PocketSVG.m */; };
+		4C1FEA11180A52CD00219EA5 /* arrow.svg in Resources */ = {isa = PBXBuildFile; fileRef = 4C1FEA10180A52CD00219EA5 /* arrow.svg */; };
+		4C1FEA14180A563B00219EA5 /* TUIView+Easing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1FEA13180A563B00219EA5 /* TUIView+Easing.m */; };
 		4C2C69CB17FE79E20038C604 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C2C69CA17FE79E20038C604 /* Preferences.xib */; };
 		4C2FBC50174493DE001A8EA9 /* MVHistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FBC4F174493DE001A8EA9 /* MVHistoryManager.m */; };
 		4C2FBC53174494C2001A8EA9 /* MVHistoryConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C2FBC52174494C2001A8EA9 /* MVHistoryConversation.m */; };
@@ -717,6 +720,11 @@
 		4C1EFFF11730CE10005BDA73 /* MVVimeoVideoService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVVimeoVideoService.m; sourceTree = "<group>"; };
 		4C1EFFF21730CE10005BDA73 /* MVYoutubeVideoService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVYoutubeVideoService.h; sourceTree = "<group>"; };
 		4C1EFFF31730CE10005BDA73 /* MVYoutubeVideoService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVYoutubeVideoService.m; sourceTree = "<group>"; };
+		4C1FEA0C180A526600219EA5 /* PocketSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketSVG.h; sourceTree = "<group>"; };
+		4C1FEA0D180A526600219EA5 /* PocketSVG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketSVG.m; sourceTree = "<group>"; };
+		4C1FEA10180A52CD00219EA5 /* arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = arrow.svg; sourceTree = "<group>"; };
+		4C1FEA12180A563B00219EA5 /* TUIView+Easing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TUIView+Easing.h"; sourceTree = "<group>"; };
+		4C1FEA13180A563B00219EA5 /* TUIView+Easing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TUIView+Easing.m"; sourceTree = "<group>"; };
 		4C2C69CA17FE79E20038C604 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
 		4C2FBC4E174493DE001A8EA9 /* MVHistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVHistoryManager.h; sourceTree = "<group>"; };
 		4C2FBC4F174493DE001A8EA9 /* MVHistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVHistoryManager.m; sourceTree = "<group>"; };
@@ -1529,6 +1537,7 @@
 		4C1E01EA17324960005BDA73 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				4C1FEA0B180A525B00219EA5 /* PocketSVG */,
 				4C1E00111730D7FF005BDA73 /* XMPPFramework */,
 				4CCFEBDF17404BA00054ABC2 /* CloudApp */,
 				4CCFEBDE17404B980054ABC2 /* KeychainItem */,
@@ -1590,6 +1599,7 @@
 				4C1E00091730CE31005BDA73 /* Categories */,
 				4C1E01E917324954005BDA73 /* XIBs */,
 				4C1E01BA1731FE5A005BDA73 /* Images */,
+				4C1FEA0F180A52C400219EA5 /* SVG */,
 				4C1E01EA17324960005BDA73 /* Vendor */,
 				4C1EFF611730C65C005BDA73 /* Supporting Files */,
 				4C1EFF591730C65C005BDA73 /* Frameworks */,
@@ -1690,6 +1700,23 @@
 				4C55DEFD174341D40002DE67 /* Tools */,
 			);
 			name = URLKit;
+			sourceTree = "<group>";
+		};
+		4C1FEA0B180A525B00219EA5 /* PocketSVG */ = {
+			isa = PBXGroup;
+			children = (
+				4C1FEA0C180A526600219EA5 /* PocketSVG.h */,
+				4C1FEA0D180A526600219EA5 /* PocketSVG.m */,
+			);
+			name = PocketSVG;
+			sourceTree = "<group>";
+		};
+		4C1FEA0F180A52C400219EA5 /* SVG */ = {
+			isa = PBXGroup;
+			children = (
+				4C1FEA10180A52CD00219EA5 /* arrow.svg */,
+			);
+			name = SVG;
 			sourceTree = "<group>";
 		};
 		4C2FBC4D174493B8001A8EA9 /* History */ = {
@@ -1952,6 +1979,8 @@
 				4C1EFFB61730CD04005BDA73 /* TUIImage+ProportionalResize.m */,
 				4C1EFFB71730CD05005BDA73 /* TUIImage+LocalURLCaching.h */,
 				4C1EFFB81730CD05005BDA73 /* TUIImage+LocalURLCaching.m */,
+				4C1FEA12180A563B00219EA5 /* TUIView+Easing.h */,
+				4C1FEA13180A563B00219EA5 /* TUIView+Easing.m */,
 			);
 			name = TwUI;
 			sourceTree = "<group>";
@@ -2108,6 +2137,7 @@
 				4C7DFF7F173826E20048F8DA /* icon_activity_indicator_highlight@2x.png in Resources */,
 				4C7DFF80173826E20048F8DA /* icon_activity_indicator_over_blue@2x.png in Resources */,
 				4C7DFF81173826E20048F8DA /* icon_activity_indicator_over@2x.png in Resources */,
+				4C1FEA11180A52CD00219EA5 /* arrow.svg in Resources */,
 				4C7DFF82173826E20048F8DA /* icon_activity_menubar_active@2x.png in Resources */,
 				4C7DFF83173826E20048F8DA /* icon_activity_menubar@2x.png in Resources */,
 				4C7DFF8B173884210048F8DA /* icon_online@2x.png in Resources */,
@@ -2243,6 +2273,7 @@
 				4C1E01701730D80F005BDA73 /* XMPPCapabilities.xcdatamodel in Sources */,
 				4C1E01711730D80F005BDA73 /* XMPPCapabilitiesCoreDataStorage.m in Sources */,
 				4C1E01721730D80F005BDA73 /* XMPPCapsCoreDataStorageObject.m in Sources */,
+				4C1FEA14180A563B00219EA5 /* TUIView+Easing.m in Sources */,
 				4C1E01731730D80F005BDA73 /* XMPPCapsResourceCoreDataStorageObject.m in Sources */,
 				4C1E01741730D80F005BDA73 /* XMPPCapabilities.m in Sources */,
 				4C1E01751730D80F005BDA73 /* XMPPMessageArchiving.xcdatamodeld in Sources */,
@@ -2264,6 +2295,7 @@
 				4C1E01851730D80F005BDA73 /* GCDMulticastDelegate.m in Sources */,
 				4C1E01861730D80F005BDA73 /* LibIDN.m in Sources */,
 				4C1E01871730D80F005BDA73 /* RFImageToDataTransformer.m in Sources */,
+				4C1FEA0E180A526600219EA5 /* PocketSVG.m in Sources */,
 				4C1E01881730D80F005BDA73 /* XMPPIDTracker.m in Sources */,
 				4C1E01891730D80F005BDA73 /* XMPPSRVResolver.m in Sources */,
 				4C1E018A1730D80F005BDA73 /* GCDAsyncSocket.m in Sources */,

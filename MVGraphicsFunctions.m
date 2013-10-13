@@ -67,6 +67,34 @@ NSDictionary* MVDictionaryForStringDrawing (float fontSize, BOOL bold)
 	return dict;
 }
 
+void MVHelDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
+                      BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur)
+{
+  NSDictionary* dict = MVDictionaryForStringDrawing(fontSize, bold);
+	NSShadow *shadow = nil;
+	if(shadowColor != nil) {
+		shadow = [[MVShadow alloc] init];
+		[shadow setShadowOffset:shadowOffset];
+		[shadow setShadowBlurRadius:shadowBlur];
+		[shadow setShadowColor:shadowColor];
+	}
+  
+	NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+	[dict setValue:style forKey:NSParagraphStyleAttributeName];
+	[dict setValue:fontColor forKey:NSForegroundColorAttributeName];
+
+  NSFont *font = [NSFont fontWithName:@"Helvetica Neue" size:fontSize];
+  [dict setValue:font forKey:NSFontAttributeName];
+
+	[NSGraphicsContext saveGraphicsState];
+	if(shadow)
+		[shadow set];
+  
+	[string drawInRect:aRect withAttributes:dict];
+  
+	[NSGraphicsContext restoreGraphicsState];
+}
+
 void MVDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
                    BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur)
 {
@@ -96,7 +124,7 @@ void MVDrawStringAlignLineBreakMode (NSString *string, NSRect aRect, NSColor* fo
 	[style setLineBreakMode:lineBreakMode];
 	[dict setValue:style forKey:NSParagraphStyleAttributeName];
 	[dict setValue:fontColor forKey:NSForegroundColorAttributeName];
-
+  
 	[NSGraphicsContext saveGraphicsState];
 	if(shadow)
 		[shadow set];

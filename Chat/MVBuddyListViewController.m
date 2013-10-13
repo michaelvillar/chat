@@ -177,7 +177,7 @@ didClickRowAtIndexPath:(TUIFastIndexPath *)indexPath
 - (CGFloat)tableView:(TUITableView *)tableView
 heightForRowAtIndexPath:(TUIFastIndexPath *)indexPath
 {
-  return 36;
+  return 30;
 }
 
 - (TUITableViewCell *)tableView:(TUITableView *)tableView
