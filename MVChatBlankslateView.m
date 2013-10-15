@@ -57,7 +57,7 @@
                                                self.bounds.size.height - 71),
                                     [NSColor colorWithDeviceRed:0.6078 green:0.6431
                                                            blue:0.7098 alpha:1.0000],
-                                    12, YES,
+                                    12, kMVStringTypeBold,
                                     [NSColor colorWithDeviceWhite:1 alpha:0.8],
                                     CGSizeMake(0, -1),
                                     0, 1, NSLineBreakByWordWrapping);

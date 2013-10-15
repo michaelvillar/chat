@@ -1,6 +1,7 @@
 #import "MVTabsView.h"
 #import "MVTabView.h"
 #import "NSObject+PerformBlockAfterDelay.h"
+#import "TUIView+Easing.h"
 
 #define kMVTabsViewAnimationDuration 0.3
 #define kMVTabsViewOverflowMargin 30
@@ -18,6 +19,7 @@
 @property (strong, readwrite) TUIView *maskView;
 @property (strong, readwrite) TUIButton *overflowButton;
 @property (strong, readwrite) TUIView *overflowButtonBreathingView;
+@property (strong, readwrite) TUIView *selectedBarView;
 @property (readwrite) BOOL menuOpened;
 
 - (NSArray*)overflowTabs;
@@ -43,6 +45,7 @@
             maskView          = maskView_,
             overflowButton    = overflowButton_,
             overflowButtonBreathingView = overflowButtonBreathingView_,
+            selectedBarView = selectedBarView_,
             menuOpened        = menuOpened_,
             delegate          = delegate_;
 
@@ -127,6 +130,11 @@
       }
     };
     contentView_.layer.mask = maskView_.layer;
+    
+    selectedBarView_ = [[TUIView alloc] initWithFrame:CGRectMake(-50, 0, 100, 3)];
+    selectedBarView_.backgroundColor = [TUIColor colorWithRed:0.1255 green:0.5137 blue:0.9686 alpha:1.0000];
+    selectedBarView_.layer.anchorPoint = CGPointMake(0, 0.5);
+    [self addSubview:selectedBarView_];
   }
   return self;
 }
@@ -139,6 +147,15 @@
   [super layoutSubviews];
   [self layoutTabs:NO];
   [self updateOverflowButtonVisibility];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+  [[TUIColor colorWithRed:0.9333 green:0.9412 blue:0.9569 alpha:1] set];
+  [NSBezierPath fillRect:self.bounds];
+  
+  [[TUIColor colorWithRed:0.831373 green:0.850980 blue:0.874510 alpha:1.0000] set];
+  [NSBezierPath fillRect:CGRectMake(0, 0, self.bounds.size.width, 1)];
 }
 
 #pragma mark -
@@ -169,7 +186,6 @@
   MVTabView *tabView = [[MVTabView alloc] initWithFrame:CGRectMake(0, 0, 1, 23)];
   tabView.name = name;
   tabView.identifier = identifier;
-  tabView.closable = closable;
   tabView.sortable = sortable;
   tabView.online = online;
   tabView.delegate = self;
@@ -327,6 +343,8 @@
     }
 
     self.selectedTabView = newSelectedTabView;
+    
+    [self updateSelectedBarFrame];
 
     if(self.selectedTabView) {
       [TUIView animateWithDuration:0.2 animations:^{
@@ -648,7 +666,7 @@
         w = self.bounds.size.width - x + 2;
       }
     }
-    w = MAX(w, 40);
+    w = MAX(w, 22);
 
     if(self.sortingTabView != tabView) {
       [TUIView animateWithDuration:kMVTabsViewAnimationDuration animations:^{
@@ -670,6 +688,7 @@
   self.totalWidth = x - 1.0;
   [self updateOverflowButtonVisibility];
   [self updateTabszPositions];
+  [self updateSelectedBarFrame];
 }
 
 - (void)updateTabszPositions
@@ -687,17 +706,26 @@
   }
 }
 
+- (void)updateSelectedBarFrame
+{
+  CGRect selectedBarViewFrame = self.selectedBarView.frame;
+  selectedBarViewFrame.origin.x = self.selectedTabView.frame.origin.x;
+  selectedBarViewFrame.size.width = self.selectedTabView.frame.size.width - 1.5;
+  [TUIView animateWithDuration:0.45 animations:^{
+    [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.20 :1.4 :0.46 :1]];
+    CATransform3D transform = CATransform3DIdentity;
+    transform = CATransform3DScale(transform, selectedBarViewFrame.size.width / 100, 1, 1);
+    transform = CATransform3DTranslate(transform, selectedBarViewFrame.origin.x / (selectedBarViewFrame.size.width / 100), 0, 0);
+    self.selectedBarView.layer.transform = transform;
+  }];
+}
+
 #pragma mark -
 #pragma mark MVTabViewDelegate Methods
 
 - (void)tabViewShouldBeSelect:(MVTabView*)tabView
 {
   [self setSelectedTab:tabView.identifier];
-}
-
-- (void)tabViewShouldBeClose:(MVTabView*)tabView
-{
-  [self removeTab:tabView.identifier animated:YES];
 }
 
 #pragma mark -

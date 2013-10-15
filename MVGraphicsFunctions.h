@@ -6,18 +6,19 @@ NSBezierPath* MVRoundedRectBezierPath(CGRect rrect, CGFloat radius);
 
 #pragma mark -
 #pragma mark String Drawing Methods
-NSSize MVSizeOfString (NSString *string, float fontSize, BOOL bold);
-NSDictionary* MVDictionaryForStringDrawing (float fontSize, BOOL bold);
-void MVHelDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
-                      BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur);
+NSSize MVSizeOfString (NSString *string, float fontSize, int style);
+NSDictionary* MVDictionaryForStringDrawing (float fontSize, int style);
+#define kMVStringTypeNormal 0
+#define kMVStringTypeMedium 1
+#define kMVStringTypeBold 2
 void MVDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
-                   BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur);
+                   int style, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur);
 void MVDrawStringAlignLineBreakMode (NSString *string, NSRect aRect, NSColor* fontColor,
-                                      float fontSize, BOOL bold, NSColor* shadowColor,
+                                      float fontSize, int style, NSColor* shadowColor,
                                       NSSize shadowOffset, float shadowBlur,
                                       int alignment, int lineBreakMode);
 void MVDrawStringAlign (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
-                        BOOL bold, NSColor* shadowColor, NSSize shadowOffset,
+                        int style, NSColor* shadowColor, NSSize shadowOffset,
                          float shadowBlur, int alignment);
 void MVDrawAttributedStringWithColor(NSAttributedString *string, NSRect aRect, NSColor* fontColor,
                                       NSColor* shadowColor, NSSize shadowOffset, int alignment,

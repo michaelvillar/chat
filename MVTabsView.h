@@ -10,7 +10,7 @@
 - (void)tabsViewDidChangeOrder:(MVTabsView*)tabsView;
 @end
 
-@interface MVTabsView : MVTopBarView
+@interface MVTabsView : TUIView
 
 @property (weak, readwrite) NSObject <MVTabsViewDelegate> *delegate;
 

@@ -102,7 +102,7 @@
     [self.tabsView addTab:[self titleForController:buddyListViewController_]
                  closable:NO
                  sortable:NO
-                   online:NO
+                   online:YES
                identifier:buddyListViewController_
                   atIndex:1
                  animated:YES];

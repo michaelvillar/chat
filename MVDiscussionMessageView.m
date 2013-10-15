@@ -706,7 +706,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
                     CGRectMake(headerRect.origin.x + 42, headerRect.origin.y + 21,
                                headerRect.size.width - 42 - 29, 16),
                     [NSColor blackColor],
-                    12, YES,
+                    12, kMVStringTypeBold,
                     shadowColor, CGSizeMake(0, -1), 0);
 
       // screenname
@@ -716,7 +716,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
                     (view.item.own ?
                      [NSColor colorWithDeviceRed:0.4980 green:0.5725 blue:0.7255 alpha:1.0000] :
                      [NSColor colorWithDeviceRed:0.5490 green:0.5725 blue:0.6039 alpha:1.0000]),
-                    12, NO,
+                    12, kMVStringTypeNormal,
                     shadowColor, CGSizeMake(0, -1), 0);
     }
   }
@@ -736,7 +736,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
     {
       [[NSGraphicsContext currentContext] saveGraphicsState];
 
-      CGSize size = MVSizeOfString(string, 9, YES);
+      CGSize size = MVSizeOfString(string, 9, kMVStringTypeBold);
       size.width += 10;
       float roundedRectX = round((view.bounds.size.width - size.width) / 2);
       if(dateFormatter.dateStyle == NSDateFormatterNoStyle)
@@ -798,7 +798,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
                        rrect,
                        fontColor,
                        9,
-                       YES,
+                       kMVStringTypeBold,
                        shadowColor,
                        CGSizeMake(0, -1),
                        0,
@@ -806,7 +806,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
 
     if(dateFormatter.dateStyle == NSDateFormatterNoStyle)
     {
-      CGSize size = MVSizeOfString(string, 9, YES);
+      CGSize size = MVSizeOfString(string, 9, kMVStringTypeBold);
       CGPoint point = CGPointMake(round((view.bounds.size.width - size.width) / 2 - 16), 4);
       [[TUIImage imageNamed:(view.style == kMVDiscussionViewStyleTransparent ?
                              @"icon_clock_alternate.png" :
@@ -911,7 +911,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
                     textRect,
                     fontColor,
                     11,
-                    NO,
+                    kMVStringTypeNormal,
                     shadowColor,
                     CGSizeMake(0, -1),
                     0);

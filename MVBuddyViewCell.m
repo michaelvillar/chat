@@ -75,11 +75,11 @@
         fontColor = [NSColor colorWithDeviceWhite:0.2 alpha:1];
       else
         fontColor = [NSColor colorWithDeviceRed:0.6078 green:0.6510 blue:0.7059 alpha:1];
-      MVHelDrawString(weakSelf.fullname ? weakSelf.fullname : weakSelf.email,
-                      view.bounds,
-                      fontColor,
-                      13, NO,
-                      nil, CGSizeMake(0, 0), 0);
+      MVDrawString(weakSelf.fullname ? weakSelf.fullname : weakSelf.email,
+                   view.bounds,
+                   fontColor,
+                   13, kMVStringTypeNormal,
+                   nil, CGSizeMake(0, 0), 0);
       [[NSGraphicsContext currentContext] restoreGraphicsState];
     };
     

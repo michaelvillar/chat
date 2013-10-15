@@ -327,7 +327,7 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
         MVDrawString(parent.placeholder,
                       rect,
                       fontColor,
-                      12, NO, nil, CGSizeZero, 0);
+                      12, kMVStringTypeNormal, nil, CGSizeZero, 0);
       }
     };
     textView_.subpixelTextRenderingEnabled = YES;

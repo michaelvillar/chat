@@ -5,14 +5,12 @@
 @protocol MVTabViewDelegate
 @optional
 - (void)tabViewShouldBeSelect:(MVTabView*)tabView;
-- (void)tabViewShouldBeClose:(MVTabView*)tabView;
 @end
 
 @interface MVTabView : TUIView
 
 @property (copy, readwrite) NSString *name;
 @property (strong, readwrite) NSObject *identifier;
-@property (readwrite, nonatomic) BOOL closable;
 @property (readwrite) BOOL sortable;
 @property (readwrite) BOOL showed;
 @property (readwrite, nonatomic, getter = isSelected) BOOL selected;

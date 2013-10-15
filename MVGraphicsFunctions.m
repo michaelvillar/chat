@@ -46,64 +46,41 @@ NSBezierPath* MVRoundedRectBezierPath(CGRect rrect, CGFloat radius)
   return path;
 }
 
-#pragma mark -
+NSFont* MVFontFromStyle(float fontSize, int style)
+{
+  if(style == kMVStringTypeMedium)
+    return [NSFont fontWithName:@"Helvetica Neue Medium" size:fontSize];
+  if(style == kMVStringTypeBold)
+    return [NSFont fontWithName:@"Helvetica Neue Bold" size:fontSize];
+  return [NSFont fontWithName:@"Helvetica Neue" size:fontSize];
+}
+
+#pragma mark -int style
 #pragma mark String Drawing Methods
 
-NSSize MVSizeOfString (NSString *string, float fontSize, BOOL bold)
+NSSize MVSizeOfString (NSString *string, float fontSize, int style)
 {
-	NSDictionary* dict = MVDictionaryForStringDrawing(fontSize, bold);
+	NSDictionary* dict = MVDictionaryForStringDrawing(fontSize, style);
 	NSSize size = [string sizeWithAttributes:dict];
 	return size;
 }
 
-NSDictionary* MVDictionaryForStringDrawing (float fontSize, BOOL bold)
+NSDictionary* MVDictionaryForStringDrawing (float fontSize, int style)
 {
 	NSDictionary *dict = [[NSMutableDictionary alloc] init];
-	if(bold)
-		[dict setValue:[NSFont boldSystemFontOfSize:fontSize] forKey:NSFontAttributeName];
-	else
-		[dict setValue:[NSFont systemFontOfSize:fontSize] forKey:NSFontAttributeName];
-
+  [dict setValue:MVFontFromStyle(fontSize, style) forKey:NSFontAttributeName];
 	return dict;
 }
 
-void MVHelDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
-                      BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur)
-{
-  NSDictionary* dict = MVDictionaryForStringDrawing(fontSize, bold);
-	NSShadow *shadow = nil;
-	if(shadowColor != nil) {
-		shadow = [[MVShadow alloc] init];
-		[shadow setShadowOffset:shadowOffset];
-		[shadow setShadowBlurRadius:shadowBlur];
-		[shadow setShadowColor:shadowColor];
-	}
-  
-	NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-	[dict setValue:style forKey:NSParagraphStyleAttributeName];
-	[dict setValue:fontColor forKey:NSForegroundColorAttributeName];
-
-  NSFont *font = [NSFont fontWithName:@"Helvetica Neue" size:fontSize];
-  [dict setValue:font forKey:NSFontAttributeName];
-
-	[NSGraphicsContext saveGraphicsState];
-	if(shadow)
-		[shadow set];
-  
-	[string drawInRect:aRect withAttributes:dict];
-  
-	[NSGraphicsContext restoreGraphicsState];
-}
-
 void MVDrawString (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
-                   BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur)
+                   int style, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur)
 {
-	MVDrawStringAlign(string, aRect, fontColor, fontSize, bold,
+	MVDrawStringAlign(string, aRect, fontColor, fontSize, style,
                      shadowColor, shadowOffset, shadowBlur, 0);
 }
 
 void MVDrawStringAlignLineBreakMode (NSString *string, NSRect aRect, NSColor* fontColor,
-                                     float fontSize, BOOL bold, NSColor* shadowColor,
+                                     float fontSize, int style, NSColor* shadowColor,
                                      NSSize shadowOffset, float shadowBlur,
                                      int alignment, int lineBreakMode)
 {
@@ -116,15 +93,17 @@ void MVDrawStringAlignLineBreakMode (NSString *string, NSRect aRect, NSColor* fo
 		[shadow setShadowColor:shadowColor];
 	}
 
-	NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+	NSMutableParagraphStyle *pStyle = [[NSMutableParagraphStyle alloc] init];
 	if(alignment == 1)
-		[style setAlignment:NSCenterTextAlignment];
+		[pStyle setAlignment:NSCenterTextAlignment];
 	else if(alignment == 2)
-		[style setAlignment:NSRightTextAlignment];
-	[style setLineBreakMode:lineBreakMode];
-	[dict setValue:style forKey:NSParagraphStyleAttributeName];
+		[pStyle setAlignment:NSRightTextAlignment];
+	[pStyle setLineBreakMode:lineBreakMode];
+	[dict setValue:pStyle forKey:NSParagraphStyleAttributeName];
 	[dict setValue:fontColor forKey:NSForegroundColorAttributeName];
   
+  [dict setValue:MVFontFromStyle(fontSize, style) forKey:NSFontAttributeName];
+
 	[NSGraphicsContext saveGraphicsState];
 	if(shadow)
 		[shadow set];
@@ -135,10 +114,10 @@ void MVDrawStringAlignLineBreakMode (NSString *string, NSRect aRect, NSColor* fo
 }
 
 void MVDrawStringAlign (NSString *string, NSRect aRect, NSColor* fontColor, float fontSize,
-                        BOOL bold, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur,
+                        int style, NSColor* shadowColor, NSSize shadowOffset, float shadowBlur,
                          int alignment)
 {
-	MVDrawStringAlignLineBreakMode(string, aRect, fontColor, fontSize, bold, shadowColor,
+	MVDrawStringAlignLineBreakMode(string, aRect, fontColor, fontSize, style, shadowColor,
                                  shadowOffset, shadowBlur, alignment, NSLineBreakByTruncatingTail);
 }
 
