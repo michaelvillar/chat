@@ -3,7 +3,8 @@
 #import "NSObject+PerformBlockAfterDelay.h"
 #import "TUIView+Easing.h"
 
-#define kMVTabsViewAnimationDuration 0.3
+#define kMVTabsViewAnimationDuration 0.45
+#define kMVTabsViewAnimationEasing [CAMediaTimingFunction functionWithControlPoints:0.20 :1.4 :0.46 :1]
 #define kMVTabsViewOverflowMargin 30
 
 @interface MVTabsView () <MVTabViewDelegate,
@@ -135,12 +136,22 @@
     selectedBarView_.backgroundColor = [TUIColor colorWithRed:0.1255 green:0.5137 blue:0.9686 alpha:1.0000];
     selectedBarView_.layer.anchorPoint = CGPointMake(0, 0.5);
     [self addSubview:selectedBarView_];
+    
+    [self addObserver:self forKeyPath:@"frame" options:0 context:NULL];
   }
   return self;
 }
 
 #pragma mark -
 #pragma mark Overriden Methods
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+  if([keyPath isEqualToString:@"frame"]) {
+    
+  }
+}
 
 - (void)layoutSubviews
 {
@@ -197,10 +208,10 @@
   tabView.frame = frame;
 
   [tabView.layer setOpacity:0.0];
-  if(animated)
-    [self mv_performBlock:^{
-      [self layoutTabs:animated];
-    } afterDelay:0.01];
+  if(animated) {
+    [CATransaction commit];
+    [self layoutTabs:animated];
+  }
   else
     [self layoutTabs:animated];
 
@@ -249,6 +260,7 @@
 
 
     [TUIView animateWithDuration:kMVTabsViewAnimationDuration animations:^{
+      [TUIView setEasing:kMVTabsViewAnimationEasing];
       CGRect frame = tabView.layer.frame;
       frame.origin.x += - frame.size.width / 2;
       [tabView.layer setFrame:frame];
@@ -670,6 +682,7 @@
 
     if(self.sortingTabView != tabView) {
       [TUIView animateWithDuration:kMVTabsViewAnimationDuration animations:^{
+        [TUIView setEasing:kMVTabsViewAnimationEasing];
         [TUIView setAnimationsEnabled:animated];
         if(tabView.layer.opacity != 1.0)
           [tabView.layer setOpacity:1.0];
@@ -708,14 +721,13 @@
 
 - (void)updateSelectedBarFrame
 {
-  CGRect selectedBarViewFrame = self.selectedBarView.frame;
-  selectedBarViewFrame.origin.x = self.selectedTabView.frame.origin.x;
-  selectedBarViewFrame.size.width = self.selectedTabView.frame.size.width - 1.5;
-  [TUIView animateWithDuration:0.45 animations:^{
-    [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.20 :1.4 :0.46 :1]];
+  [TUIView animateWithDuration:kMVTabsViewAnimationDuration animations:^{
+    float x = self.selectedTabView.frame.origin.x;
+    float w = self.selectedTabView.frame.size.width - 1.5;
+    [TUIView setEasing:kMVTabsViewAnimationEasing];
     CATransform3D transform = CATransform3DIdentity;
-    transform = CATransform3DScale(transform, selectedBarViewFrame.size.width / 100, 1, 1);
-    transform = CATransform3DTranslate(transform, selectedBarViewFrame.origin.x / (selectedBarViewFrame.size.width / 100), 0, 0);
+    transform = CATransform3DScale(transform, w / 100, 1, 1);
+    transform = CATransform3DTranslate(transform, x / (w / 100), 0, 0);
     self.selectedBarView.layer.transform = transform;
   }];
 }
