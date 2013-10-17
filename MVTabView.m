@@ -52,7 +52,7 @@ void MVTabDraw(MVTabView *view, CGRect rect, BOOL forceGlowing, int glowingPhase
   }
   
   CGSize size = MVSizeOfString(view.name, 11, kMVStringTypeBold);
-  CGRect stringRect = CGRectMake(marginX, 5, bounds.size.width - marginX - 2, 15);
+  CGRect stringRect = CGRectMake(marginX, 1, bounds.size.width - marginX - 2, 19);
 
   if(stringRect.size.width - 3 < size.width)
   {
