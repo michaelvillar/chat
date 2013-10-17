@@ -61,7 +61,7 @@ static NSGradient *backgroundGradient = nil;
     
     searchFieldContainerView_ = [[TUIView alloc] initWithFrame:CGRectMake(0, 0,
                                                                           self.bounds.size.width,
-                                                                          39)];
+                                                                          37)];
     searchFieldContainerView_.userInteractionEnabled = NO;
     
     CGRect searchFieldViewFrame = CGRectMake(0, searchFieldContainerView_.bounds.size.height,
@@ -69,33 +69,14 @@ static NSGradient *backgroundGradient = nil;
                                              searchFieldContainerView_.bounds.size.height);
     searchFieldView_ = [[TUIView alloc] initWithFrame:searchFieldViewFrame];
     searchFieldView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
-    searchFieldView_.opaque = NO;
-    searchFieldView_.backgroundColor = [TUIColor clearColor];
-    searchFieldView_.drawRect = ^(TUIView *view, CGRect rect) {
-      // bg
-      NSColor *bottomColor = [NSColor colorWithDeviceRed:0.9059 green:0.9255 blue:0.9608 alpha:1];
-      NSColor *topColor = [NSColor colorWithDeviceRed:0.9647 green:0.9725 blue:0.9843 alpha:1];
-      NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:bottomColor
-                                                           endingColor:topColor];
-      [gradient drawInRect:CGRectMake(0, 2, view.bounds.size.width, 36) angle:90];
-      
-      // shadow
-      bottomColor = [NSColor colorWithDeviceRed:0.6784 green:0.7098 blue:0.7647 alpha:0];
-      topColor = [NSColor colorWithDeviceRed:0.6784 green:0.7098 blue:0.7647 alpha:0.82];
-      gradient = [[NSGradient alloc] initWithStartingColor:bottomColor
-                                                           endingColor:topColor];
-      [gradient drawInRect:CGRectMake(0, 0, view.bounds.size.width, 2) angle:90];
-      
-      // line
-      [[NSColor colorWithDeviceRed:0.6118 green:0.6392 blue:0.6902 alpha:1.0000] set];
-      [NSBezierPath fillRect:CGRectMake(0, 2, view.bounds.size.width, 0.5)];
-    };
-    [searchFieldView_ setNeedsDisplay];
+    searchFieldView_.opaque = YES;
+    searchFieldView_.backgroundColor = [TUIColor whiteColor];
     
     CGRect searchFieldFrame = CGRectMake(4, 6, searchFieldView_.bounds.size.width - 8, 29);
     searchField_ = [[MVRoundedTextView alloc] initWithFrame:searchFieldFrame];
     searchField_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
     searchField_.placeholder = @"Search buddy";
+    searchField_.multiline = NO;
     searchField_.delegate = self;
     
     [searchFieldContainerView_ addSubview:searchFieldView_];
@@ -209,6 +190,11 @@ static NSGradient *backgroundGradient = nil;
                                                    self.searchFieldContainerView.frame.size.height,
                                                    self.bounds.size.width,
                                                    self.searchFieldContainerView.frame.size.height);
+}
+
+- (void)performFindPanelAction:(id)sender
+{
+  [self setSearchFieldVisible:YES animated:YES];
 }
 
 #pragma mark Drawing Methods

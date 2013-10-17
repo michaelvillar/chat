@@ -2,6 +2,8 @@
 #import "MVGraphicsFunctions.h"
 #import "MVShadow.h"
 
+#define kMVRoundedScrollViewY 6.5
+
 @interface TUITextEditor : TUITextRenderer @end
 @interface TUITextViewEditor : TUITextEditor
 
@@ -138,90 +140,27 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
   CGRect rrect = CGRectMake(3, rect.origin.y + 4, rect.size.width - 6, h - 8);
   NSBezierPath *path = MVRoundedRectBezierPath(rrect, 11);
   NSBezierPath *path2;
-  NSBezierPath *path3;
-  NSAffineTransform *transform;
-  NSShadow *shadow;
 
-  // white shadow (bottom)
-  [[NSGraphicsContext currentContext] saveGraphicsState];
-  path2 = [NSBezierPath bezierPath];
-  path2.windingRule = NSEvenOddWindingRule;
-  [path2 appendBezierPath:path];
-
-  path3 = [NSBezierPath bezierPath];
-  [path3 appendBezierPath:path];
-  transform = [NSAffineTransform transform];
-  [transform translateXBy:0 yBy:-1];
-  [path3 transformUsingAffineTransform:transform];
-
-  [path2 appendBezierPath:path3];
-  [[NSColor colorWithDeviceWhite:1 alpha:0.25] set];
-  [path2 fill];
-  [[NSGraphicsContext currentContext] restoreGraphicsState];
-
-  // black shadow (top)
-  [[NSGraphicsContext currentContext] saveGraphicsState];
-  path2 = [NSBezierPath bezierPath];
-  path2.windingRule = NSEvenOddWindingRule;
-  [path2 appendBezierPath:path];
-
-  path3 = [NSBezierPath bezierPath];
-  [path3 appendBezierPath:path];
-  transform = [NSAffineTransform transform];
-  [transform translateXBy:0 yBy:1];
-  [path3 transformUsingAffineTransform:transform];
-
-  [path2 appendBezierPath:path3];
-  [[NSColor colorWithDeviceWhite:0 alpha:0.05] set];
-  [path2 fill];
-  [[NSGraphicsContext currentContext] restoreGraphicsState];
-
+  NSColor *borderColor;
   if(chatTextView.textViewHasFocus && chatTextView.windowHasFocus) {
-    // blue blur
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-    NSColor *blue = [NSColor colorWithDeviceRed:0.2588 green:0.5608 blue:0.8471 alpha:1];
-    [blue set];
-    shadow = [[MVShadow alloc] init];
-    shadow.shadowBlurRadius = 4.0;
-    shadow.shadowColor = blue;
-    [shadow set];
-    [path fill];
-    [[NSGraphicsContext currentContext] restoreGraphicsState];
+    borderColor = [NSColor colorWithDeviceRed:0.1255 green:0.5137 blue:0.9686 alpha:1.0000];
   }
   else {
-    // grey background
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-    NSColor *startColor = [NSColor colorWithDeviceWhite:0 alpha:0.1];
-    NSColor *endColor = [NSColor colorWithDeviceWhite:0 alpha:0.2];
-    NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:startColor endingColor:endColor];
-    [gradient drawInBezierPath:path angle:90];
-    [[NSGraphicsContext currentContext] restoreGraphicsState];
+    borderColor = [NSColor colorWithDeviceRed:0.6471 green:0.7098 blue:0.7843 alpha:1.0000];
   }
+
+  // grey background
+  [[NSGraphicsContext currentContext] saveGraphicsState];
+  [borderColor set];
+  [path fill];
+  [[NSGraphicsContext currentContext] restoreGraphicsState];
 
   // white background
   [[NSGraphicsContext currentContext] saveGraphicsState];
-  rrect = CGRectMake(4.2, rect.origin.y + 5, rect.size.width - 8.4, h - 10);
+  rrect = CGRectMake(4.5, rect.origin.y + 5.5, rect.size.width - 9, h - 11);
   path2 = MVRoundedRectBezierPath(rrect, 9.8);
   [[NSColor whiteColor] set];
   [path2 fill];
-  [[NSGraphicsContext currentContext] restoreGraphicsState];
-
-  // overall shadow
-  [[NSGraphicsContext currentContext] saveGraphicsState];
-  [path setClip];
-  shadow = [[MVShadow alloc] init];
-  shadow.shadowBlurRadius = 3.0;
-  if(chatTextView.textViewHasFocus && chatTextView.windowHasFocus) {
-    shadow.shadowColor = [NSColor colorWithDeviceRed:0.4392 green:0.5569 blue:0.7098 alpha:1];
-    [[NSColor colorWithDeviceRed:0.4627 green:0.6196 blue:0.7765 alpha:1.0000] set];
-  }
-  else {
-    shadow.shadowColor = [NSColor colorWithDeviceWhite:0 alpha:0.25];
-    [[NSColor colorWithDeviceRed:0.5922 green:0.5961 blue:0.6000 alpha:1.0000] setStroke];
-  }
-  shadow.shadowOffset = NSMakeSize(0, -1);
-  [shadow set];
-  [path stroke];
   [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 
@@ -301,9 +240,9 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
     };
     [self addSubview:topView_];
 
-    CGRect rect = CGRectMake(12, 7, self.bounds.size.width - 24, self.bounds.size.height - 8);
-    CGRect scrollViewFrame = CGRectMake(12, 7,
-                                        self.bounds.size.width - 18,
+    CGRect rect = CGRectMake(12, kMVRoundedScrollViewY, self.bounds.size.width - 28, self.bounds.size.height - 8);
+    CGRect scrollViewFrame = CGRectMake(12, kMVRoundedScrollViewY,
+                                        self.bounds.size.width - 24,
                                         self.bounds.size.height - 8);
     scrollView_ = [[TUIScrollView alloc] initWithFrame:scrollViewFrame];
     textView_ = [[_MVRoundedTextView alloc] initWithFrame:CGRectMake(0, 0,
@@ -320,18 +259,18 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
       if(parent.textView.text.length <= 0 && [parent.placeholder length] > 0)
       {
         CGRect rect = CGRectMake(0, 1,
-                                 view.frame.size.width - 12 - parent.paddingLeft - 5, 15);
+                                 view.frame.size.width - 12 - parent.paddingLeft - 5, 18);
         NSColor *fontColor = (parent.textViewHasFocus ?
                               [NSColor colorWithDeviceRed:0.6902 green:0.7294 blue:0.7804 alpha:1] :
                               [NSColor colorWithDeviceRed:0.6980 green:0.6980 blue:0.6980 alpha:1]);
         MVDrawString(parent.placeholder,
-                      rect,
-                      fontColor,
-                      12, kMVStringTypeNormal, nil, CGSizeZero, 0);
+                     rect,
+                     fontColor,
+                     12, kMVStringTypeNormal, nil, CGSizeZero, 0);
       }
     };
     textView_.subpixelTextRenderingEnabled = YES;
-    textView_.font = [TUIFont systemFontOfSize:12];
+    textView_.font = [TUIFont fontWithName:@"Helvetica Neue" size:12];
     textView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
 
     scrollView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
@@ -381,9 +320,9 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
 
   [self checkForFrame];
 
-  float scrollViewWidth = self.bounds.size.width - 18 - self.paddingLeft -
+  float scrollViewWidth = self.bounds.size.width - 24 - self.paddingLeft -
                           (self.isClosable ? 20 : 0);
-  CGRect scrollViewFrame = CGRectMake(12 + self.paddingLeft, 7,
+  CGRect scrollViewFrame = CGRectMake(12 + self.paddingLeft, kMVRoundedScrollViewY,
                                       scrollViewWidth, self.textViewHeight);
   CGRect frame = self.frame;
   [self.bottomView setFrame:CGRectMake(0, 0, frame.size.width, 13)];
@@ -557,17 +496,20 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
 
 - (void)checkForFrame
 {
-  NSSize size = NSMakeSize(0, 15);
+  int minHeight = 15;
+  NSSize size = NSMakeSize(0, minHeight);
   float height;
   if(self.multiline)
   {
     size = [[self.textView.textRenderers objectAtIndex:0]
                     sizeConstrainedToWidth:self.textView.bounds.size.width];
     height = size.height;
-    if(height < 15)
-      height = 15;
+    if(height < minHeight)
+      height = minHeight;
     if(height > self.maximumHeight - 14)
       height = self.maximumHeight - 14;
+    if(height > minHeight)
+      height += 1;
     if(height != self.textViewHeight) {
       self.textViewHeight = height;
 
@@ -575,8 +517,8 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
       frame.size.height = self.textViewHeight + 14;
       [self setFrame:frame];
     }
-    if(size.height < 15)
-      size.height = 15;
+    if(size.height < minHeight)
+      size.height = minHeight;
     size.width = self.textView.bounds.size.width;
   }
   else
