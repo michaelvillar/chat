@@ -470,88 +470,17 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
                                       view.fullDateFormatter : view.shortDateFormatter);
     NSString *string = [dateFormatter stringFromDate:view.item.date];
 
-    NSColor *fontColor;
-    NSColor *shadowColor;
-    if(view.style == kMVDiscussionViewStyleTransparent)
-    {
-      [[NSGraphicsContext currentContext] saveGraphicsState];
-
-      CGSize size = MVSizeOfString(string, 9, kMVStringTypeBold);
-      size.width += 10;
-      float roundedRectX = round((view.bounds.size.width - size.width) / 2);
-      if(dateFormatter.dateStyle == NSDateFormatterNoStyle)
-      {
-        roundedRectX -= 14;
-        size.width += 14;
-      }
-      NSBezierPath *roundedPath;
-      NSGradient *gradient;
-      NSColor *color1;
-      NSColor *color2;
-      CGRect roundedRect;
-
-      roundedRect = CGRectMake(roundedRectX - 1, 1, size.width + 2, 17);
-      roundedPath = MVRoundedRectBezierPath(roundedRect, 8.5);
-      [[NSColor colorWithDeviceWhite:1 alpha:0.75] set];
-      [roundedPath addClip];
-      [NSBezierPath fillRect:CGRectMake(roundedRectX - 1, 0, size.width + 2, 8.5)];
-
-      [[NSGraphicsContext currentContext] restoreGraphicsState];
-      [[NSGraphicsContext currentContext] saveGraphicsState];
-
-      roundedRect = CGRectMake(roundedRectX - 1, 2, size.width + 2, 17);
-      roundedPath = MVRoundedRectBezierPath(roundedRect, 8.5);
-
-      color1 = [NSColor colorWithDeviceRed:0.7216 green:0.7216 blue:0.7216 alpha:1.0000];
-      color2 = [NSColor colorWithDeviceRed:0.8549 green:0.8549 blue:0.8549 alpha:1.0000];
-      gradient = [[NSGradient alloc] initWithColorsAndLocations:
-                  color1, 0.0,
-                  color2, 1.0,
-                  nil];
-      [gradient drawInBezierPath:roundedPath angle:-90];
-
-      roundedRect = CGRectMake(roundedRectX, 3, size.width, 15);
-      roundedPath = MVRoundedRectBezierPath(roundedRect, 7.5);
-
-      color1 = [NSColor colorWithDeviceRed:0.9098 green:0.9098 blue:0.9098 alpha:1.0000];
-      color2 = [NSColor colorWithDeviceRed:0.9922 green:0.9922 blue:0.9922 alpha:1.0000];
-      gradient = [[NSGradient alloc] initWithColorsAndLocations:
-                  [NSColor colorWithDeviceRed:0.8588 green:0.8588 blue:0.8588 alpha:1.0000], 0.0,
-                  color1, 0.15,
-                  color1, 0.8,
-                  color2, 1.0,
-                  nil];
-      [gradient drawInBezierPath:roundedPath angle:-90];
-
-      [[NSGraphicsContext currentContext] restoreGraphicsState];
-
-      fontColor = [NSColor colorWithDeviceRed:0.5020 green:0.5020 blue:0.5020 alpha:1.0000];
-      shadowColor = [NSColor colorWithDeviceWhite:1.0 alpha:0.75];
-    }
-    else
-    {
-      fontColor = [NSColor colorWithDeviceRed:0.6431 green:0.6745 blue:0.7216 alpha:1.0000];
-      shadowColor = [NSColor colorWithDeviceWhite:1.0 alpha:0.5];
-    }
+    NSColor *fontColor = [NSColor colorWithDeviceRed:0.8039 green:0.8353 blue:0.8745 alpha:1.0000];
 
     MVDrawStringAlign(string,
                        rrect,
                        fontColor,
-                       9,
-                       kMVStringTypeBold,
-                       shadowColor,
-                       CGSizeMake(0, -1),
+                       10,
+                       kMVStringTypeNormal,
+                       nil,
+                       CGSizeZero,
                        0,
                        1);
-
-    if(dateFormatter.dateStyle == NSDateFormatterNoStyle)
-    {
-      CGSize size = MVSizeOfString(string, 9, kMVStringTypeBold);
-      CGPoint point = CGPointMake(round((view.bounds.size.width - size.width) / 2 - 16), 4);
-      [[TUIImage imageNamed:(view.style == kMVDiscussionViewStyleTransparent ?
-                             @"icon_clock_alternate.png" :
-                             @"icon_clock.png") cache:YES] drawAtPoint:point];
-    }
   }
 
   // notifications
