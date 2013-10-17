@@ -73,7 +73,7 @@
     CGRect searchFieldFrame = CGRectMake(4, 4, searchFieldView_.bounds.size.width - 8, 29);
     searchField_ = [[MVRoundedTextView alloc] initWithFrame:searchFieldFrame];
     searchField_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
-    searchField_.placeholder = @"Search buddy";
+    searchField_.placeholder = @"Search for a buddy";
     searchField_.multiline = NO;
     searchField_.delegate = self;
     

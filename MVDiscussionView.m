@@ -1331,7 +1331,8 @@
 - (void)layoutViewsWithAdditionnalHeight:(int)additionnalHeight
 {
   CGRect visible = [self visibleRect];
-  visible.size.height += 300;
+  visible.size.height += 400;
+  visible.origin.y -= 110;
 
 	// Example:
 	// old:            0 1 2 3 4 5 6 7

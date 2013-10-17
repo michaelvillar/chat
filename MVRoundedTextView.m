@@ -138,7 +138,7 @@
 void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h);
 void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
   CGRect rrect = CGRectMake(3, rect.origin.y + 4, rect.size.width - 6, h - 8);
-  NSBezierPath *path = MVRoundedRectBezierPath(rrect, 11);
+  NSBezierPath *path = MVRoundedRectBezierPath(rrect, 10);
   NSBezierPath *path2;
 
   NSColor *borderColor;
@@ -149,7 +149,7 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
     borderColor = [NSColor colorWithDeviceRed:0.6471 green:0.7098 blue:0.7843 alpha:1.0000];
   }
 
-  // grey background
+  // borders
   [[NSGraphicsContext currentContext] saveGraphicsState];
   [borderColor set];
   [path fill];
@@ -158,7 +158,7 @@ void MVDrawBackground(MVRoundedTextView *chatTextView, CGRect rect, float h) {
   // white background
   [[NSGraphicsContext currentContext] saveGraphicsState];
   rrect = CGRectMake(4.5, rect.origin.y + 5.5, rect.size.width - 9, h - 11);
-  path2 = MVRoundedRectBezierPath(rrect, 9.8);
+  path2 = MVRoundedRectBezierPath(rrect, 8.5);
   [[NSColor whiteColor] set];
   [path2 fill];
   [[NSGraphicsContext currentContext] restoreGraphicsState];

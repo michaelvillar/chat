@@ -157,7 +157,7 @@
     return;
   NSMutableAttributedString *string = [[NSMutableAttributedString alloc]
                                                 initWithAttributedString:attributedMessage];
-  [string setFont:[TUIFont systemFontOfSize:12]];
+  [string setFont:[TUIFont fontWithName:@"Helvetica Neue" size:12]];
   if(self.type == kMVDiscussionMessageTypeFile ||
      self.type == kMVDiscussionMessageTypeRemoteFile)
   {
@@ -173,7 +173,7 @@
                              usingBlock:^(id value, NSRange range, BOOL *stop)
   {
     if(value && [value isKindOfClass:[NSString class]] && [value isEqualToString:@"YES"])
-      [string setFont:[TUIFont boldSystemFontOfSize:12] inRange:range];
+      [string setFont:[TUIFont fontWithName:@"Helvetica Neue Medium" size:12] inRange:range];
   }];
   if(string.length > kMVMessageMaxChars)
     [string replaceCharactersInRange:NSMakeRange(kMVMessageMaxChars,

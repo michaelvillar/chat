@@ -9,8 +9,8 @@
 #import "NSObject+PerformBlockAfterDelay.h"
 #import "MVShadow.h"
 
-#define kMVDiscussionMessageViewBubbleRadius 10.5
-#define kMVDiscussionMessageViewBubbleMarginLeft 40
+#define kMVDiscussionMessageViewBubbleRadius 11.5
+#define kMVDiscussionMessageViewBubbleMarginLeft 9
 #define kMVDiscussionMessageViewBubbleMarginRight 45
 #define kMVDiscussionMessageViewTextMarginLeft 8
 #define kMVDiscussionMessageViewTextMarginRight 8
@@ -82,11 +82,11 @@ CGRect MVDiscussionMessageViewBubbleRect(MVDiscussionMessageView *view)
                        constrainedToWidth:view.bounds.size.width
                              textRenderer:view.textRenderer
                                  inWindow:view.nsWindow];
-  CGRect rrect = CGRectMake(kMVDiscussionMessageViewBubbleMarginLeft, 5,
+  CGRect rrect = CGRectMake(kMVDiscussionMessageViewBubbleMarginLeft, 0,
                             size.width -
                             kMVDiscussionMessageViewBubbleMarginRight -
                             kMVDiscussionMessageViewBubbleMarginLeft,
-                            view.bounds.size.height - 10);
+                            view.bounds.size.height);
   if(view.item.own)
     rrect.origin.x = view.bounds.size.width -
     rrect.size.width -
@@ -116,29 +116,16 @@ void MVDiscussionMessageViewDrawText(MVDiscussionMessageView *view)
                                range:range];
     }
   }];
-  if(view.item.selected)
+  if(view.item.selected || view.item.own)
     attributedString.color = [TUIColor whiteColor];
   view.textRenderer.attributedString = attributedString;
-  if(view.item.selected)
-    view.textRenderer.shadowColor = [TUIColor clearColor];
-  else
-  {
-    NSColor *shadowColor;
-    if(view.item.own)
-      shadowColor = [NSColor colorWithDeviceWhite:1.0 alpha:0.5];
-    else
-      shadowColor = [NSColor colorWithDeviceWhite:1.0 alpha:0.8];
-    view.textRenderer.shadowColor = [TUIColor colorWithNSColor:shadowColor];
-    view.textRenderer.shadowOffset = CGSizeMake(0, -1);
-    view.textRenderer.shadowBlur = 1;
-  }
 
   float paddingTop = (view.item.type == kMVDiscussionMessageTypeTweet ? 45 : 0);
   view.textRenderer.frame = CGRectMake(rrect.origin.x + kMVDiscussionMessageViewTextMarginLeft +
                                        (view.item.type == kMVDiscussionMessageTypeFile ||
                                         view.item.type == kMVDiscussionMessageTypeRemoteFile ?
                                         16 : 0),
-                                       rrect.origin.y + 3,
+                                       rrect.origin.y + 1.5,
                                        rrect.size.width - kMVDiscussionMessageViewTextMarginLeft
                                        - kMVDiscussionMessageViewTextMarginRight -
                                        (view.item.type == kMVDiscussionMessageTypeFile ||
@@ -154,10 +141,6 @@ void MVDiscussionMessageViewDrawBubble(MVDiscussionMessageView *view)
 
   [[NSGraphicsContext currentContext] saveGraphicsState];
 
-  NSGradient *gradient;
-  NSColor *color1;
-  NSColor *color2;
-  NSColor *color3;
   NSBezierPath *bubblePath;
 
   CGRect rrect = MVDiscussionMessageViewBubbleRect(view);
@@ -221,275 +204,33 @@ void MVDiscussionMessageViewDrawBubble(MVDiscussionMessageView *view)
   }
   [path closePath];
 
-  NSShadow *shadow = [[MVShadow alloc] init];
+  
+  NSColor *backgroundColor;
   if(view.isHighlighted || view.item.isSelected)
   {
     if(view.windowHasFocus && view.shouldDisplayAsFirstResponder)
-      shadow.shadowColor = [NSColor colorWithDeviceRed:0.2078 green:0.4824 blue:0.7529 alpha:0.55];
+    {
+      backgroundColor = [NSColor redColor];
+    }
     else
-      shadow.shadowColor = [NSColor colorWithDeviceRed:0.5412 green:0.5804 blue:0.6902 alpha:0.35];
+    {
+      backgroundColor = [NSColor grayColor];
+    }
   }
-  else if(view.item.ownMention)
-    shadow.shadowColor = [NSColor colorWithDeviceRed:0.6275 green:0.4627 blue:0.1647 alpha:0.55];
   else if(!view.item.own)
-    shadow.shadowColor = [NSColor colorWithDeviceRed:0.4941 green:0.5373 blue:0.6118 alpha:0.55];
+  {
+    backgroundColor = [NSColor colorWithDeviceRed:0.9137 green:0.9333 blue:0.9569 alpha:1.0000];
+  }
   else
-    shadow.shadowColor = [NSColor colorWithDeviceRed:0.2118 green:0.3412 blue:0.6627 alpha:0.55];
-  shadow.shadowBlurRadius = 2.0;
-  shadow.shadowOffset = CGSizeMake(0, -1);
-  [shadow set];
+  {
+    backgroundColor = [NSColor colorWithDeviceRed:0.1529 green:0.5373 blue:0.9686 alpha:1.0000];
+  }
 
-  // first shadow
-  [[NSColor whiteColor] set];
+  [backgroundColor set];
   [path fill];
 
   [[NSGraphicsContext currentContext] restoreGraphicsState];
   [[NSGraphicsContext currentContext] saveGraphicsState];
-
-  shadow = [[MVShadow alloc] init];
-  if(view.isHighlighted || view.item.isSelected)
-  {
-    if(view.windowHasFocus && view.shouldDisplayAsFirstResponder)
-    {
-      [[NSColor colorWithDeviceRed:0.2078 green:0.4824 blue:0.7529 alpha:0.99] set];
-      shadow.shadowColor = [NSColor colorWithDeviceRed:0.2078 green:0.4824
-                                                  blue:0.7529 alpha:1.0000];
-    }
-    else
-    {
-      [[NSColor colorWithDeviceRed:0.5412 green:0.5804 blue:0.6902 alpha:1.0000] set];
-      shadow.shadowColor = [NSColor colorWithDeviceRed:0.5412 green:0.5804
-                                                  blue:0.6902 alpha:0.35];
-    }
-  }
-  else if(view.item.ownMention)
-  {
-    [[NSColor colorWithDeviceRed:0.6275 green:0.4627 blue:0.1647 alpha:0.25] set];
-    shadow.shadowColor = [NSColor colorWithDeviceRed:0.6275 green:0.4627 blue:0.1647 alpha:1.0000];
-  }
-  else if(!view.item.own)
-  {
-    [[NSColor colorWithDeviceRed:0.4941 green:0.5373 blue:0.6118 alpha:0.25] set];
-    shadow.shadowColor = [NSColor colorWithDeviceRed:0.4941 green:0.5373 blue:0.6118 alpha:1.0000];
-  }
-  else
-  {
-    [[NSColor colorWithDeviceRed:0.0745 green:0.2000 blue:0.6392 alpha:0.20] set];
-    shadow.shadowColor = [NSColor colorWithDeviceRed:0.0745 green:0.2000 blue:0.6392 alpha:0.8];
-  }
-
-  shadow.shadowBlurRadius = 1.0;
-  shadow.shadowOffset = CGSizeMake(0, 0);
-  // second shadow + borders
-  [shadow set];
-  path.lineWidth = 1.8;
-  path.lineCapStyle = NSRoundLineCapStyle;
-  path.lineJoinStyle = NSBevelLineJoinStyle;
-  [path stroke];
-
-  [[NSGraphicsContext currentContext] restoreGraphicsState];
-  [[NSGraphicsContext currentContext] saveGraphicsState];
-
-  // gradient background
-  float ratio = 21 / (view.bounds.size.height - 10);
-  NSString *ratioStr = [NSString stringWithFormat:@"%f",ratio];
-  if(view.isHighlighted || view.item.isSelected)
-  {
-    if(view.windowHasFocus && view.shouldDisplayAsFirstResponder)
-    {
-      color1 = [NSColor colorWithDeviceRed:0.4588 green:0.6863 blue:0.8902 alpha:1.0000];
-      color2 = [NSColor colorWithDeviceRed:0.2863 green:0.5137 blue:0.8157 alpha:1.0000];
-    }
-    else
-    {
-      color1 = [NSColor colorWithDeviceRed:0.7569 green:0.7843 blue:0.8745 alpha:1.0000];
-      color2 = [NSColor colorWithDeviceRed:0.6196 green:0.6588 blue:0.7686 alpha:1.0000];
-    }
-    gradient = [[NSGradient alloc] initWithColorsAndLocations:
-                color1, 0.0,
-                color2, 1.0,
-                nil];
-  }
-  else if(view.item.ownMention)
-  {
-    gradient = [ownMentionGradients valueForKey:ratioStr];
-    if(!gradient)
-    {
-      color1 = [NSColor colorWithDeviceRed:0.9961 green:0.9804 blue:0.8706 alpha:1.0000];
-      color2 = [NSColor colorWithDeviceRed:0.9569 green:0.8706 blue:0.3059 alpha:1.0000];
-      color3 = [NSColor colorWithDeviceRed:0.9882 green:0.9569 blue:0.7451 alpha:1.0000];
-    }
-  }
-  else if(!view.item.own)
-  {
-    gradient = [bubbleGradients valueForKey:ratioStr];
-    if(!gradient)
-    {
-      color1 = [NSColor whiteColor];
-      color2 = [NSColor colorWithDeviceRed:0.9020 green:0.9176 blue:0.9569 alpha:1.0000];
-      color3 = color1;
-    }
-  }
-  else
-  {
-    gradient = [ownBubbleGradients valueForKey:ratioStr];
-    if(!gradient)
-    {
-      color1 = [NSColor colorWithDeviceRed:0.8980 green:0.9412 blue:0.9961 alpha:1.0000];
-      color2 = [NSColor colorWithDeviceRed:0.6784 green:0.7961 blue:1.0000 alpha:1.0000];
-      color3 = [NSColor colorWithDeviceRed:0.7725 green:0.9176 blue:1.0000 alpha:1.0000];
-    }
-  }
-
-  if(!gradient)
-  {
-    gradient = [[NSGradient alloc] initWithColorsAndLocations:
-                color1, 0.07 * ratio,
-                color2, 1 - 0.30 * ratio,
-                color3, 1.0,
-                nil];
-    if(view.item.ownMention)
-      [ownMentionGradients setValue:gradient forKey:ratioStr];
-    else if(!view.item.own)
-      [bubbleGradients setValue:gradient forKey:ratioStr];
-    else
-      [ownBubbleGradients setValue:gradient forKey:ratioStr];
-  }
-  [gradient drawInBezierPath:path angle:-90];
-
-  [[NSGraphicsContext currentContext] restoreGraphicsState];
-
-  if(!view.item.sameSenderAsPreviousItem || view.item.type == kMVDiscussionMessageTypeWriting)
-  {
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-
-    // white curve on arrow
-    path = nil;
-    if(inverted)
-    {
-      path = [NSBezierPath bezierPath];
-      [path moveToPoint:CGPointMake(maxx+0, miny+10.5)];
-      [path curveToPoint:CGPointMake(maxx+7, miny+1)
-           controlPoint1:CGPointMake(maxx+0, miny+8)
-           controlPoint2:CGPointMake(maxx+3, miny+3)];
-      [path curveToPoint:CGPointMake(maxx-7, miny+10.5)
-           controlPoint1:CGPointMake(maxx+4, miny+1.20)
-           controlPoint2:CGPointMake(maxx-2.2, miny+4.2)];
-      [path closePath];
-    }
-    else
-    {
-      path = [NSBezierPath bezierPath];
-      [path moveToPoint:CGPointMake(minx+0, miny+10.5)];
-      [path curveToPoint:CGPointMake(minx+-7, miny+1)
-           controlPoint1:CGPointMake(minx+0, miny+8)
-           controlPoint2:CGPointMake(minx+-3, miny+3)];
-      [path curveToPoint:CGPointMake(minx+7, miny+10.5)
-           controlPoint1:CGPointMake(minx+-4, miny+1.20)
-           controlPoint2:CGPointMake(minx+2.2, miny+4.2)];
-      [path closePath];
-    }
-
-    if(view.isHighlighted || view.item.isSelected)
-    {
-      if(view.windowHasFocus && view.shouldDisplayAsFirstResponder)
-      {
-        color1 = [NSColor colorWithDeviceRed:0.4902 green:0.7176 blue:0.9098 alpha:0.75];
-        color2 = [NSColor colorWithDeviceRed:0.4902 green:0.7176 blue:0.9098 alpha:0.0];
-      }
-      else
-      {
-        color1 = [NSColor colorWithDeviceRed:0.8039 green:0.8235 blue:0.8941 alpha:1.0000];
-        color2 = [NSColor colorWithDeviceRed:0.8039 green:0.8235 blue:0.8941 alpha:0.0];
-      }
-      gradient = [[NSGradient alloc] initWithColorsAndLocations:
-                  color2, 0.2,
-                  color1, 0.8,
-                  nil];
-    }
-    else if(view.item.own && !view.item.ownMention)
-    {
-      if(!ownWhiteCurveGradient)
-      {
-        color1 = [NSColor colorWithDeviceRed:0.9686 green:1.0000 blue:1.0000 alpha:0.75];
-        color2 = [NSColor colorWithDeviceRed:0.9686 green:1.0000 blue:1.0000 alpha:0.0];
-        gradient = [[NSGradient alloc] initWithColorsAndLocations:
-                    color2, 0.2,
-                    color1, 0.7,
-                    nil];
-        ownWhiteCurveGradient = gradient;
-      }
-      gradient = ownWhiteCurveGradient;
-    }
-    else
-    {
-      if(!whiteCurveGradient)
-      {
-        color1 = [NSColor whiteColor];
-        color2 = [NSColor colorWithDeviceWhite:1.0 alpha:0.0];
-        gradient = [[NSGradient alloc] initWithColorsAndLocations:
-                    color2, 0.2,
-                    color1, 0.7,
-                    nil];
-        whiteCurveGradient = gradient;
-      }
-      gradient = whiteCurveGradient;
-    }
-
-    if(path)
-      [gradient drawInBezierPath:path angle:(view.item.own ? -45 : -135)];
-
-    [[NSGraphicsContext currentContext] restoreGraphicsState];
-  }
-  [[NSGraphicsContext currentContext] saveGraphicsState];
-
-  // highlight inset
-  if((view.item.own && !view.item.ownMention) || view.isHighlighted || view.item.isSelected)
-  {
-    CGRect rrectInset = rrect;
-    NSBezierPath *highlightPath = MVRoundedRectBezierPath(rrectInset, radius);
-    rrectInset.origin.y -= 1;
-    NSBezierPath *insetPath = MVRoundedRectBezierPath(rrectInset, radius);
-    NSBezierPath *highlightedPath = [NSBezierPath bezierPath];
-    [highlightedPath appendBezierPath:highlightPath];
-    highlightedPath.windingRule = NSEvenOddWindingRule;
-    [highlightedPath appendBezierPath:insetPath];
-    [highlightedPath addClip];
-
-    if(view.isHighlighted || view.item.isSelected)
-    {
-      if(view.windowHasFocus && view.shouldDisplayAsFirstResponder)
-        [[NSColor colorWithDeviceRed:0.4902 green:0.7176 blue:0.9098 alpha:1.0000] set];
-      else
-        [[NSColor colorWithDeviceRed:0.8078 green:0.8275 blue:0.8941 alpha:0.75] set];
-    }
-    else
-      [[NSColor colorWithDeviceWhite:1.0 alpha:0.5] set];
-    rrectInset.origin.y += rrectInset.size.height / 2;
-    [highlightPath addClip];
-    [NSBezierPath fillRect:rrectInset];
-
-    [[NSGraphicsContext currentContext] restoreGraphicsState];
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-  }
-  [[NSGraphicsContext currentContext] restoreGraphicsState];
-
-  // avatar
-  if((view.item.avatar && !view.item.sameSenderAsPreviousItem)
-     || view.item.type == kMVDiscussionMessageTypeWriting)
-  {
-    CGRect avatarRrect = [view avatarRect];
-
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-    NSBezierPath *path = MVRoundedRectBezierPath(avatarRrect, 4.0);
-    [path addClip];
-    [view.item.avatar drawInRect:avatarRrect];
-    [[NSGraphicsContext currentContext] restoreGraphicsState];
-
-    [[TUIImage imageNamed:@"avatar_over.png" cache:YES] drawInRect:
-     CGRectMake(avatarRrect.origin.x, avatarRrect.origin.y - 1,
-                avatarRrect.size.width, avatarRrect.size.height + 1)];
-  }
 }
 
 void MVDiscussionMessageViewDrawOverImage(MVDiscussionMessageView *view,
@@ -568,15 +309,14 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
 {
   if(!transparent)
   {
-    // gradient background
     if(view.style == kMVDiscussionViewStyleBlueGradient && !view.item.isAnimating)
     {
       if((view.item.type == kMVDiscussionMessageTypeTimestamp ||
           view.item.type == kMVDiscussionMessageTypeFullTimestamp ||
-          view.item.type == kMVDiscussionMessageTypeNotification)
-         && view.backgroundGradient)
+          view.item.type == kMVDiscussionMessageTypeNotification))
       {
-        [view.backgroundGradient drawInRect:view.bounds angle:-90];
+        [[TUIColor whiteColor] set];
+        [NSBezierPath fillRect:view.bounds];
       }
     }
   }
@@ -1105,7 +845,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
   if(self.item.ownMention)
     self.textRenderer.selectionColor = [TUIColor colorWithWhite:1 alpha:0.85];
   else if(self.item.own)
-    self.textRenderer.selectionColor = [TUIColor colorWithWhite:1 alpha:0.75];
+    self.textRenderer.selectionColor = [TUIColor colorWithWhite:1 alpha:0.35];
   else
     self.textRenderer.selectionColor = nil;
   [item addObserver:self forKeyPath:@"asset.uploadPercentage" options:0 context:NULL];
@@ -1534,7 +1274,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
     if(item.previousItem.type == kMVDiscussionMessageTypeNotification)
       return kMVDiscussionMessageViewNotificationMarginBottom;
   }
-  return 0;
+  return 3;
 }
 
 + (CGSize)sizeForItem:(MVDiscussionMessageItem*)item
@@ -1582,7 +1322,7 @@ void MVDiscussionMessageViewDraw(MVDiscussionMessageView *view, BOOL transparent
                     kMVDiscussionMessageViewTextMarginRight;
     textRenderer.attributedString = item.attributedMessage;
     CGSize size = [textRenderer sizeConstrainedToWidth:w - margins];
-    item.cachedSize = CGSizeMake(size.width + margins, size.height + 16);
+    item.cachedSize = CGSizeMake(size.width + margins, size.height + 9);
   }
   else if(item.type == kMVDiscussionMessageTypeTweet)
   {

@@ -61,6 +61,9 @@ static NSGradient *backgroundGradient;
 {
   self = [super initWithFrame:frame];
   if(self) {
+    self.opaque = YES;
+    self.backgroundColor = [TUIColor whiteColor];
+    
     discussionView_ = nil;
     textView_ = nil;
     state_ = kMVChatSectionViewStateOnline;
@@ -164,16 +167,6 @@ static NSGradient *backgroundGradient;
     [self.discussionView removeObserver:self forKeyPath:@"countItems"];
     [self.discussionView removeObserver:self forKeyPath:@"allowsBlankslate"];
   }
-}
-
-- (void)drawRect:(CGRect)rect
-{
-  CGRect rrect = CGRectMake(0, 30, self.bounds.size.width, self.bounds.size.height - 30);
-  [backgroundGradient drawInRect:rrect
-                           angle:90];
-
-  [[NSColor colorWithDeviceRed:0.9608 green:0.9686 blue:0.9843 alpha:1.0000] set];
-  NSRectFill(CGRectMake(0, self.bounds.size.height - 1, self.bounds.size.width, 1));
 }
 
 - (void)layoutSubviews
