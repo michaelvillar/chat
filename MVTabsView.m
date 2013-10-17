@@ -58,6 +58,7 @@
   self = [super initWithFrame:frame];
   if(self) {
     self.clipsToBounds = YES;
+    self.moveWindowByDragging = YES;
 
     __block MVTabsView *tabsView = self;
 
@@ -72,6 +73,7 @@
 
     contentView_ = [[TUIView alloc] initWithFrame:self.bounds];
     contentView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
+    contentView_.moveWindowByDragging = YES;
     [self addSubview:contentView_];
 
     CGRect overflowFrame = CGRectMake(self.bounds.size.width - 16 - 8,
@@ -162,8 +164,12 @@
 
 - (void)drawRect:(CGRect)rect
 {
-  [[TUIColor colorWithRed:0.9333 green:0.9412 blue:0.9569 alpha:1] set];
-  [NSBezierPath fillRect:self.bounds];
+  NSColor *startingColor = [NSColor colorWithDeviceRed:0.9725 green:0.9765 blue:0.9843 alpha:1];
+  NSColor *endingColor = [NSColor colorWithDeviceRed:0.9333 green:0.9451 blue:0.9569 alpha:1];
+  NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:startingColor
+                                                       endingColor:endingColor];
+  [gradient drawFromPoint:NSMakePoint(0, self.bounds.size.height)
+                  toPoint:NSMakePoint(0, 1) options:0];
   
   [[TUIColor colorWithRed:0.831373 green:0.850980 blue:0.874510 alpha:1.0000] set];
   [NSBezierPath fillRect:CGRectMake(0, 0, self.bounds.size.width, 1)];
@@ -194,7 +200,7 @@
   if([self tabForIdentifier:identifier])
     return;
   index = MIN(index, self.tabs.count);
-  MVTabView *tabView = [[MVTabView alloc] initWithFrame:CGRectMake(0, 0, 1, 23)];
+  MVTabView *tabView = [[MVTabView alloc] initWithFrame:CGRectMake(0, 0, 1, self.bounds.size.height)];
   tabView.name = name;
   tabView.identifier = identifier;
   tabView.sortable = sortable;
@@ -686,7 +692,7 @@
         [TUIView setAnimationsEnabled:animated];
         if(tabView.layer.opacity != 1.0)
           [tabView.layer setOpacity:1.0];
-        [tabView setFrame:CGRectMake(x, 0, w, 23)];
+        [tabView setFrame:CGRectMake(x, 0, w, self.bounds.size.height)];
         [TUIView setAnimationsEnabled:YES];
       }];
     }

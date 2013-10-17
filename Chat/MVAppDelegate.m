@@ -56,10 +56,9 @@
   }
   
   NSView *contentView = self.window.contentView;
-  
   MVNSContentView *tUINSView = [[MVNSContentView alloc] initWithFrame:contentView.bounds];
   tUINSView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
-  [contentView addSubview:tUINSView];
+  [self.window setContentView:tUINSView];
   
   self.chatViewController = [[MVChatViewController alloc] init];
   self.chatViewController.view.frame = tUINSView.bounds;

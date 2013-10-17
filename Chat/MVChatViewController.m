@@ -82,7 +82,7 @@
     };
     
     tabsView_ = [[MVTabsView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height,
-                                                             self.view.frame.size.width, 23)];
+                                                             self.view.frame.size.width, 25)];
     tabsView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                  TUIViewAutoresizingFlexibleBottomMargin;
     tabsView_.delegate = self;
@@ -93,7 +93,7 @@
     swipeableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                       TUIViewAutoresizingFlexibleHeight;
     swipeableView_.delegate = self;
-    swipeableView_.contentViewTopMargin = 23;
+    swipeableView_.contentViewTopMargin = self.tabsView.frame.size.height;
     [view_ addSubview:swipeableView_];
 
     buddyListViewController_ = [[MVBuddyListViewController alloc] init];
@@ -108,8 +108,6 @@
                  animated:YES];
     [self.swipeableView insertSwipeableSubview:buddyListViewController_.view atIndex:1];
     [self displayController:buddyListViewController_];
-    
-    [self updateWindowTitle];
     
     [buddiesManager_ addDelegate:self];
     [self addObserver:self forKeyPath:@"connectionState" options:0 context:NULL];
@@ -211,11 +209,6 @@
   return title;
 }
 
-- (void)updateWindowTitle
-{
-  self.view.nsWindow.title = [self titleForController:self.currentController];
-}
-
 - (void)displayController:(NSObject<MVController>*)controller
 {
   if(controller == self.currentController)
@@ -224,7 +217,6 @@
   self.currentController = controller;
   [self.swipeableView swipeToView:controller.view];
   [controller makeFirstResponder];
-  [self updateWindowTitle];
   [self.tabsView setSelectedTab:controller];
 }
 
@@ -302,7 +294,6 @@
   {
     self.currentController = controller;
     [controller makeFirstResponder];
-    [self updateWindowTitle];
     [self.tabsView setSelectedTab:controller];
   }
 }
@@ -326,7 +317,7 @@
     CGRect frame = self.tabsView.frame;
     if([self.tabsView countTabs] > 0)
     {
-      frame.origin.y = self.view.frame.size.height - 23;
+      frame.origin.y = self.view.frame.size.height - frame.size.height;
     }
     else
     {
