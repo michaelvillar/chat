@@ -1,8 +1,8 @@
 #import "MVBuddyListView.h"
 #import "MVRoundedTextView.h"
+#import "MVBuddyListTableView.h"
 #import "NSEvent+CharacterDetection.h"
-
-static NSGradient *backgroundGradient = nil;
+#import "TUIView+Easing.h"
 
 @interface MVBuddyListView () <MVRoundedTextViewDelegate>
 
@@ -25,31 +25,15 @@ static NSGradient *backgroundGradient = nil;
             maskView = maskView_,
             delegate = delegate_;
 
-+ (void)initialize
-{
-  if(!backgroundGradient)
-  {
-    NSColor *bottomColor = [NSColor colorWithDeviceRed:0.8863
-                                                 green:0.9059
-                                                  blue:0.9529
-                                                 alpha:1.0000];
-    NSColor *topColor = [NSColor colorWithDeviceRed:0.9216
-                                              green:0.9373
-                                               blue:0.9686
-                                              alpha:1.0000];
-    
-    backgroundGradient = [[NSGradient alloc] initWithStartingColor:bottomColor
-                                                       endingColor:topColor];
-  }
-}
-
 - (id)initWithFrame:(CGRect)frame
 {
   self = [super initWithFrame:frame];
   if(self)
   {
-    tableView_ = [[TUITableView alloc] initWithFrame:self.bounds
-                                               style:TUITableViewStylePlain];
+    self.backgroundColor = [TUIColor whiteColor];
+    
+    tableView_ = [[MVBuddyListTableView alloc] initWithFrame:self.bounds
+                                                       style:TUITableViewStylePlain];
     tableView_.backgroundColor = [TUIColor whiteColor];
     tableView_.opaque = NO;
     tableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
@@ -63,16 +47,30 @@ static NSGradient *backgroundGradient = nil;
                                                                           self.bounds.size.width,
                                                                           37)];
     searchFieldContainerView_.userInteractionEnabled = NO;
+    searchFieldContainerView_.backgroundColor = [TUIColor clearColor];
+    searchFieldContainerView_.opaque = NO;
     
     CGRect searchFieldViewFrame = CGRectMake(0, searchFieldContainerView_.bounds.size.height,
                                              searchFieldContainerView_.bounds.size.width,
                                              searchFieldContainerView_.bounds.size.height);
     searchFieldView_ = [[TUIView alloc] initWithFrame:searchFieldViewFrame];
     searchFieldView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
-    searchFieldView_.opaque = YES;
-    searchFieldView_.backgroundColor = [TUIColor whiteColor];
+    searchFieldView_.opaque = NO;
+    searchFieldView_.backgroundColor = [TUIColor clearColor];
+    searchFieldView_.drawRect = ^(TUIView *view, CGRect rect)
+    {
+      NSColor *startColor = [NSColor colorWithDeviceWhite:1 alpha:0.8];
+      NSColor *endColor = [NSColor colorWithDeviceWhite:1 alpha:0];
+      NSGradient *gradient = [[NSGradient alloc] initWithColorsAndLocations:
+                              startColor, 0.0,
+                              startColor, 0.7,
+                              endColor, 1.0,
+                              nil];
+      [gradient drawFromPoint:CGPointMake(0, view.bounds.size.height)
+                      toPoint:CGPointMake(0, 0) options:0];
+    };
     
-    CGRect searchFieldFrame = CGRectMake(4, 6, searchFieldView_.bounds.size.width - 8, 29);
+    CGRect searchFieldFrame = CGRectMake(4, 4, searchFieldView_.bounds.size.width - 8, 29);
     searchField_ = [[MVRoundedTextView alloc] initWithFrame:searchFieldFrame];
     searchField_.autoresizingMask = TUIViewAutoresizingFlexibleWidth;
     searchField_.placeholder = @"Search buddy";
@@ -138,16 +136,18 @@ static NSGradient *backgroundGradient = nil;
   __block CGRect tableViewRect = self.tableView.frame;
   self.searchFieldContainerView.userInteractionEnabled = self.searchFieldVisible;
   if(self.searchFieldVisible) {
-    [TUIView animateWithDuration:0.2 animations:^{
-      [TUIView setAnimationCurve:TUIViewAnimationCurveEaseInOut];
+    [TUIView animateWithDuration:0.45 animations:^{
+      [TUIView setEasing:[CAMediaTimingFunction functionWithControlPoints:0.20 :1.4 :0.46 :1]];
       rect.origin.y = 0;
       self.searchFieldView.frame = rect;
       
-      tableViewRect.origin.y = - (rect.size.height - 2);
+      tableViewRect.origin.y = - rect.size.height;
       self.tableView.frame = tableViewRect;
     } completion:^(BOOL finished) {
+      if(!self.searchFieldVisible)
+        return;
       tableViewRect.origin.y = 0;
-      tableViewRect.size.height = self.frame.size.height - (rect.size.height - 2);
+      tableViewRect.size.height = self.frame.size.height - rect.size.height;
       self.tableView.frame = tableViewRect;
       [self.tableView scrollToTopAnimated:NO];
     }];
@@ -169,6 +169,8 @@ static NSGradient *backgroundGradient = nil;
       tableViewRect.origin.y = 0;
       self.tableView.frame = tableViewRect;
     } completion:^(BOOL finished) {
+      if(self.searchFieldVisible)
+        return;
       [self.searchField setEditable:NO];
       self.searchField.text = @"";
     }];
@@ -195,17 +197,6 @@ static NSGradient *backgroundGradient = nil;
 - (void)performFindPanelAction:(id)sender
 {
   [self setSearchFieldVisible:YES animated:YES];
-}
-
-#pragma mark Drawing Methods
-
-- (void)drawRect:(CGRect)rect
-{
-  [backgroundGradient drawInRect:self.bounds
-                           angle:90];
-  
-  [[NSColor colorWithDeviceRed:0.9608 green:0.9686 blue:0.9843 alpha:1.0000] set];
-  NSRectFill(CGRectMake(0, self.bounds.size.height - 1, self.bounds.size.width, 1));
 }
 
 #pragma mark Events Handling

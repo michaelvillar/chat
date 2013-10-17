@@ -256,6 +256,7 @@
 		4C55DF03174345C50002DE67 /* MVBuddiesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C55DF02174345C50002DE67 /* MVBuddiesManager.m */; };
 		4C55DF06174349270002DE67 /* MVMulticastDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C55DF05174349270002DE67 /* MVMulticastDelegate.m */; };
 		4C55DF091743529B0002DE67 /* NSURL+ImageDetection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C55DF081743529B0002DE67 /* NSURL+ImageDetection.m */; };
+		4C5AEA7318103F2700AD1786 /* MVBuddyListTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5AEA7218103F2700AD1786 /* MVBuddyListTableView.m */; };
 		4C7DFF6A173826960048F8DA /* icon_offline.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DFF68173826960048F8DA /* icon_offline.png */; };
 		4C7DFF6B173826960048F8DA /* icon_offline_active.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DFF69173826960048F8DA /* icon_offline_active.png */; };
 		4C7DFF71173826B30048F8DA /* icon_activity_indicator_over.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7DFF6C173826B30048F8DA /* icon_activity_indicator_over.png */; };
@@ -740,6 +741,8 @@
 		4C55DF05174349270002DE67 /* MVMulticastDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVMulticastDelegate.m; sourceTree = "<group>"; };
 		4C55DF071743529B0002DE67 /* NSURL+ImageDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+ImageDetection.h"; sourceTree = "<group>"; };
 		4C55DF081743529B0002DE67 /* NSURL+ImageDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+ImageDetection.m"; sourceTree = "<group>"; };
+		4C5AEA7118103F2700AD1786 /* MVBuddyListTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MVBuddyListTableView.h; sourceTree = "<group>"; };
+		4C5AEA7218103F2700AD1786 /* MVBuddyListTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MVBuddyListTableView.m; sourceTree = "<group>"; };
 		4C7DFF68173826960048F8DA /* icon_offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_offline.png; sourceTree = "<group>"; };
 		4C7DFF69173826960048F8DA /* icon_offline_active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_offline_active.png; sourceTree = "<group>"; };
 		4C7DFF6C173826B30048F8DA /* icon_activity_indicator_over.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_activity_indicator_over.png; sourceTree = "<group>"; };
@@ -1860,6 +1863,8 @@
 				4C7DFF8F173890F00048F8DA /* MVBuddyListView.m */,
 				4C7DFF87173834CF0048F8DA /* MVBuddyViewCell.h */,
 				4C7DFF88173834CF0048F8DA /* MVBuddyViewCell.m */,
+				4C5AEA7118103F2700AD1786 /* MVBuddyListTableView.h */,
+				4C5AEA7218103F2700AD1786 /* MVBuddyListTableView.m */,
 			);
 			name = BuddyList;
 			sourceTree = "<group>";
@@ -2248,6 +2253,7 @@
 				4C1E01591730D80F005BDA73 /* XMPPMessage+XEP0045.m in Sources */,
 				4C1E015A1730D80F005BDA73 /* XMPPMUC.m in Sources */,
 				4C1E015B1730D80F005BDA73 /* XMPPRoom.m in Sources */,
+				4C5AEA7318103F2700AD1786 /* MVBuddyListTableView.m in Sources */,
 				4C1E015C1730D80F005BDA73 /* XMPPvCard.xcdatamodeld in Sources */,
 				4C1E015D1730D80F005BDA73 /* XMPPvCardAvatarCoreDataStorageObject.m in Sources */,
 				4C1E015E1730D80F005BDA73 /* XMPPvCardCoreDataStorage.m in Sources */,

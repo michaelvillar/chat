@@ -174,6 +174,7 @@ typedef enum {
 - (void)endContinuousScrollAnimated:(BOOL)animated;
 
 @property (nonatomic, readonly) CGRect visibleRect;
+@property (nonatomic, readonly) CGRect visibleRectForLayout;
 @property (nonatomic, readonly) TUIEdgeInsets scrollIndicatorInsets;
 
 - (void)flashScrollIndicators;

@@ -4,6 +4,12 @@
 #import "MVBuddiesManager.h"
 #import "MVXMPP.h"
 
+@interface XMPPUserMemoryStorageObject ()
+
+- (id)initWithJID:(XMPPJID*)jid;
+
+@end
+
 @interface MVBuddyListViewController () <TUITableViewDataSource,
                                          TUITableViewDelegate,
                                          MVBuddyListViewDelegate,
@@ -99,6 +105,14 @@
   }
   else
     self.filteredUsers = self.users;
+  
+  NSMutableArray *tmp = [NSMutableArray array];
+  for(int i=0;i<50;i++) {
+    XMPPJID *jid = [XMPPJID jidWithString:@"blah@gmail.com"];
+    XMPPUserMemoryStorageObject *user = [[XMPPUserMemoryStorageObject alloc] initWithJID:jid];
+    [tmp addObject:user];
+  }
+  self.filteredUsers = tmp;
   
   [self.tableView reloadData];
   
