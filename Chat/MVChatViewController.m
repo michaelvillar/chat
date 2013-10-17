@@ -63,7 +63,7 @@
     view_.backgroundColor = [TUIColor clearColor];
     view_.drawRect = ^(TUIView *view, CGRect rect) {
       // clipping mask
-      float radius = 3.5;
+      float radius = 4;
       rect = view.bounds;
       NSBezierPath *path = [NSBezierPath bezierPath];
       [path moveToPoint:CGPointMake(rect.size.width, rect.size.height / 2)];

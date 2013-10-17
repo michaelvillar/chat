@@ -43,7 +43,7 @@
     representedObject_ = nil;
     
     self.opaque = NO;
-    self.backgroundColor = [TUIColor whiteColor];
+    self.backgroundColor = [TUIColor clearColor];
     self.clipsToBounds = NO;
     
     __weak __block MVBuddyViewCell *weakSelf = self;

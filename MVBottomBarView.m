@@ -17,8 +17,6 @@
 {
   self = [super initWithFrame:frame];
   if(self) {
-    __block MVBottomBarView *parent = self;
-
     self.opaque = NO;
     self.backgroundColor = [TUIColor clearColor];
     self.clipsToBounds = YES;
@@ -32,7 +30,21 @@
     bottomView_.shouldDisplayWhenWindowChangesFocus = YES;
     bottomView_.drawRect = ^(TUIView *view, CGRect rect) {
       [[NSColor colorWithDeviceWhite:1 alpha:0.8] set];
-      [NSBezierPath fillRect:view.bounds];
+      
+      float radius = 5;
+      rect = view.bounds;
+      NSBezierPath *path = [NSBezierPath bezierPath];
+      [path moveToPoint:CGPointMake(rect.size.width, rect.size.height / 2)];
+      [path appendBezierPathWithArcFromPoint:CGPointMake(rect.size.width, 0)
+                                     toPoint:CGPointMake(rect.size.width / 2, 0)
+                                      radius:radius];
+      [path appendBezierPathWithArcFromPoint:CGPointMake(0, 0)
+                                     toPoint:CGPointMake(0, rect.size.height / 2)
+                                      radius:radius];
+      [path lineToPoint:CGPointMake(0, rect.size.height)];
+      [path lineToPoint:CGPointMake(rect.size.width, rect.size.height)];
+      [path closePath];
+      [path fill];
     };
 
     topView_ = [[TUIView alloc] initWithFrame:CGRectMake(0, frame.size.height - 8,

@@ -61,8 +61,8 @@ static NSGradient *backgroundGradient;
 {
   self = [super initWithFrame:frame];
   if(self) {
-    self.opaque = YES;
-    self.backgroundColor = [TUIColor whiteColor];
+    self.opaque = NO;
+    self.backgroundColor = [TUIColor clearColor];
     
     discussionView_ = nil;
     textView_ = nil;

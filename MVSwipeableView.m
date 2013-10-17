@@ -31,6 +31,9 @@
   self = [super initWithFrame:frame];
   if(self)
   {
+    self.opaque = NO;
+    self.backgroundColor = [TUIColor clearColor];
+    
     contentView_ = [[TUIView alloc] initWithFrame:self.bounds];
     contentView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                     TUIViewAutoresizingFlexibleHeight;

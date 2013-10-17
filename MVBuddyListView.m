@@ -30,11 +30,12 @@
   self = [super initWithFrame:frame];
   if(self)
   {
-    self.backgroundColor = [TUIColor whiteColor];
+    self.opaque = NO;
+    self.backgroundColor = [TUIColor clearColor];
     
     tableView_ = [[MVBuddyListTableView alloc] initWithFrame:self.bounds
                                                        style:TUITableViewStylePlain];
-    tableView_.backgroundColor = [TUIColor whiteColor];
+    tableView_.backgroundColor = [TUIColor clearColor];
     tableView_.opaque = NO;
     tableView_.autoresizingMask = TUIViewAutoresizingFlexibleWidth |
                                   TUIViewAutoresizingFlexibleHeight;
